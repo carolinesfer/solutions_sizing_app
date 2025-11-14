@@ -223,17 +223,17 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 0.9.12 Create `architecture_agent/README.md` with agent documentation
   - [x] 0.9.13 Update `architecture_agent/custom_model/pyproject.toml` with required dependencies (pydantic-ai, scoper_shared, etc.)
 
-- [ ] 1.0 Set up Pydantic data models and schemas (in scoper_shared)
-  - [ ] 1.1 Create `scoper_shared/schemas.py` file
-  - [ ] 1.2 Implement `UseCaseInput` schema with `paragraph`, `transcript` (optional), and `use_case_title` fields
-  - [ ] 1.3 Implement `FactExtractionModel` schema with `use_case_title`, `technical_confidence_score`, `key_extracted_requirements`, `domain_keywords`, and `identified_gaps` fields
-  - [ ] 1.4 Implement `Question` schema with `id`, `text`, `type` (Literal), `options`, `required`, `rationale`, and `tracks` fields
-  - [ ] 1.5 Implement `ArchitectureStep` schema with `id`, `name`, `purpose`, `inputs`, and `outputs` fields
-  - [ ] 1.6 Implement `QuestionnaireDraft` schema with `questions`, `selected_from_master_ids`, `delta_questions`, and `coverage_estimate` fields
-  - [ ] 1.7 Implement `QuestionnaireFinal` schema with `qas`, `answered_pct`, and `gaps` fields
-  - [ ] 1.8 Implement `ArchitecturePlan` schema with `steps` (10-16 items), `assumptions`, `risks`, and `notes` fields
-  - [ ] 1.9 Add Google-style docstrings to all schemas explaining their purpose and usage
-  - [ ] 1.10 Create unit tests for schema validation in `scoper_shared/tests/test_schemas.py`
+- [x] 1.0 Set up Pydantic data models and schemas (in scoper_shared)
+  - [x] 1.1 Create `scoper_shared/schemas.py` file
+  - [x] 1.2 Implement `UseCaseInput` schema with `paragraph`, `transcript` (optional), and `use_case_title` fields
+  - [x] 1.3 Implement `FactExtractionModel` schema with `use_case_title`, `technical_confidence_score`, `key_extracted_requirements`, `domain_keywords`, and `identified_gaps` fields
+  - [x] 1.4 Implement `Question` schema with `id`, `text`, `type` (Literal), `options`, `required`, `rationale`, and `tracks` fields
+  - [x] 1.5 Implement `ArchitectureStep` schema with `id`, `name`, `purpose`, `inputs`, and `outputs` fields
+  - [x] 1.6 Implement `QuestionnaireDraft` schema with `questions`, `selected_from_master_ids`, `delta_questions`, and `coverage_estimate` fields
+  - [x] 1.7 Implement `QuestionnaireFinal` schema with `qas`, `answered_pct`, and `gaps` fields
+  - [x] 1.8 Implement `ArchitecturePlan` schema with `steps` (10-16 items), `assumptions`, `risks`, and `notes` fields
+  - [x] 1.9 Add Google-style docstrings to all schemas explaining their purpose and usage
+  - [x] 1.10 Create unit tests for schema validation in `scoper_shared/tests/test_schemas.py`
 
 - [ ] 2.0 Implement Knowledge Base infrastructure (KB Retriever and Domain Router in scoper_shared)
   - [ ] 2.1 Create `scoper_shared/utils/__init__.py` file
