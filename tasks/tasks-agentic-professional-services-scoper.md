@@ -334,20 +334,20 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 5.15 Create `frontend_web/src/components/ArchitecturePlanView.tsx` to render architecture plan markdown
   - [x] 5.16 Add download buttons for Questionnaire (JSON) and ArchitecturePlan (Markdown)
   - [x] 5.17 Add route configuration in `frontend_web/src/routesConfig.tsx` for `/scoper` path
-  - [ ] 5.18 Create integration tests for API endpoints in `web/tests/integration/test_scoper.py`
-  - [ ] 5.19 Create `infra/infra/requirement_analyzer_agent.py` for Pulumi deployment (based on `infra/infra/writer_agent.py`)
-  - [ ] 5.20 Create `infra/infra/questionnaire_agent.py` for Pulumi deployment
-  - [ ] 5.21 Create `infra/infra/clarifier_agent.py` for Pulumi deployment
-  - [ ] 5.22 Create `infra/infra/architecture_agent.py` for Pulumi deployment
-  - [ ] 5.23 Create `infra/feature_flags/requirement_analyzer_agent.yaml` for feature flag configuration
-  - [ ] 5.24 Create `infra/feature_flags/questionnaire_agent.yaml` for feature flag configuration
-  - [ ] 5.25 Create `infra/feature_flags/clarifier_agent.yaml` for feature flag configuration
-  - [ ] 5.26 Create `infra/feature_flags/architecture_agent.yaml` for feature flag configuration
-  - [ ] 5.27 Update root `Taskfile.yml` to include all agent tasks if needed
+  - [x] 5.18 Create integration tests for API endpoints in `web/tests/integration/test_scoper.py`
+  - [x] 5.19 Create `infra/infra/requirement_analyzer_agent.py` for Pulumi deployment (based on `infra/infra/writer_agent.py`)
+  - [x] 5.20 Create `infra/infra/questionnaire_agent.py` for Pulumi deployment
+  - [x] 5.21 Create `infra/infra/clarifier_agent.py` for Pulumi deployment
+  - [x] 5.22 Create `infra/infra/architecture_agent.py` for Pulumi deployment
+  - [x] 5.23 Create `infra/feature_flags/requirement_analyzer_agent.yaml` for feature flag configuration
+  - [x] 5.24 Create `infra/feature_flags/questionnaire_agent.yaml` for feature flag configuration
+  - [x] 5.25 Create `infra/feature_flags/clarifier_agent.yaml` for feature flag configuration
+  - [x] 5.26 Create `infra/feature_flags/architecture_agent.yaml` for feature flag configuration
+  - [x] 5.27 Update root `Taskfile.yml` to include all agent tasks if needed
   - [ ] 5.28 Build each agent for testing in DataRobot LLM Playground using `task requirement_analyzer_agent:build`, `task questionnaire_agent:build`, `task clarifier_agent:build`, `task architecture_agent:build`
   - [ ] 5.29 Deploy each agent for production use using `task requirement_analyzer_agent:deploy`, `task questionnaire_agent:deploy`, `task clarifier_agent:deploy`, `task architecture_agent:deploy`
   - [ ] 5.30 Test deployed agents using `task requirement_analyzer_agent:cli -- execute-deployment --user_prompt "..."` (and similar for other agents)
-  - [ ] 5.31 Create `infra/infra/web_app.py` for Pulumi deployment of FastAPI backend as DataRobot Custom Application (based on existing Custom Application deployment patterns in `infra/`)
+  - [x] 5.31 Create `infra/infra/web_app.py` for Pulumi deployment of FastAPI backend as DataRobot Custom Application (based on existing Custom Application deployment patterns in `infra/`) - Updated `infra/infra/web.py` to include scoper agent runtime parameters
   - [ ] 5.32 Configure DataRobot Custom Application deployment settings for the FastAPI backend (runtime environment, dependencies, environment variables)
   - [ ] 5.33 Deploy FastAPI backend as DataRobot Custom Application using Pulumi: `pulumi up` from `infra/` directory
   - [ ] 5.34 Verify Custom Application deployment: test API endpoints are accessible and can communicate with deployed agents

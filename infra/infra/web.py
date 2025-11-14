@@ -29,6 +29,10 @@ from . import project_dir, use_case
 from .llm import app_runtime_parameters as llm_app_runtime_parameters
 from .oauth import app_runtime_parameters as oauth_app_runtime_parameters
 from .writer_agent import writer_agent_app_runtime_parameters
+from .requirement_analyzer_agent import requirement_analyzer_agent_app_runtime_parameters
+from .questionnaire_agent import questionnaire_agent_app_runtime_parameters
+from .clarifier_agent import clarifier_agent_app_runtime_parameters
+from .architecture_agent import architecture_agent_app_runtime_parameters
 
 
 SESSION_SECRET_KEY: Final[str] = "SESSION_SECRET_KEY"
@@ -208,6 +212,10 @@ web_app_runtime_parameters: list[
     pulumi_datarobot.ApplicationSourceRuntimeParameterValueArgs
 ] = (
     writer_agent_app_runtime_parameters
+    + requirement_analyzer_agent_app_runtime_parameters
+    + questionnaire_agent_app_runtime_parameters
+    + clarifier_agent_app_runtime_parameters
+    + architecture_agent_app_runtime_parameters
     + llm_app_runtime_parameters
     + [
         parameter

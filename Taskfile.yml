@@ -8,6 +8,18 @@ includes:
   writer_agent:
     taskfile: ./writer_agent/Taskfile.yml
     dir: ./writer_agent
+  requirement_analyzer_agent:
+    taskfile: ./requirement_analyzer_agent/Taskfile.yml
+    dir: ./requirement_analyzer_agent
+  questionnaire_agent:
+    taskfile: ./questionnaire_agent/Taskfile.yml
+    dir: ./questionnaire_agent
+  clarifier_agent:
+    taskfile: ./clarifier_agent/Taskfile.yml
+    dir: ./clarifier_agent
+  architecture_agent:
+    taskfile: ./architecture_agent/Taskfile.yml
+    dir: ./architecture_agent
   infra:
     taskfile: ./infra/Taskfile.yaml
     dir: ./infra
@@ -37,6 +49,10 @@ tasks:
     desc: "🧹 Run linters"
     cmds:
       - task: writer_agent:lint
+      - task: requirement_analyzer_agent:lint
+      - task: questionnaire_agent:lint
+      - task: clarifier_agent:lint
+      - task: architecture_agent:lint
       - task: infra:lint
       - task: frontend_web:lint
       - task: web:lint
@@ -45,6 +61,10 @@ tasks:
     desc: "🛠️ Install all dependencies for agent and infra"
     cmds:
       - task: writer_agent:install
+      - task: requirement_analyzer_agent:install
+      - task: questionnaire_agent:install
+      - task: clarifier_agent:install
+      - task: architecture_agent:install
       - task: infra:install
       - task: frontend_web:install
       - task: web:install
