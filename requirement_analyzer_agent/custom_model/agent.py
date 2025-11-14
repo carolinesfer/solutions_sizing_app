@@ -18,11 +18,10 @@ Requirement Analyzer Agent implementation using pydantic-ai.
 This agent extracts facts, requirements, and identifies gaps from raw user input.
 """
 
-import json
 from typing import Any
 
 from opentelemetry import trace
-from pydantic_ai import Agent, RunContext
+from pydantic_ai import Agent
 from pydantic_ai.models.openai import OpenAIModel
 
 from config import Config

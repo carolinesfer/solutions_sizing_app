@@ -21,7 +21,6 @@
 - **Infrastructure as Code:** https://www.pulumi.com/registry/packages/datarobot/
 - **Asynchronous Programming:** Prefer `async` and `await`
 - **LLM Framework:** `pydantic`, `langgraph`, `llamaindex`
-- **Vector Database:** `faiss`, `chroma` (optional)
 - **Data Processing:** `pandas`, `numpy`, `dask` (optional), `pyspark` (optional)
 - **Version Control:** `git`
 - **Process Management:** `systemd`, `supervisor`
@@ -78,6 +77,27 @@
 - **Documentation:** Auto-generate API documentation using FastAPI's OpenAPI support.
 - **Versioning:** Plan for API versioning from the start (e.g., using URL prefixes or headers).
 - **CORS:** Configure Cross-Origin Resource Sharing (CORS) settings correctly.
+
+## 7. DataRobot Platform Integration
+
+As an engineer at DataRobot, your primary objective is to build and deploy solutions using the DataRobot platform. All ML, GenAI, and agentic workflows should be designed for deployment and management within the DataRobot ecosystem.
+
+- **Primary SDK:** Always prefer the `datarobot` Python package for all programmatic interactions with the platform, including project creation, model deployment, and prediction retrieval. Refer to the [DataRobot API Documentation](https://docs.datarobot.com/en/docs/api/index.html) for detailed usage.
+
+- **Agentic AI Workflows:**
+    - All agentic workflows must be developed, tested, and deployed using DataRobot's [Agentic AI framework](https://docs.datarobot.com/en/docs/agentic-ai/agentic-develop/index.html).
+    - Design agents to be hosted as DataRobot Applications for testing, monitoring, and production use.
+    - Leverage DataRobot for managing the agent lifecycle, state, and interaction logging.
+
+- **Generative AI & RAG:**
+    - For RAG (Retrieval-Augmented Generation) chatbots and other GenAI use cases, you must use DataRobot's [GenAI capabilities](https://docs.datarobot.com/en/docs/gen-ai/genai-code/index.html).
+    - Utilize DataRobot's managed Vector Database for storing and querying embeddings. Do not default to local or standalone vector stores like FAISS or Chroma unless explicitly required for a non-deployable component.
+    - Use the platform's pre-built RAG tools and prompt templates (Playground) as a starting point, and integrate them via the Python SDK.
+
+- **Deployment & Hosting:**
+    - All models (traditional ML or LLM-based) must be packaged for deployment on DataRobot. Use `datarobot-drum` to create custom model runtimes that conform to the DataRobot execution environment.
+    - FastAPI applications (as defined in Section 6) that serve as backends for AI applications should be deployed as DataRobot Custom Applications for unified governance, monitoring, and security.
+    - The goal is for *all* artifacts to be registered in the DataRobot Model Registry and/or available as a scalable DataRobot Deployment.
 
 # Code Example Requirements
 

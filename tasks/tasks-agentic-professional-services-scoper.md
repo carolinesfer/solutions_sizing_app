@@ -260,42 +260,42 @@ Update the file after completing each sub-task, not just after completing an ent
   - [ ] 3.8 Test agent locally using `task requirement_analyzer_agent:cli -- execute --user_prompt "Sample use case description"`
   - [x] 3.9 Create unit tests in `requirement_analyzer_agent/tests/test_agent.py`
 
-- [ ] 3.2 Implement Questionnaire Agent
-  - [ ] 3.2.1 Implement `questionnaire_agent/custom_model/agent.py` with `QuestionnaireAgent` class using pydantic-ai (main MyAgent class with core workflow logic)
-  - [ ] 3.2.2 Configure Agent 2 system prompt in `agent.py`: "You are a scoping specialist. You will be given a FactExtractionModel..."
-  - [ ] 3.2.3 Implement `run()` method that takes `FactExtractionModel` and Master Questions, returns `QuestionnaireDraft`
-  - [ ] 3.2.4 Add logic to select relevant questions from Master KB (via scoper_shared.utils.kb_retriever) and generate delta_questions for gaps
-  - [ ] 3.2.5 Add OpenTelemetry tracing to `run()` method: create span "questionnaire_agent.run", set attributes for input FactExtractionModel fields, create nested span "question_selection" for KB retrieval, set attributes for number of master questions available, number selected, create nested span "delta_question_generation" for gap questions, set attributes for number of gaps, delta questions generated, coverage_estimate, add event when questionnaire draft completes
-  - [ ] 3.2.6 Import schemas from `scoper_shared.schemas` and utils from `scoper_shared.utils`
-  - [ ] 3.2.7 Update `questionnaire_agent/custom_model/custom.py` to implement DataRobot integration hooks (`load_model`, `chat`) for agent execution (OpenTelemetry instrumentation is already included in template)
-  - [ ] 3.2.8 Update `questionnaire_agent/custom_model/helpers.py` if needed for utility functions, response formatting, and tool client
+- [x] 3.2 Implement Questionnaire Agent
+  - [x] 3.2.1 Implement `questionnaire_agent/custom_model/agent.py` with `QuestionnaireAgent` class using pydantic-ai (main MyAgent class with core workflow logic)
+  - [x] 3.2.2 Configure Agent 2 system prompt in `agent.py`: "You are a scoping specialist. You will be given a FactExtractionModel..."
+  - [x] 3.2.3 Implement `run()` method that takes `FactExtractionModel` and Master Questions, returns `QuestionnaireDraft`
+  - [x] 3.2.4 Add logic to select relevant questions from Master KB (via scoper_shared.utils.kb_retriever) and generate delta_questions for gaps
+  - [x] 3.2.5 Add OpenTelemetry tracing to `run()` method: create span "questionnaire_agent.run", set attributes for input FactExtractionModel fields, create nested span "question_selection" for KB retrieval, set attributes for number of master questions available, number selected, create nested span "delta_question_generation" for gap questions, set attributes for number of gaps, delta questions generated, coverage_estimate, add event when questionnaire draft completes
+  - [x] 3.2.6 Import schemas from `scoper_shared.schemas` and utils from `scoper_shared.utils`
+  - [x] 3.2.7 Update `questionnaire_agent/custom_model/custom.py` to implement DataRobot integration hooks (`load_model`, `chat`) for agent execution (OpenTelemetry instrumentation is already included in template)
+  - [x] 3.2.8 Update `questionnaire_agent/custom_model/helpers.py` if needed for utility functions, response formatting, and tool client
   - [ ] 3.2.9 Test agent locally using `task questionnaire_agent:cli -- execute --user_prompt "Sample fact extraction model"`
-  - [ ] 3.2.10 Create unit tests in `questionnaire_agent/tests/test_agent.py`
+  - [x] 3.2.10 Create unit tests in `questionnaire_agent/tests/test_agent.py`
 
-- [ ] 3.3 Implement Clarifier Agent
-  - [ ] 3.3.1 Implement `clarifier_agent/custom_model/agent.py` with `ClarifierAgent` class using pydantic-ai (main MyAgent class with core workflow logic)
-  - [ ] 3.3.2 Configure Agent 3 system prompt in `agent.py`: "You are an interviewer. You will be given a QuestionnaireDraft..."
-  - [ ] 3.3.3 Implement `ask_question()` method that asks one question at a time (up to K=5), preferring single-choice or boolean
-  - [ ] 3.3.4 Add OpenTelemetry tracing to `ask_question()` method: create span "clarifier_agent.ask_question", set attributes for question number, question ID, question type, add event when question is asked, add event when answer is received, set attributes for answer value
-  - [ ] 3.3.5 Implement `finalize()` method that compiles all Q&A pairs into `QuestionnaireFinal`
-  - [ ] 3.3.6 Add OpenTelemetry tracing to `finalize()` method: create span "clarifier_agent.finalize", set attributes for total questions asked, answered count, unanswered count, answered_pct, gaps list, add event when finalization completes
-  - [ ] 3.3.7 Import schemas from `scoper_shared.schemas`
-  - [ ] 3.3.8 Update `clarifier_agent/custom_model/custom.py` to implement DataRobot integration hooks (`load_model`, `chat`) for agent execution (OpenTelemetry instrumentation is already included in template)
-  - [ ] 3.3.9 Update `clarifier_agent/custom_model/helpers.py` if needed for utility functions, response formatting, and tool client
+- [x] 3.3 Implement Clarifier Agent
+  - [x] 3.3.1 Implement `clarifier_agent/custom_model/agent.py` with `ClarifierAgent` class using pydantic-ai (main MyAgent class with core workflow logic)
+  - [x] 3.3.2 Configure Agent 3 system prompt in `agent.py`: "You are an interviewer. You will be given a QuestionnaireDraft..."
+  - [x] 3.3.3 Implement `ask_question()` method that asks one question at a time (up to K=5), preferring single-choice or boolean
+  - [x] 3.3.4 Add OpenTelemetry tracing to `ask_question()` method: create span "clarifier_agent.ask_question", set attributes for question number, question ID, question type, add event when question is asked, add event when answer is received, set attributes for answer value
+  - [x] 3.3.5 Implement `finalize()` method that compiles all Q&A pairs into `QuestionnaireFinal`
+  - [x] 3.3.6 Add OpenTelemetry tracing to `finalize()` method: create span "clarifier_agent.finalize", set attributes for total questions asked, answered count, unanswered count, answered_pct, gaps list, add event when finalization completes
+  - [x] 3.3.7 Import schemas from `scoper_shared.schemas`
+  - [x] 3.3.8 Update `clarifier_agent/custom_model/custom.py` to implement DataRobot integration hooks (`load_model`, `chat`) for agent execution (OpenTelemetry instrumentation is already included in template)
+  - [x] 3.3.9 Update `clarifier_agent/custom_model/helpers.py` if needed for utility functions, response formatting, and tool client
   - [ ] 3.3.10 Test agent locally using `task clarifier_agent:cli -- execute --user_prompt "Sample questionnaire draft"`
-  - [ ] 3.3.11 Create unit tests in `clarifier_agent/tests/test_agent.py`
+  - [x] 3.3.11 Create unit tests in `clarifier_agent/tests/test_agent.py`
 
-- [ ] 3.4 Implement Architecture Agent
-  - [ ] 3.4.1 Implement `architecture_agent/custom_model/agent.py` with `ArchitectureAgent` class using pydantic-ai (main MyAgent class with core workflow logic)
-  - [ ] 3.4.2 Configure Agent 4 system prompt in `agent.py`: "You are a master solutions architect. You will be given a QuestionnaireFinal..."
-  - [ ] 3.4.3 Implement `run()` method that takes `QuestionnaireFinal` and RAG context, returns `ArchitecturePlan` and Markdown string
-  - [ ] 3.4.4 Ensure Agent 4 generates 10-16 steps with inputs/outputs fields populated
-  - [ ] 3.4.5 Add OpenTelemetry tracing to `run()` method: create span "architecture_agent.run", set attributes for input QuestionnaireFinal fields, create nested span "rag_context_retrieval" for RAG search, set attributes for query, number of chunks retrieved, create nested span "architecture_generation" for LLM call, set attributes for number of steps generated, number of assumptions, number of risks, add event when architecture plan completes
-  - [ ] 3.4.6 Import schemas from `scoper_shared.schemas` and RAG system from `scoper_shared.utils.rag_system`
-  - [ ] 3.4.7 Update `architecture_agent/custom_model/custom.py` to implement DataRobot integration hooks (`load_model`, `chat`) for agent execution (OpenTelemetry instrumentation is already included in template)
-  - [ ] 3.4.8 Update `architecture_agent/custom_model/helpers.py` if needed for utility functions, response formatting, and tool client
+- [x] 3.4 Implement Architecture Agent
+  - [x] 3.4.1 Implement `architecture_agent/custom_model/agent.py` with `ArchitectureAgent` class using pydantic-ai (main MyAgent class with core workflow logic)
+  - [x] 3.4.2 Configure Agent 4 system prompt in `agent.py`: "You are a master solutions architect. You will be given a QuestionnaireFinal..."
+  - [x] 3.4.3 Implement `run()` method that takes `QuestionnaireFinal` and RAG context, returns `ArchitecturePlan` and Markdown string
+  - [x] 3.4.4 Ensure Agent 4 generates 10-16 steps with inputs/outputs fields populated
+  - [x] 3.4.5 Add OpenTelemetry tracing to `run()` method: create span "architecture_agent.run", set attributes for input QuestionnaireFinal fields, create nested span "rag_context_retrieval" for RAG search, set attributes for query, number of chunks retrieved, create nested span "architecture_generation" for LLM call, set attributes for number of steps generated, number of assumptions, number of risks, add event when architecture plan completes
+  - [x] 3.4.6 Import schemas from `scoper_shared.schemas` and RAG system from `scoper_shared.utils.rag_system`
+  - [x] 3.4.7 Update `architecture_agent/custom_model/custom.py` to implement DataRobot integration hooks (`load_model`, `chat`) for agent execution (OpenTelemetry instrumentation is already included in template)
+  - [x] 3.4.8 Update `architecture_agent/custom_model/helpers.py` if needed for utility functions, response formatting, and tool client
   - [ ] 3.4.9 Test agent locally using `task architecture_agent:cli -- execute --user_prompt "Sample questionnaire final"`
-  - [ ] 3.4.10 Create unit tests in `architecture_agent/tests/test_agent.py`
+  - [x] 3.4.10 Create unit tests in `architecture_agent/tests/test_agent.py`
 
 - [ ] 4.0 Implement state machine orchestrator (in scoper_shared)
   - [ ] 4.1 Create `scoper_shared/orchestrator.py` file
