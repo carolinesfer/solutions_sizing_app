@@ -66,10 +66,11 @@ solutions_sizing_app/
 ├── mcp_server/                     # MCP server for tool integration
 ├── infra/                         # Pulumi Infrastructure as Code
 ├── tasks/                         # Project documentation (PRD, EDD, task list)
-├── test_agents.sh                # Quick CLI test script for all agents
-├── test_all_agents.py             # Comprehensive Python test script for full workflow
-├── TESTING.md                     # Complete testing guide and documentation
-└── TEST_FILES_EXPLANATION.md     # Explanation of testing file consolidation
+├── tests/                         # Testing files and documentation
+│   ├── test_agents.sh            # Quick CLI test script for all agents
+│   ├── test_all_agents.py        # Comprehensive Python test script for full workflow
+│   ├── TESTING.md                # Complete testing guide and documentation
+│   └── TEST_FILES_EXPLANATION.md # Explanation of testing file consolidation
 ```
 
 ---
@@ -212,11 +213,11 @@ task architecture_agent:dev
 **Quick Test All Agents (Recommended):**
 ```bash
 # Automated Python script - tests all 4 agents in sequence
-cd requirement_analyzer_agent
-PYTHONPATH=.. uv run python ../test_all_agents.py
+cd tests
+PYTHONPATH=.. python test_all_agents.py
 
 # Or use the shell script for quick CLI tests
-./test_agents.sh
+./tests/test_agents.sh
 ```
 
 **Test Individual Agents via CLI:**
@@ -241,7 +242,7 @@ task clarifier_agent:cli -- execute --user_prompt '{"questions": [...], "selecte
 task architecture_agent:cli -- execute --user_prompt '{"qas": [{"id": "q1", "answer": "Database"}], "answered_pct": 0.9, "gaps": []}'
 ```
 
-See [TESTING.md](./TESTING.md) for comprehensive testing documentation.
+See [tests/TESTING.md](./tests/TESTING.md) for comprehensive testing documentation.
 
 #### Option 4: Agent Playground (Chainlit)
 
@@ -355,7 +356,7 @@ The `scoper_shared` package uses a `src/` layout for proper Python packaging:
 
 - **`scoper_shared/src/scoper_shared/kb_content/`**: Knowledge Base content
   - `master_questionnaire.json`: Canonical questions organized by domain tracks
-  - `platform_guides/`: Internal DataRobot documentation (Markdown) - to be organized by track subdirectories
+  - `platform_guides/`: Internal DataRobot documentation (Markdown) - organized by track subdirectories
 
 ### Web API
 
@@ -422,6 +423,316 @@ Each agent can be configured via environment variables or `.env` file:
 
 ---
 
+## 🎯 DataRobot Platform Integration
+
+### Use Case
+
+The application is deployed under a DataRobot **Use Case** that groups all related resources:
+
+- **Use Case Name**: `Agentic Professional Services Scoper [<PROJECT_NAME>]` (default) or uses existing use case if `DATAROBOT_DEFAULT_USE_CASE` environment variable is set
+  - If `DATAROBOT_DEFAULT_USE_CASE` is set to a Use Case ID (24+ character alphanumeric), it will use that existing Use Case
+  - If `DATAROBOT_DEFAULT_USE_CASE` is set to a name (not an ID), it will create a new Use Case with that name
+- **Use Case Description**: "Agentic Professional Services Scoper - AI-powered system for standardizing and accelerating Professional Services scoping process"
+- **Location**: Defined in `infra/infra/__init__.py`
+
+The Use Case serves as the organizational container for:
+- All 4 agent Custom Models
+- Agent Deployments
+- Registered Models
+- FastAPI Custom Application
+- Agentic Playgrounds
+- LLM Blueprints
+
+### Registry Items
+
+When deployed, the following items are registered in the DataRobot Model Registry:
+
+#### Custom Models
+
+Each of the 4 agents is registered as a **Custom Model** in the Model Registry:
+
+1. **Requirement Analyzer Agent Custom Model**
+   - Target Type: `AgenticWorkflow`
+   - Language: `python`
+   - Base Environment: Python 3.12 execution environment
+   - Use Case: Associated with the project Use Case
+
+2. **Questionnaire Agent Custom Model**
+   - Target Type: `AgenticWorkflow`
+   - Language: `python`
+   - Base Environment: Python 3.12 execution environment
+   - Use Case: Associated with the project Use Case
+
+3. **Clarifier Agent Custom Model**
+   - Target Type: `AgenticWorkflow`
+   - Language: `python`
+   - Base Environment: Python 3.12 execution environment
+   - Use Case: Associated with the project Use Case
+
+4. **Architecture Agent Custom Model**
+   - Target Type: `AgenticWorkflow`
+   - Language: `python`
+   - Base Environment: Python 3.12 execution environment
+   - Use Case: Associated with the project Use Case
+
+#### Registered Models
+
+Each Custom Model is registered as a **Registered Model** in the Model Registry, enabling:
+- Version tracking
+- Deployment management
+- Model lineage
+- Governance and compliance
+
+#### Custom Application
+
+The FastAPI backend is registered as a **Custom Application**:
+- Application Source: Contains all web application files
+- Runtime Parameters: Configured for agent endpoints, LLM settings, OAuth providers
+- Resources: CPU XL resource bundle (configurable)
+- Use Case: Associated with the project Use Case
+
+### Deployed Models
+
+When `AGENT_DEPLOY` environment variable is not set to `"0"`, the following deployments are created:
+
+#### Agent Deployments
+
+Each agent is deployed as a **DataRobot Deployment**:
+
+1. **Requirement Analyzer Agent Deployment**
+   - Platform: `DATAROBOT_SERVERLESS`
+   - Prediction Environment: Serverless prediction environment
+   - Association ID Settings: Configured for workflow tracking
+   - Predictions Data Collection: Enabled for monitoring
+   - Predictions Settings: Min computes: 0, Max computes: 2
+
+2. **Questionnaire Agent Deployment**
+   - Platform: `DATAROBOT_SERVERLESS`
+   - Prediction Environment: Serverless prediction environment
+   - Association ID Settings: Configured for workflow tracking
+   - Predictions Data Collection: Enabled for monitoring
+   - Predictions Settings: Min computes: 0, Max computes: 2
+
+3. **Clarifier Agent Deployment**
+   - Platform: `DATAROBOT_SERVERLESS`
+   - Prediction Environment: Serverless prediction environment
+   - Association ID Settings: Configured for workflow tracking
+   - Predictions Data Collection: Enabled for monitoring
+   - Predictions Settings: Min computes: 0, Max computes: 2
+
+4. **Architecture Agent Deployment**
+   - Platform: `DATAROBOT_SERVERLESS`
+   - Prediction Environment: Serverless prediction environment
+   - Association ID Settings: Configured for workflow tracking
+   - Predictions Data Collection: Enabled for monitoring
+   - Predictions Settings: Min computes: 0, Max computes: 2
+
+#### Deployment Endpoints
+
+Each agent deployment provides:
+- **Direct Access Endpoint**: `{DATAROBOT_ENDPOINT}/deployments/{deployment_id}/directAccess/`
+- **Chat Endpoint**: `{DATAROBOT_ENDPOINT}/genai/agents/fromCustomModel/{custom_model_id}/chat/`
+- **MCP Endpoint** (if applicable): `{DATAROBOT_ENDPOINT}/deployments/{deployment_id}/directAccess/mcp`
+
+#### Agentic Playgrounds
+
+Each agent has an associated **Agentic Playground** for interactive testing:
+- Playground Type: `agentic`
+- Use Case: Associated with the project Use Case
+- Access URL: `{DATAROBOT_URL}/usecases/{use_case_id}/agentic-playgrounds/{playground_id}/comparison/chats`
+
+#### LLM Blueprints
+
+Each agent has an associated **LLM Blueprint**:
+- Playground ID: Linked to the agent's Agentic Playground
+- LLM ID: `chat-interface-custom-model`
+- Custom Model ID: References the agent's Custom Model
+- Prompt Type: `ONE_TIME_PROMPT`
+
+### Accessing Deployed Resources
+
+After deployment, Pulumi exports the following information:
+
+- **Custom Model IDs**: For each agent
+- **Deployment IDs**: For each agent deployment
+- **Deployment Endpoints**: Direct access URLs for each agent
+- **Playground URLs**: Links to agentic playgrounds for testing
+- **Custom Application ID**: FastAPI backend application ID
+- **Custom Application URL**: Production URL for the web application
+
+View these exports by running:
+```bash
+cd infra
+pulumi stack output
+```
+
+---
+
+## 📊 Current Development Progress
+
+### ✅ Completed Components
+
+#### Core Infrastructure (100% Complete)
+- ✅ All 4 agents implemented and tested locally
+- ✅ Shared components (schemas, orchestrator, domain router, KB retriever)
+- ✅ State machine orchestrator with 9 workflow states
+- ✅ FastAPI backend with scoper endpoints
+- ✅ React frontend with workflow UI
+- ✅ Database persistence for workflow state
+- ✅ OpenTelemetry tracing throughout
+- ✅ Pulumi infrastructure code for all agents
+
+#### Knowledge Base (100% Complete)
+- ✅ 43 questions extracted and structured in `master_questionnaire.json`
+- ✅ 184 platform guide markdown files organized by track:
+  - `time_series/`: Time series forecasting guides
+  - `nlp/`: Natural language processing guides
+  - `cv/`: Computer vision guides
+  - `genai_rag/`: Generative AI and RAG guides
+  - `classic_ml/`: Traditional machine learning guides
+  - `infrastructure/`: Infrastructure and deployment guides (80 Pulumi docs)
+  - `general/`: General DataRobot documentation (13 files)
+
+#### Testing Infrastructure (100% Complete)
+- ✅ Unit tests for all agents
+- ✅ Unit tests for shared components
+- ✅ Integration tests for web API
+- ✅ End-to-end test script (`tests/test_all_agents.py`)
+- ✅ Quick CLI test script (`tests/test_agents.sh`)
+- ✅ All testing files consolidated in `tests/` directory
+- ✅ Pydantic Evals evaluation framework setup
+- ✅ Comprehensive testing documentation (`tests/TESTING.md`)
+
+#### Documentation (100% Complete)
+- ✅ Product Requirements Document (PRD)
+- ✅ Engineering Design Document (EDD)
+- ✅ Task list with progress tracking
+- ✅ Testing guide
+- ✅ Agent development guidelines
+- ✅ Evaluation guide
+
+### 🚧 In Progress / Pending
+
+#### RAG System Implementation (Task 6.0 - 0% Complete)
+- ❌ **Critical Gap**: RAG system using DataRobot's managed Vector Database not yet implemented
+- ❌ Architecture Agent currently uses simple file-based KB retriever (loads all platform guides)
+- ❌ No semantic search or relevance ranking
+- ❌ Missing vector database integration
+- **Impact**: Architecture Agent receives all platform guides instead of semantically relevant context
+
+**Required Implementation:**
+- Create `scoper_shared/src/scoper_shared/utils/rag_system.py`
+- Integrate DataRobot Vector Database APIs
+- Implement document chunking and embedding generation
+- Implement vector search functionality
+- Update Architecture Agent to use RAG system
+- Update Orchestrator PLAN_ARCH state to use RAG system
+
+#### Deployment Tasks (Tasks 5.28-5.34 - Pending)
+- ⏳ Build agents for LLM Playground testing (requires Pulumi deployment)
+- ⏳ Deploy agents to DataRobot production (requires Pulumi deployment)
+- ⏳ Test deployed agents via deployment endpoints
+- ⏳ Configure Custom Application deployment settings
+- ⏳ Deploy FastAPI backend as Custom Application
+- ⏳ Verify end-to-end workflow with deployed agents
+
+**Note**: These tasks require actual DataRobot environment access and cannot be completed with test files alone.
+
+#### Minor Tasks
+- ⏳ PDF extraction for some reference documents (non-critical, can be done manually)
+- ⏳ PDF to Markdown conversion for one time series document
+
+#### Recent Improvements
+- ✅ **Test File Consolidation**: All testing files have been consolidated into the `tests/` directory at the repository root for better organization
+  - `test_all_agents.py` - Comprehensive Python test script
+  - `test_agents.sh` - Quick CLI test script
+  - `TESTING.md` - Complete testing documentation
+  - `TEST_FILES_EXPLANATION.md` - Explanation of test file structure
+
+---
+
+## 🎯 Planned Next Steps
+
+### Immediate Priorities
+
+1. **Implement RAG System (Task 6.0)** - **HIGH PRIORITY**
+   - This is the most critical missing component
+   - Will significantly improve Architecture Agent output quality
+   - Required for production readiness
+   - Estimated effort: 2-3 days
+
+2. **Complete Deployment Pipeline (Tasks 5.28-5.34)**
+   - Build and deploy all 4 agents to DataRobot
+   - Deploy FastAPI backend as Custom Application
+   - Verify end-to-end workflow with deployed agents
+   - Estimated effort: 1-2 days
+
+3. **Production Testing and Validation**
+   - Test complete workflow with real use cases
+   - Validate output quality with SMEs
+   - Performance testing and optimization
+   - Estimated effort: 2-3 days
+
+### Short-Term Goals (Next 2-4 Weeks)
+
+1. **RAG System Integration**
+   - Complete DataRobot Vector Database integration
+   - Implement semantic search for Platform Guides
+   - Update Architecture Agent to use RAG context
+   - Test and validate RAG retrieval quality
+
+2. **Production Deployment**
+   - Deploy all components to DataRobot production environment
+   - Configure monitoring and alerting
+   - Set up CI/CD pipeline for automated deployments
+   - Document deployment procedures
+
+3. **Quality Assurance**
+   - Comprehensive end-to-end testing
+   - SME review and feedback collection
+   - Performance benchmarking
+   - Bug fixes and improvements
+
+### Medium-Term Goals (Next 1-2 Months)
+
+1. **Enhancement and Optimization**
+   - Optimize agent prompts based on feedback
+   - Improve question selection algorithms
+   - Enhance architecture plan generation quality
+   - Add more domain-specific knowledge
+
+2. **Feature Additions**
+   - Support for additional domain tracks
+   - Enhanced clarification question generation
+   - Multi-language support (if needed)
+   - Export formats (PDF, Word, etc.)
+
+3. **Integration and Automation**
+   - Integration with Salesforce or other internal tools
+   - Automated feedback loop implementation
+   - Historical project data integration (for Phase 2)
+   - Hours estimation functionality (Phase 2)
+
+### Long-Term Vision (Phase 2+)
+
+1. **Hours Estimation**
+   - Generate detailed hours and FTE requirements
+   - Integrate historical project data
+   - Workforce rate information integration
+
+2. **SOW Generation**
+   - Full Project Plan generation
+   - Statements of Work (SOW) creation
+   - Legal and compliance considerations
+
+3. **Advanced Features**
+   - Multi-project scoping
+   - Template customization
+   - Advanced analytics and reporting
+   - Machine learning model for estimation accuracy
+
+---
+
 ## ✅ Requirements
 
 - Python 3.10+ (tested up to 3.12)
@@ -436,7 +747,7 @@ Each agent can be configured via environment variables or `.env` file:
 - **[Product Requirements Document (PRD)](./tasks/Solutions-Agent-PRD.md)**: Business requirements and success metrics
 - **[Engineering Design Document (EDD)](./tasks/Solutions-Agent-Unified-EDD.md)**: Technical architecture and implementation details
 - **[Task List](./tasks/tasks-agentic-professional-services-scoper.md)**: Detailed implementation checklist and progress tracking
-- **[Testing Guide](./TESTING.md)**: Comprehensive testing documentation and methods
+- **[Testing Guide](./tests/TESTING.md)**: Comprehensive testing documentation and methods
 - **[Agent Development Guidelines](./AGENTS.md)**: Coding standards and best practices
 - **[Evaluation Guide](./EVALUATION.md)**: Pydantic Evals evaluation framework usage
 - **[DataRobot Agent Development Docs](https://docs.datarobot.com/en/docs/agentic-ai/agentic-develop/agentic-development.html)**: Official DataRobot documentation
@@ -455,18 +766,18 @@ Each agent can be configured via environment variables or `.env` file:
 
 ## 🧪 Testing
 
-See **[TESTING.md](./TESTING.md)** for comprehensive testing documentation and guides.
+See **[tests/TESTING.md](./tests/TESTING.md)** for comprehensive testing documentation and guides.
 
 ### Quick Start Testing
 
 **Test all 4 agents in sequence:**
 ```bash
 # Automated Python script (recommended)
-cd requirement_analyzer_agent
-PYTHONPATH=.. uv run python ../test_all_agents.py
+cd tests
+PYTHONPATH=.. python test_all_agents.py
 
 # Or quick CLI tests
-./test_agents.sh
+./tests/test_agents.sh
 ```
 
 ### Unit Tests
@@ -513,7 +824,7 @@ See [EVALUATION.md](./EVALUATION.md) for detailed evaluation documentation.
 - **Agents**: Unit tests for each agent's core logic and output validation
 - **Pydantic Evals**: Systematic evaluation datasets with custom evaluators for each agent
 - **Web API**: Integration tests for all scoper endpoints (workflow creation, state management, clarification, results)
-- **End-to-End Testing**: `test_all_agents.py` tests the complete workflow from Requirement Analyzer → Questionnaire → Clarifier → Architecture
+- **End-to-End Testing**: `tests/test_all_agents.py` tests the complete workflow from Requirement Analyzer → Questionnaire → Clarifier → Architecture
 
 ---
 
