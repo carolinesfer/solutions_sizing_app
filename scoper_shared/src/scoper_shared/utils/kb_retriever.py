@@ -71,7 +71,9 @@ class KBRetriever:
             self.platform_guides_dir = _PLATFORM_GUIDES_DIR
         else:
             self.kb_content_dir = Path(kb_content_dir)
-            self.master_questionnaire_path = self.kb_content_dir / "master_questionnaire.json"
+            self.master_questionnaire_path = (
+                self.kb_content_dir / "master_questionnaire.json"
+            )
             self.platform_guides_dir = self.kb_content_dir / "platform_guides"
 
     def get_master_questionnaire(self) -> List[Question]:
@@ -91,7 +93,9 @@ class KBRetriever:
             questions = retriever.get_master_questionnaire()
             ```
         """
-        with tracer.start_as_current_span("kb_retriever.get_master_questionnaire") as span:
+        with tracer.start_as_current_span(
+            "kb_retriever.get_master_questionnaire"
+        ) as span:
             span.set_attribute("file.path", str(self.master_questionnaire_path))
 
             if not self.master_questionnaire_path.exists():
@@ -123,7 +127,9 @@ class KBRetriever:
 
             except json.JSONDecodeError as e:
                 span.record_exception(e)
-                raise ValueError(f"Invalid JSON in master questionnaire file: {e}") from e
+                raise ValueError(
+                    f"Invalid JSON in master questionnaire file: {e}"
+                ) from e
             except Exception as e:
                 span.record_exception(e)
                 raise
@@ -178,7 +184,9 @@ class KBRetriever:
                             with open(md_file, "r", encoding="utf-8") as f:
                                 content = f.read()
                                 # Add file header for context
-                                track_content_parts.append(f"## {md_file.name}\n\n{content}")
+                                track_content_parts.append(
+                                    f"## {md_file.name}\n\n{content}"
+                                )
                         except Exception as e:
                             span.record_exception(e)
                             # Continue loading other files even if one fails
@@ -199,32 +207,40 @@ class KBRetriever:
 
             # Also load any general guides from general/ subdirectory or general.md file
             general_dir = self.platform_guides_dir / "general"
-            general_file = self.platform_guides_dir / "general.md"
 
             general_content_parts: list[str] = []
 
-            # Try general/ subdirectory first
+            # Try general/ subdirectory first (preferred)
+            general_dir_processed = False
             if general_dir.exists() and general_dir.is_dir():
                 md_files = sorted(general_dir.glob("*.md"))
                 for md_file in md_files:
                     try:
                         with open(md_file, "r", encoding="utf-8") as f:
                             content = f.read()
-                            general_content_parts.append(f"## {md_file.name}\n\n{content}")
+                            general_content_parts.append(
+                                f"## {md_file.name}\n\n{content}"
+                            )
                     except Exception as e:
                         span.record_exception(e)
                         continue
+                # Only mark as processed if files were actually loaded
+                if general_content_parts:
+                    general_dir_processed = True
 
             # Fallback to general.md, common.md, overview.md files
-            for guide_name in ["general.md", "common.md", "overview.md"]:
-                guide_path = self.platform_guides_dir / guide_name
-                if guide_path.exists() and guide_path.is_file() and guide_name not in guides:
-                    try:
-                        with open(guide_path, "r", encoding="utf-8") as f:
-                            general_content_parts.append(f.read())
-                    except Exception as e:
-                        span.record_exception(e)
-                        continue
+            # Only load flat files if general/ subdirectory wasn't already processed
+            # (prevents duplicate content if both subdirectory and flat files exist)
+            if not general_dir_processed:
+                for guide_name in ["general.md", "common.md", "overview.md"]:
+                    guide_path = self.platform_guides_dir / guide_name
+                    if guide_path.exists() and guide_path.is_file():
+                        try:
+                            with open(guide_path, "r", encoding="utf-8") as f:
+                                general_content_parts.append(f.read())
+                        except Exception as e:
+                            span.record_exception(e)
+                            continue
 
             # Add general content if found
             if general_content_parts:
@@ -235,4 +251,3 @@ class KBRetriever:
             span.add_event("platform_guides_filtered", {"count": len(guides)})
 
             return guides
-

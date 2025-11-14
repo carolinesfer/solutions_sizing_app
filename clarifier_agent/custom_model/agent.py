@@ -89,7 +89,10 @@ class ClarifierAgent:
     """
 
     def __init__(
-        self, model_name: str | None = None, api_key: str | None = None, max_questions: int = 5
+        self,
+        model_name: str | None = None,
+        api_key: str | None = None,
+        max_questions: int = 5,
     ) -> None:
         """
         Initialize the Clarifier Agent.
@@ -109,8 +112,14 @@ class ClarifierAgent:
         if api_key and not config.use_datarobot_llm_gateway:
             provider = OpenAIProvider(api_key=api_key)
             model = OpenAIModel(self.model_name, provider=provider)
-        # Use global agent if available and not using LLM Gateway, otherwise create new one
-        if clarifier_agent is not None and not config.use_datarobot_llm_gateway and not model_name:
+        # Use global agent if available and not using LLM Gateway, and no custom model_name or api_key
+        # (if api_key is provided, we must use the newly created model with that api_key)
+        if (
+            clarifier_agent is not None
+            and not config.use_datarobot_llm_gateway
+            and not model_name
+            and not api_key
+        ):
             self.agent = clarifier_agent
         else:
             self.agent = Agent(
@@ -120,7 +129,10 @@ class ClarifierAgent:
             )
 
     async def ask_question(
-        self, draft: QuestionnaireDraft, current_answers: list[dict[str, Any]], question_num: int
+        self,
+        draft: QuestionnaireDraft,
+        current_answers: list[dict[str, Any]],
+        question_num: int,
     ) -> tuple[Optional[Question], str]:
         """
         Ask one question at a time (up to K=5), preferring single-choice or boolean.
@@ -156,7 +168,9 @@ class ClarifierAgent:
             preferred_questions = [
                 q for q in unanswered if q.type in ["single_select", "bool"]
             ]
-            questions_to_ask = preferred_questions if preferred_questions else unanswered
+            questions_to_ask = (
+                preferred_questions if preferred_questions else unanswered
+            )
 
             if not questions_to_ask or question_num > self.max_questions:
                 # No more questions or reached max
@@ -168,7 +182,10 @@ class ClarifierAgent:
 
             span.set_attribute("question_id", question.id)
             span.set_attribute("question_type", question.type)
-            span.add_event("question_asked", {"question_id": question.id, "question_text": question.text})
+            span.add_event(
+                "question_asked",
+                {"question_id": question.id, "question_text": question.text},
+            )
 
             # Prepare prompt for asking the question
             prompt = f"""QuestionnaireDraft:
@@ -179,7 +196,7 @@ Current Answers:
 
 Ask question {question_num} of {self.max_questions}: {question.text}
 
-Please provide a concise answer. If the question is single_select or bool, choose from the options: {question.options if question.options else 'N/A'}"""
+Please provide a concise answer. If the question is single_select or bool, choose from the options: {question.options if question.options else "N/A"}"""
 
             # Create nested span for LLM call
             with tracer.start_as_current_span("clarifier_agent.llm_call") as llm_span:
@@ -196,7 +213,9 @@ Please provide a concise answer. If the question is single_select or bool, choos
                     raise
 
             span.set_attribute("answer_value", answer)
-            span.add_event("answer_received", {"question_id": question.id, "answer": answer})
+            span.add_event(
+                "answer_received", {"question_id": question.id, "answer": answer}
+            )
 
             return (question, answer)
 
@@ -226,7 +245,9 @@ Please provide a concise answer. If the question is single_select or bool, choos
             total_questions = len(draft.questions)
             answered_count = len(all_answers)
             unanswered_count = total_questions - answered_count
-            answered_pct = answered_count / total_questions if total_questions > 0 else 0.0
+            answered_pct = (
+                answered_count / total_questions if total_questions > 0 else 0.0
+            )
 
             # Find gaps (unanswered question IDs)
             answered_ids = {ans.get("id") for ans in all_answers}
@@ -258,7 +279,9 @@ Please provide a concise answer. If the question is single_select or bool, choos
             return final
 
     async def run(
-        self, draft: QuestionnaireDraft, current_answers: list[dict[str, Any]] | None = None
+        self,
+        draft: QuestionnaireDraft,
+        current_answers: list[dict[str, Any]] | None = None,
     ) -> QuestionnaireFinal:
         """
         Run the full clarification loop and finalize.
@@ -288,7 +311,9 @@ Please provide a concise answer. If the question is single_select or bool, choos
         # Finalize
         return await self.finalize(draft, current_answers)
 
-    async def run_from_json(self, input_json: str | dict[str, Any]) -> QuestionnaireFinal:
+    async def run_from_json(
+        self, input_json: str | dict[str, Any]
+    ) -> QuestionnaireFinal:
         """
         Run the agent from JSON input.
 

@@ -94,7 +94,9 @@ class QuestionnaireAgent:
     It uses pydantic-ai to ensure structured output conforming to QuestionnaireDraft.
     """
 
-    def __init__(self, model_name: str | None = None, api_key: str | None = None) -> None:
+    def __init__(
+        self, model_name: str | None = None, api_key: str | None = None
+    ) -> None:
         """
         Initialize the Questionnaire Agent.
 
@@ -112,8 +114,14 @@ class QuestionnaireAgent:
         if api_key and not config.use_datarobot_llm_gateway:
             provider = OpenAIProvider(api_key=api_key)
             model = OpenAIModel(self.model_name, provider=provider)
-        # Use global agent if available and not using LLM Gateway, otherwise create new one
-        if questionnaire_agent is not None and not config.use_datarobot_llm_gateway and not model_name:
+        # Use global agent if available and not using LLM Gateway, and no custom model_name or api_key
+        # (if api_key is provided, we must use the newly created model with that api_key)
+        if (
+            questionnaire_agent is not None
+            and not config.use_datarobot_llm_gateway
+            and not model_name
+            and not api_key
+        ):
             self.agent = questionnaire_agent
         else:
             self.agent = Agent(
@@ -162,7 +170,9 @@ class QuestionnaireAgent:
             with tracer.start_as_current_span("question_selection") as kb_span:
                 try:
                     master_questions = self.kb_retriever.get_master_questionnaire()
-                    kb_span.set_attribute("master_questions_count", len(master_questions))
+                    kb_span.set_attribute(
+                        "master_questions_count", len(master_questions)
+                    )
 
                     # Filter questions by tracks
                     relevant_questions = [
@@ -170,7 +180,9 @@ class QuestionnaireAgent:
                         for q in master_questions
                         if not q.tracks or any(track in q.tracks for track in tracks)
                     ]
-                    kb_span.set_attribute("filtered_questions_count", len(relevant_questions))
+                    kb_span.set_attribute(
+                        "filtered_questions_count", len(relevant_questions)
+                    )
 
                 except Exception as e:
                     kb_span.record_exception(e)
@@ -198,11 +210,15 @@ Please:
 5. Output *only* the Pydantic QuestionnaireDraft JSON."""
 
             # Generate delta questions with nested span
-            with tracer.start_as_current_span("delta_question_generation") as delta_span:
+            with tracer.start_as_current_span(
+                "delta_question_generation"
+            ) as delta_span:
                 delta_span.set_attribute("gaps_count", len(facts.identified_gaps))
 
                 # Create nested span for LLM call
-                with tracer.start_as_current_span("questionnaire_agent.llm_call") as llm_span:
+                with tracer.start_as_current_span(
+                    "questionnaire_agent.llm_call"
+                ) as llm_span:
                     try:
                         # Run the agent
                         result = await self.agent.run(prompt)
@@ -215,7 +231,8 @@ Please:
                                 "usage.prompt_tokens", result.usage.prompt_tokens or 0
                             )
                             llm_span.set_attribute(
-                                "usage.completion_tokens", result.usage.completion_tokens or 0
+                                "usage.completion_tokens",
+                                result.usage.completion_tokens or 0,
                             )
                             llm_span.set_attribute(
                                 "usage.total_tokens", result.usage.total_tokens or 0
@@ -231,8 +248,12 @@ Please:
                 )
 
             # Set output attributes
-            span.set_attribute("output.selected_from_master_count", len(draft.selected_from_master_ids))
-            span.set_attribute("output.delta_questions_count", len(draft.delta_questions))
+            span.set_attribute(
+                "output.selected_from_master_count", len(draft.selected_from_master_ids)
+            )
+            span.set_attribute(
+                "output.delta_questions_count", len(draft.delta_questions)
+            )
             span.set_attribute("output.total_questions_count", len(draft.questions))
             span.set_attribute("output.coverage_estimate", draft.coverage_estimate)
 
@@ -248,7 +269,9 @@ Please:
 
             return draft
 
-    async def run_from_json(self, input_json: str | dict[str, Any]) -> QuestionnaireDraft:
+    async def run_from_json(
+        self, input_json: str | dict[str, Any]
+    ) -> QuestionnaireDraft:
         """
         Run the agent from JSON input.
 

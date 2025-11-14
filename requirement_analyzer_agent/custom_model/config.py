@@ -33,7 +33,9 @@ class Config(DataRobotAppFrameworkBaseSettings):
     """
 
     llm_deployment_id: str | None = None
-    llm_default_model: str = "azure/gpt-4o-mini"  # Model ID for DataRobot LLM Gateway (without 'datarobot/' prefix)
+    llm_default_model: str = (
+        "gpt-4o-mini"  # Default model (will be adjusted based on LLM Gateway mode)
+    )
     use_datarobot_llm_gateway: bool = Field(
         default=False, validation_alias="USE_DATAROBOT_LLM_GATEWAY"
     )
@@ -41,7 +43,8 @@ class Config(DataRobotAppFrameworkBaseSettings):
     external_mcp_url: str | None = None
 
     agent_endpoint: str = Field(
-        default="http://localhost:8842", validation_alias="REQUIREMENT_ANALYZER_AGENT_ENDPOINT"
+        default="http://localhost:8842",
+        validation_alias="REQUIREMENT_ANALYZER_AGENT_ENDPOINT",
     )
 
     @property
@@ -55,10 +58,25 @@ class Config(DataRobotAppFrameworkBaseSettings):
     def auto_enable_llm_gateway_from_infra(self) -> "Config":
         """Automatically enable LLM Gateway if INFRA_ENABLE_LLM=gateway_direct.py is set."""
         import os
+
         infra_enable_llm = os.getenv("INFRA_ENABLE_LLM", "")
-        if infra_enable_llm == "gateway_direct.py" and not self.use_datarobot_llm_gateway:
+        if (
+            infra_enable_llm == "gateway_direct.py"
+            and not self.use_datarobot_llm_gateway
+        ):
             # If INFRA_ENABLE_LLM=gateway_direct.py is set, automatically enable LLM Gateway
             self.use_datarobot_llm_gateway = True
+
+        # Adjust default model based on LLM Gateway mode
+        # If using LLM Gateway and model is still OpenAI format, convert to Gateway format
+        if self.use_datarobot_llm_gateway and self.llm_default_model == "gpt-4o-mini":
+            self.llm_default_model = "azure/gpt-4o-mini"
+        # If not using LLM Gateway and model has "azure/" prefix, remove it
+        elif not self.use_datarobot_llm_gateway and self.llm_default_model.startswith(
+            "azure/"
+        ):
+            self.llm_default_model = self.llm_default_model.replace("azure/", "")
+
         return self
 
     @model_validator(mode="before")

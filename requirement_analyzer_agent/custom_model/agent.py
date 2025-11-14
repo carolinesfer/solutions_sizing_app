@@ -86,7 +86,9 @@ class RequirementAnalyzerAgent:
     It uses pydantic-ai to ensure structured output conforming to FactExtractionModel.
     """
 
-    def __init__(self, model_name: str | None = None, api_key: str | None = None) -> None:
+    def __init__(
+        self, model_name: str | None = None, api_key: str | None = None
+    ) -> None:
         """
         Initialize the Requirement Analyzer Agent.
 
@@ -103,8 +105,14 @@ class RequirementAnalyzerAgent:
         if api_key and not config.use_datarobot_llm_gateway:
             provider = OpenAIProvider(api_key=api_key)
             model = OpenAIModel(self.model_name, provider=provider)
-        # Use global agent if available and not using LLM Gateway, otherwise create new one
-        if requirement_analyzer_agent is not None and not config.use_datarobot_llm_gateway and not model_name:
+        # Use global agent if available and not using LLM Gateway, and no custom model_name or api_key
+        # (if api_key is provided, we must use the newly created model with that api_key)
+        if (
+            requirement_analyzer_agent is not None
+            and not config.use_datarobot_llm_gateway
+            and not model_name
+            and not api_key
+        ):
             self.agent = requirement_analyzer_agent
         else:
             self.agent = Agent(
@@ -141,7 +149,8 @@ class RequirementAnalyzerAgent:
             span.set_attribute("input.use_case_title", input_data.use_case_title)
             span.set_attribute("input.paragraph_length", len(input_data.paragraph))
             span.set_attribute(
-                "input.transcript_length", len(input_data.transcript) if input_data.transcript else 0
+                "input.transcript_length",
+                len(input_data.transcript) if input_data.transcript else 0,
             )
 
             # Prepare prompt for the agent
@@ -155,7 +164,9 @@ class RequirementAnalyzerAgent:
             prompt = "\n".join(prompt_parts)
 
             # Create nested span for LLM call
-            with tracer.start_as_current_span("requirement_analyzer.llm_call") as llm_span:
+            with tracer.start_as_current_span(
+                "requirement_analyzer.llm_call"
+            ) as llm_span:
                 try:
                     # Run the agent
                     result = await self.agent.run(prompt)
@@ -164,11 +175,16 @@ class RequirementAnalyzerAgent:
                     # Set LLM call attributes
                     llm_span.set_attribute("model", self.model_name)
                     if result.usage:
-                        llm_span.set_attribute("usage.prompt_tokens", result.usage.prompt_tokens or 0)
                         llm_span.set_attribute(
-                            "usage.completion_tokens", result.usage.completion_tokens or 0
+                            "usage.prompt_tokens", result.usage.prompt_tokens or 0
                         )
-                        llm_span.set_attribute("usage.total_tokens", result.usage.total_tokens or 0)
+                        llm_span.set_attribute(
+                            "usage.completion_tokens",
+                            result.usage.completion_tokens or 0,
+                        )
+                        llm_span.set_attribute(
+                            "usage.total_tokens", result.usage.total_tokens or 0
+                        )
 
                 except Exception as e:
                     llm_span.record_exception(e)
@@ -176,27 +192,37 @@ class RequirementAnalyzerAgent:
 
             # Set output attributes
             span.set_attribute(
-                "output.technical_confidence_score", extracted_facts.technical_confidence_score
+                "output.technical_confidence_score",
+                extracted_facts.technical_confidence_score,
             )
             span.set_attribute(
-                "output.requirements_count", len(extracted_facts.key_extracted_requirements)
+                "output.requirements_count",
+                len(extracted_facts.key_extracted_requirements),
             )
-            span.set_attribute("output.gaps_count", len(extracted_facts.identified_gaps))
-            span.set_attribute("output.domain_keywords", str(extracted_facts.domain_keywords))
+            span.set_attribute(
+                "output.gaps_count", len(extracted_facts.identified_gaps)
+            )
+            span.set_attribute(
+                "output.domain_keywords", str(extracted_facts.domain_keywords)
+            )
 
             # Add event when extraction completes
             span.add_event(
                 "requirement_extraction_completed",
                 {
                     "confidence_score": extracted_facts.technical_confidence_score,
-                    "requirements_count": len(extracted_facts.key_extracted_requirements),
+                    "requirements_count": len(
+                        extracted_facts.key_extracted_requirements
+                    ),
                     "gaps_count": len(extracted_facts.identified_gaps),
                 },
             )
 
             return extracted_facts
 
-    async def run_from_json(self, input_json: str | dict[str, Any]) -> FactExtractionModel:
+    async def run_from_json(
+        self, input_json: str | dict[str, Any]
+    ) -> FactExtractionModel:
         """
         Run the agent from JSON input.
 

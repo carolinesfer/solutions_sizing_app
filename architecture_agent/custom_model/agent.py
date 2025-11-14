@@ -117,11 +117,13 @@ class ArchitectureAgent:
         if api_key and not config.use_datarobot_llm_gateway:
             provider = OpenAIProvider(api_key=api_key)
             model = OpenAIModel(self.model_name, provider=provider)
-        # Use global agent if available and not using LLM Gateway, otherwise create new one
+        # Use global agent if available and not using LLM Gateway, and no custom model_name or api_key
+        # (if api_key is provided, we must use the newly created model with that api_key)
         if (
             architecture_agent is not None
             and not config.use_datarobot_llm_gateway
             and not model_name
+            and not api_key
         ):
             self.agent = architecture_agent
         else:
