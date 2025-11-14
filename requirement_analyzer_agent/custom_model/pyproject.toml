@@ -17,6 +17,7 @@ dependencies = [
     "litellm>=1.72.1",
     "pydantic-ai>=0.0.14",
     "pydantic>=2.6.1",
+    "openai>=1.0.0",
     "scoper_shared",
 ]
 

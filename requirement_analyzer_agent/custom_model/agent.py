@@ -11,178 +11,163 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from datetime import datetime
-from functools import partial
+
+"""
+Requirement Analyzer Agent implementation using pydantic-ai.
+
+This agent extracts facts, requirements, and identifies gaps from raw user input.
+"""
+
 from typing import Any
 
-from datarobot_genai.core.agents import (
-    make_system_prompt,
-)
-from datarobot_genai.langgraph.agent import LangGraphAgent
-from langchain_core.messages import HumanMessage
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_litellm.chat_models import ChatLiteLLM
-from langgraph.graph import END, START, MessagesState, StateGraph
-from langgraph.prebuilt import create_react_agent
-from langgraph.types import Command
+from opentelemetry import trace
+from pydantic_ai import Agent
+from pydantic_ai.models.openai import OpenAIModel
 
 from config import Config
+from scoper_shared.schemas import FactExtractionModel, UseCaseInput
 
 config = Config()
+tracer = trace.get_tracer(__name__)
+
+# System prompt for Requirement Analyzer Agent
+SYSTEM_PROMPT = """You are a senior solutions architect. Your sole task is to read the following user query and transcript and extract key information. Identify the core goal, all technical requirements, any mentioned data sources, and any clear informational gaps. You must output *only* the Pydantic FactExtractionModel JSON. Do not add conversational text. Pay special attention to keywords that suggest the project domain (e.g., 'forecast', 'time series', 'NLP', 'images', 'agentic')."""
+
+# Create the agent with structured output
+requirement_analyzer_agent = Agent(
+    model=OpenAIModel("gpt-4o-mini"),
+    system_prompt=SYSTEM_PROMPT,
+    result_type=FactExtractionModel,
+)
 
 
-class MyAgent(LangGraphAgent):
-    """MyAgent is a custom agent that uses Langgraph to plan, write, and edit content.
-    It utilizes DataRobot's LLM Gateway or a specific deployment for language model interactions.
-    This example illustrates 3 agents that handle content creation tasks, including planning, writing,
-    and editing blog posts.
+class RequirementAnalyzerAgent:
+    """
+    Requirement Analyzer Agent (Agent 1).
+
+    This agent extracts facts, requirements, and identifies gaps from raw user input.
+    It uses pydantic-ai to ensure structured output conforming to FactExtractionModel.
     """
 
-    @property
-    def workflow(self) -> StateGraph[MessagesState]:
-        langgraph_workflow = StateGraph[
-            MessagesState, None, MessagesState, MessagesState
-        ](MessagesState)
-        langgraph_workflow.add_node("planner_node", self.agent_planner)
-        langgraph_workflow.add_node("writer_node", self.agent_writer)
-        langgraph_workflow.add_node("editor_node", self.agent_editor)
-        langgraph_workflow.add_edge(START, "planner_node")
-        langgraph_workflow.add_edge("planner_node", "writer_node")
-        langgraph_workflow.add_edge("writer_node", "editor_node")
-        langgraph_workflow.add_edge("editor_node", END)
-        return langgraph_workflow  # type: ignore[return-value]
-
-    @property
-    def prompt_template(self) -> ChatPromptTemplate:
-        return ChatPromptTemplate.from_messages(
-            [
-                (
-                    "user",
-                    f"The topic is {{topic}}. Make sure you find any interesting and relevant information given the current year is {datetime.now().year}.",
-                ),
-            ]
-        )
-
-    def llm(
-        self,
-        preferred_model: str | None = None,
-        auto_model_override: bool = True,
-    ) -> ChatLiteLLM:
-        """Returns the ChatLiteLLM to use for a given model.
-
-        If a `preferred_model` is provided, it will be used. Otherwise, the default model will be used.
-        If auto_model_override is True, it will try and use the model specified in the request
-        but automatically back out to the default model if the LLM Gateway is not configured
+    def __init__(self, model_name: str | None = None, api_key: str | None = None) -> None:
+        """
+        Initialize the Requirement Analyzer Agent.
 
         Args:
-            preferred_model: Optional[str]: The model to use. If none, it defaults to config.llm_default_model.
-            auto_model_override: Optional[bool]: If True, it will try and use the model
-                specified in the request but automatically back out if the LLM Gateway is
-                not available.
+            model_name: Optional model name to use. If None, uses config default.
+            api_key: Optional API key for LLM. If None, uses environment/config.
+        """
+        self.model_name = model_name or config.llm_default_model
+        self.api_key = api_key
+        # Update agent model if custom model provided
+        if model_name:
+            self.agent = Agent(
+                model=OpenAIModel(model_name),
+                system_prompt=SYSTEM_PROMPT,
+                result_type=FactExtractionModel,
+            )
+        else:
+            self.agent = requirement_analyzer_agent
+
+    async def run(self, input_data: UseCaseInput) -> FactExtractionModel:
+        """
+        Run the requirement analyzer agent on the input data.
+
+        This method extracts facts, requirements, and gaps from the user input
+        and returns a validated FactExtractionModel.
+
+        Args:
+            input_data: UseCaseInput containing paragraph, transcript, and use_case_title.
 
         Returns:
-            ChatLiteLLM: The model to use.
+            FactExtractionModel with extracted facts, requirements, and gaps.
+
+        Example:
+            ```python
+            agent = RequirementAnalyzerAgent()
+            input_data = UseCaseInput(
+                paragraph="We need to predict customer churn...",
+                use_case_title="Customer Churn Prediction"
+            )
+            facts = await agent.run(input_data)
+            ```
         """
-        api_base = self.litellm_api_base(config.llm_deployment_id)
-        model = preferred_model
-        if preferred_model is None:
-            model = config.llm_default_model
-        if auto_model_override and not config.use_datarobot_llm_gateway:
-            model = config.llm_default_model
-        if self.verbose:
-            print(f"Using model: {model}")
-        return ChatLiteLLM(
-            model=model,
-            api_base=api_base,
-            api_key=self.api_key,
-            timeout=self.timeout,
-            streaming=True,
-            max_retries=3,
-        )
+        with tracer.start_as_current_span("requirement_analyzer.run") as span:
+            # Set input attributes
+            span.set_attribute("input.use_case_title", input_data.use_case_title)
+            span.set_attribute("input.paragraph_length", len(input_data.paragraph))
+            span.set_attribute(
+                "input.transcript_length", len(input_data.transcript) if input_data.transcript else 0
+            )
 
-    @property
-    def agent_planner(self) -> Any:
-        return create_react_agent(
-            self.llm(preferred_model="datarobot/azure/gpt-4o-mini"),
-            tools=[],
-            prompt=make_system_prompt(
-                "You are a content planner. You are working with a content writer and editor colleague.\n"
-                "You're working on planning a blog article about the topic. You collect information that helps the "
-                "audience learn something and make informed decisions. Your work is the basis for the Content Writer "
-                "to write an article on this topic."
-                "\n"
-                "1. Prioritize the latest trends, key players, and noteworthy news on the topic.\n"
-                "2. Identify the target audience, considering their interests and pain points.\n"
-                "3. Develop a detailed content outline including an introduction, key points, and a call to action.\n"
-                "4. Include SEO keywords and relevant data or sources."
-                "\n"
-                "Plan engaging and factually accurate content on the topic. You must create a comprehensive content "
-                "plan document with an outline, audience analysis, SEO keywords, and resources.",
-            ),
-            post_model_hook=partial(
-                self._add_the_last_message_and_go_to_next_node, "writer_node"
-            ),
-        )
+            # Prepare prompt for the agent
+            prompt_parts = [
+                f"Use Case Title: {input_data.use_case_title}",
+                f"\nUser Description:\n{input_data.paragraph}",
+            ]
+            if input_data.transcript:
+                prompt_parts.append(f"\nCall Transcript:\n{input_data.transcript}")
 
-    @property
-    def agent_writer(self) -> Any:
-        return create_react_agent(
-            self.llm(preferred_model="datarobot/azure/gpt-4o-mini"),
-            tools=[],
-            prompt=make_system_prompt(
-                "You are a content writer. You are working with a planner and editor colleague.\n"
-                "You're working on writing a new opinion piece about the topic. You base your writing on the work "
-                "of the Content Planner, who provides an outline and relevant context about the topic. You follow "
-                "the main objectives and direction of the outline, as provided by the Content Planner. You also "
-                "provide objective and impartial insights and back them up with information provided by the Content "
-                "Planner. You acknowledge in your opinion piece when your statements are opinions as opposed to "
-                "objective statements.\n"
-                "1. Use the content plan to craft a compelling blog post.\n"
-                "2. Incorporate SEO keywords naturally.\n"
-                "3. Sections/Subtitles are properly named in an engaging manner.\n"
-                "4. Ensure the post is structured with an engaging introduction, insightful body, and a summarizing "
-                "conclusion.\n"
-                "5. Proofread for grammatical errors and alignment with the brand's voice.\n"
-                "Write insightful and factually accurate opinion piece about the topic. You must create a "
-                "well-written blog post in markdown format, ready for publication, each section should have 2 or 3 "
-                "paragraphs.",
-            ),
-            post_model_hook=partial(
-                self._add_the_last_message_and_go_to_next_node, "editor_node"
-            ),
-        )
+            prompt = "\n".join(prompt_parts)
 
-    @property
-    def agent_editor(self) -> Any:
-        return create_react_agent(
-            self.llm(preferred_model="datarobot/azure/gpt-4o-mini"),
-            tools=[],
-            prompt=make_system_prompt(
-                "You are a content editor. You are working with a planner and writer colleague.\n"
-                "You are an editor who receives a blog post from the Content Writer. Your goal is to review the "
-                "blog post to ensure that it follows journalistic best practices, provides balanced viewpoints when "
-                "providing opinions or assertions, and also avoids major controversial topics or opinions when "
-                "possible.\n"
-                "Proofread the given blog post for grammatical errors and alignment with the brand's voice.\n"
-                "You must create a well-written blog post in markdown format, ready for publication, each section "
-                "should have 2 or 3 paragraphs.\n"
-                "You should return ONLY the full corrected blog post in markdown format, "
-                "do not include any commentary or explanations.",
-            ),
-            post_model_hook=partial(
-                self._add_the_last_message_and_go_to_next_node, END
-            ),
-        )
+            # Create nested span for LLM call
+            with tracer.start_as_current_span("requirement_analyzer.llm_call") as llm_span:
+                try:
+                    # Run the agent
+                    result = await self.agent.run(prompt)
+                    extracted_facts = result.data
 
-    def _add_the_last_message_and_go_to_next_node(
-        self, node_name: str, result: MessagesState
-    ) -> Command[Any]:
-        result["messages"][-1] = HumanMessage(
-            content=result["messages"][-1].content, name=node_name
-        )
-        return Command(
-            update={
-                # share internal message history with other agents
-                "messages": result["messages"],
-            },
-        )
+                    # Set LLM call attributes
+                    llm_span.set_attribute("model", self.model_name)
+                    if result.usage:
+                        llm_span.set_attribute("usage.prompt_tokens", result.usage.prompt_tokens or 0)
+                        llm_span.set_attribute(
+                            "usage.completion_tokens", result.usage.completion_tokens or 0
+                        )
+                        llm_span.set_attribute("usage.total_tokens", result.usage.total_tokens or 0)
+
+                except Exception as e:
+                    llm_span.record_exception(e)
+                    raise
+
+            # Set output attributes
+            span.set_attribute(
+                "output.technical_confidence_score", extracted_facts.technical_confidence_score
+            )
+            span.set_attribute(
+                "output.requirements_count", len(extracted_facts.key_extracted_requirements)
+            )
+            span.set_attribute("output.gaps_count", len(extracted_facts.identified_gaps))
+            span.set_attribute("output.domain_keywords", str(extracted_facts.domain_keywords))
+
+            # Add event when extraction completes
+            span.add_event(
+                "requirement_extraction_completed",
+                {
+                    "confidence_score": extracted_facts.technical_confidence_score,
+                    "requirements_count": len(extracted_facts.key_extracted_requirements),
+                    "gaps_count": len(extracted_facts.identified_gaps),
+                },
+            )
+
+            return extracted_facts
+
+    async def run_from_json(self, input_json: str | dict[str, Any]) -> FactExtractionModel:
+        """
+        Run the agent from JSON input.
+
+        Args:
+            input_json: JSON string or dict containing UseCaseInput data.
+
+        Returns:
+            FactExtractionModel with extracted facts.
+        """
+        if isinstance(input_json, str):
+            input_data = UseCaseInput.model_validate_json(input_json)
+        else:
+            input_data = UseCaseInput.model_validate(input_json)
+        return await self.run(input_data)
+
+
+# For backward compatibility with DataRobot template
+MyAgent = RequirementAnalyzerAgent
