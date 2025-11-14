@@ -52,8 +52,8 @@ solutions_sizing_app/
 ├── architecture_agent/            # Agent 4: Generates solution architecture plans
 ├── scoper_shared/                 # Shared components (schemas, utilities, KB content)
 │   ├── schemas.py                 # Pydantic data models
-│   ├── orchestrator.py            # State machine orchestrator (to be implemented)
-│   ├── utils/                     # Domain Router, KB Retriever, RAG System
+│   ├── orchestrator.py            # State machine orchestrator managing workflow execution
+│   ├── utils/                     # Domain Router, KB Retriever, RAG System (to be implemented)
 │   ├── kb_content/                # Master Questionnaires and Platform Guides
 │   └── tests/                     # Unit tests for shared components
 ├── writer_agent/                  # Example agent template (LangGraph-based)
@@ -138,18 +138,20 @@ The system implements a **4-agent sequential pipeline**:
 - **Schemas** (`schemas.py`): Pydantic data models for all agent inputs/outputs
 - **Domain Router** (`utils/domain_router.py`): Routes use cases to domain tracks (time_series, nlp, cv, genai_rag, classic_ml)
 - **KB Retriever** (`utils/kb_retriever.py`): Fetches Master Questionnaires and Platform Guides
-- **RAG System** (`utils/rag_system.py`): Vector search for Platform Guides (to be implemented in task 6.0)
-- **Orchestrator** (`orchestrator.py`): State machine managing workflow execution (to be implemented in task 4.0)
+- **RAG System** (`utils/rag_system.py`): Vector search for Platform Guides using DataRobot's managed Vector Database (to be implemented in task 6.0)
+- **Orchestrator** (`orchestrator.py`): State machine managing workflow execution with 9 states (INGEST → ANALYZE → ROUTE → KB_FETCH → Q_DRAFT → Q_CLARIFY → Q_FREEZE → PLAN_ARCH → DONE)
 - **Knowledge Base** (`kb_content/`): Master Questionnaires (JSON) and Platform Guides (Markdown)
 
 ### Technology Stack
 
 - **Agent Framework**: `pydantic-ai` (all 4 agents)
-- **Backend**: FastAPI with AG-UI protocol support
+- **Evaluation Framework**: `pydantic-evals` for systematic agent testing
+- **Backend**: FastAPI with AG-UI protocol support, SQLModel for database persistence
 - **Frontend**: React with TypeScript
-- **Infrastructure**: Pulumi for DataRobot deployment
+- **Infrastructure**: Pulumi for DataRobot deployment (all 4 agents + FastAPI Custom Application)
 - **Observability**: OpenTelemetry for distributed tracing
 - **Data Validation**: Pydantic v2 with strict type checking
+- **Database**: SQLite (development) / PostgreSQL (production) with Alembic migrations
 
 ---
 
@@ -158,6 +160,24 @@ The system implements a **4-agent sequential pipeline**:
 ### Local Development
 
 #### Option 1: Full Application (Backend + Frontend + Agents)
+
+Start all services together:
+```bash
+task dev
+```
+
+This will start:
+- MCP server (port 9000)
+- FastAPI backend (port 8080)
+- All 4 agents (ports 8842, 8843, 8844, 8845)
+- React frontend (port 5173)
+
+Access the application at:
+- **Frontend**: http://localhost:5173
+- **Backend API**: http://localhost:8080
+- **Scoper Page**: http://localhost:5173/scoper
+
+#### Option 2: Individual Services
 
 Build the frontend:
 ```bash
@@ -177,9 +197,7 @@ task clarifier_agent:dev
 task architecture_agent:dev
 ```
 
-Access the application at http://localhost:8080
-
-#### Option 2: Individual Agent Testing
+#### Option 3: Individual Agent Testing
 
 Test each agent independently using the CLI:
 
@@ -203,7 +221,7 @@ task clarifier_agent:cli -- execute --user_prompt '{"questions": [...], "selecte
 task architecture_agent:cli -- execute --user_prompt '{"qas": [{"id": "q1", "answer": "Database"}], "answered_pct": 0.9, "gaps": []}'
 ```
 
-#### Option 3: Agent Playground (Chainlit)
+#### Option 4: Agent Playground (Chainlit)
 
 For interactive testing of individual agents:
 
@@ -213,6 +231,39 @@ task requirement_analyzer_agent:chainlit
 ```
 
 Access at http://localhost:8083/
+
+### Web API Usage
+
+The FastAPI backend provides RESTful endpoints for the scoper workflow:
+
+**Start a new workflow:**
+```bash
+POST /api/v1/scoper/start
+{
+  "paragraph": "We need to build a predictive maintenance system",
+  "use_case_title": "Predictive Maintenance",
+  "transcript": "Optional transcript from customer meeting"
+}
+```
+
+**Get workflow state:**
+```bash
+GET /api/v1/scoper/{workflow_id}/state
+```
+
+**Submit clarification answer:**
+```bash
+POST /api/v1/scoper/{workflow_id}/clarify
+{
+  "question_id": "q1",
+  "answer": "Database"
+}
+```
+
+**Get final results:**
+```bash
+GET /api/v1/scoper/{workflow_id}/results
+```
 
 ### Build and Deploy
 
@@ -226,10 +277,20 @@ task architecture_agent:build
 
 **Deploy all agents to DataRobot:**
 ```bash
+# Deploy all agents and FastAPI backend
+task deploy
+
+# Or deploy individually
 task requirement_analyzer_agent:deploy
 task questionnaire_agent:deploy
 task clarifier_agent:deploy
 task architecture_agent:deploy
+```
+
+**Deploy FastAPI backend as Custom Application:**
+```bash
+cd infra
+pulumi up
 ```
 
 **Test deployed agents:**
@@ -259,6 +320,11 @@ Each agent follows the DataRobot Agentic Workflow Application template structure
 - **`scoper_shared/schemas.py`**: All Pydantic data models
   - `UseCaseInput`, `FactExtractionModel`, `Question`, `QuestionnaireDraft`, `QuestionnaireFinal`, `ArchitectureStep`, `ArchitecturePlan`
 
+- **`scoper_shared/orchestrator.py`**: State machine orchestrator managing the complete workflow
+  - 9 workflow states: INGEST → ANALYZE → ROUTE → KB_FETCH → Q_DRAFT → Q_CLARIFY → Q_FREEZE → PLAN_ARCH → DONE
+  - State persistence and recovery
+  - Gate conditions (e.g., ≥80% answered or coverage ≥0.8)
+
 - **`scoper_shared/utils/domain_router.py`**: Routes use cases to domain tracks based on keywords
 
 - **`scoper_shared/utils/kb_retriever.py`**: Fetches Master Questionnaires and Platform Guides
@@ -266,6 +332,27 @@ Each agent follows the DataRobot Agentic Workflow Application template structure
 - **`scoper_shared/kb_content/`**: Knowledge Base content
   - `master_questionnaire.json`: Canonical questions organized by domain tracks
   - `platform_guides/`: Internal DataRobot documentation (Markdown)
+
+### Web API
+
+- **`web/app/api/v1/scoper.py`**: FastAPI router for scoper endpoints
+  - `POST /api/v1/scoper/start` - Start new workflow
+  - `GET /api/v1/scoper/{workflow_id}/state` - Get current state
+  - `POST /api/v1/scoper/{workflow_id}/clarify` - Submit clarification answer
+  - `GET /api/v1/scoper/{workflow_id}/results` - Get final results
+
+- **`web/app/workflows/__init__.py`**: Database models and repository for workflow persistence
+  - `Workflow` SQLModel for state storage
+  - `WorkflowRepository` for database operations
+
+### Frontend
+
+- **`frontend_web/src/pages/Scoper.tsx`**: Main scoper page component
+- **`frontend_web/src/components/ScoperWorkflow.tsx`**: Workflow progress visualization
+- **`frontend_web/src/components/ClarificationQuestion.tsx`**: Interactive question/answer component
+- **`frontend_web/src/components/QuestionnaireView.tsx`**: Final questionnaire display with JSON download
+- **`frontend_web/src/components/ArchitecturePlanView.tsx`**: Architecture plan display with Markdown download
+- **`frontend_web/src/api/scoper/`**: API client functions for backend communication
 
 ---
 
@@ -300,12 +387,14 @@ Each agent can be configured via environment variables or `.env` file:
 
 ## 📄 Documentation
 
-- **[Product Requirements Document (PRD)](./tasks/Solutions-Agent-PRD-gdrive.md)**: Business requirements and success metrics
-- **[Engineering Design Document (EDD)](./tasks/Solutions-Agent-Unified-EDD-gdrive.md)**: Technical architecture and implementation details
-- **[Task List](./tasks/tasks-agentic-professional-services-scoper.md)**: Detailed implementation checklist
+- **[Product Requirements Document (PRD)](./tasks/Solutions-Agent-PRD.md)**: Business requirements and success metrics
+- **[Engineering Design Document (EDD)](./tasks/Solutions-Agent-Unified-EDD.md)**: Technical architecture and implementation details
+- **[Task List](./tasks/tasks-agentic-professional-services-scoper.md)**: Detailed implementation checklist and progress tracking
 - **[Agent Development Guidelines](./AGENTS.md)**: Coding standards and best practices
+- **[Evaluation Guide](./EVALUATION.md)**: Pydantic Evals evaluation framework usage
 - **[DataRobot Agent Development Docs](https://docs.datarobot.com/en/docs/agentic-ai/agentic-develop/agentic-development.html)**: Official DataRobot documentation
 - **[OpenTelemetry Tracing Docs](https://docs.datarobot.com/en/docs/agentic-ai/agentic-develop/agentic-tracing.html)**: Observability and tracing
+- **[Pydantic Evals Docs](https://ai.pydantic.dev/evals/)**: Evaluation framework documentation
 
 ### Agent-Specific Documentation
 
@@ -318,6 +407,8 @@ Each agent can be configured via environment variables or `.env` file:
 
 ## 🧪 Testing
 
+### Unit Tests
+
 Run unit tests for each component:
 
 ```bash
@@ -329,7 +420,37 @@ task requirement_analyzer_agent:test
 task questionnaire_agent:test
 task clarifier_agent:test
 task architecture_agent:test
+
+# Test web API integration
+cd web && pytest tests/integration/test_scoper.py
 ```
+
+### Pydantic Evals
+
+All agents use [Pydantic Evals](https://ai.pydantic.dev/evals/) for systematic evaluation. Run evaluations:
+
+```bash
+# Requirement Analyzer Agent
+cd requirement_analyzer_agent && python tests/test_evals.py
+
+# Questionnaire Agent
+cd questionnaire_agent && python tests/test_evals.py
+
+# Clarifier Agent
+cd clarifier_agent && python tests/test_evals.py
+
+# Architecture Agent
+cd architecture_agent && python tests/test_evals.py
+```
+
+See [EVALUATION.md](./EVALUATION.md) for detailed evaluation documentation.
+
+### Test Coverage
+
+- **Shared Components**: Unit tests for schemas, orchestrator, domain router, and KB retriever
+- **Agents**: Unit tests for each agent's core logic and output validation
+- **Pydantic Evals**: Systematic evaluation datasets with custom evaluators for each agent
+- **Web API**: Integration tests for all scoper endpoints (workflow creation, state management, clarification, results)
 
 ---
 
@@ -338,7 +459,7 @@ task architecture_agent:test
 Deploy all components to DataRobot:
 
 ```bash
-# Deploy all agents
+# Deploy all agents and FastAPI backend
 task deploy
 
 # Or deploy individually
@@ -349,22 +470,49 @@ task architecture_agent:deploy
 ```
 
 The deployment process uses Pulumi to:
-- Create DataRobot Custom Model deployments
+- Create DataRobot Custom Model deployments for all 4 agents
+- Deploy FastAPI backend as DataRobot Custom Application
 - Configure execution environments
-- Set up runtime parameters
+- Set up runtime parameters (including agent deployment IDs and endpoints)
 - Register agents in the Model Registry
+- Create feature flag configurations for each agent
+
+### Infrastructure Files
+
+- `infra/infra/requirement_analyzer_agent.py` - Pulumi infrastructure for Agent 1
+- `infra/infra/questionnaire_agent.py` - Pulumi infrastructure for Agent 2
+- `infra/infra/clarifier_agent.py` - Pulumi infrastructure for Agent 3
+- `infra/infra/architecture_agent.py` - Pulumi infrastructure for Agent 4
+- `infra/infra/web.py` - Pulumi infrastructure for FastAPI Custom Application
+- `infra/feature_flags/*.yaml` - Feature flag configurations for each agent
 
 ---
 
 ## 🔍 Observability
 
-All agents include **OpenTelemetry tracing** for:
-- Agent execution flow
-- LLM API calls
-- Utility function execution (Domain Router, KB Retriever)
-- State transitions (when orchestrator is implemented)
-- Input/output attributes
-- Error tracking
+All components include **OpenTelemetry tracing** for comprehensive observability:
+
+**Agents:**
+- Agent execution flow with nested spans
+- LLM API calls with token usage
+- Input/output attributes (confidence scores, question counts, etc.)
+- Error tracking and retry logic
+
+**Utilities:**
+- Domain Router: Track selected domain tracks
+- KB Retriever: Monitor file loading and question retrieval
+- RAG System: Vector search operations (when implemented)
+
+**Orchestrator:**
+- State transitions with timing information
+- Agent coordination spans
+- Gate condition evaluations
+- Workflow-level span encompassing entire execution
+
+**Web API:**
+- Request/response tracing
+- Database operations
+- Agent invocation tracking
 
 Traces can be viewed in DataRobot's monitoring dashboard or exported to external observability platforms.
 
