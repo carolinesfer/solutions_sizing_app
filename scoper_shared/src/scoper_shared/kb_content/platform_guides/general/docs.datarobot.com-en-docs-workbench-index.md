@@ -1,0 +1,300 @@
+[ DataRobot docs ](../index.html "DataRobot docs")
+
+  * [ Workbench ](wb-getstarted/index.html) [ Workbench ](wb-getstarted/index.html)
+    * [ Workbench overview ](wb-getstarted/wb-overview.html)
+    * [ Migrate assets ](wb-getstarted/wb-asset-migration.html)
+  * [ Use Cases ](wb-usecase/index.html) [ Use Cases ](wb-usecase/index.html)
+    * [ Use Case overview ](wb-usecase/wb-usecase-overview.html)
+    * [ Manage a Use Case ](wb-usecase/wb-build-usecase.html)
+    * [ Track value ](wb-usecase/wb-value.html)
+    * [ Assess risk ](wb-usecase/wb-risk.html)
+  * [ Data preparation ](wb-dataprep/index.html) [ Data preparation ](wb-dataprep/index.html)
+    * [ Add data ](wb-dataprep/wb-add-data/index.html) [ Add data ](wb-dataprep/wb-add-data/index.html)
+      * [ Data connections ](wb-dataprep/wb-add-data/wb-connect.html)
+      * [ Data Registry ](wb-dataprep/wb-add-data/wb-data-registry.html)
+      * [ Local files ](wb-dataprep/wb-add-data/wb-local-file.html)
+      * [ URL ](wb-dataprep/wb-add-data/wb-url.html)
+    * [ Explore data ](wb-dataprep/wb-explore-data/index.html) [ Explore data ](wb-dataprep/wb-explore-data/index.html)
+      * [ Exploratory Data Analysis (EDA) ](wb-dataprep/wb-explore-data/wb-eda-insights.html)
+      * [ Feature lists ](wb-dataprep/wb-explore-data/wb-data-featurelist.html)
+    * [ Prepare data ](wb-dataprep/wb-wrangle-data/index.html) [ Prepare data ](wb-dataprep/wb-wrangle-data/index.html)
+      * [ Wrangler ](wb-dataprep/wb-wrangle-data/build-recipe/index.html) [ Wrangler ](wb-dataprep/wb-wrangle-data/build-recipe/index.html)
+        * [ Build a wrangling recipe ](wb-dataprep/wb-wrangle-data/build-recipe/wb-build-recipe.html)
+        * [ Add wrangling operations ](wb-dataprep/wb-wrangle-data/build-recipe/wb-add-operation.html)
+        * [ Time-aware wrangling ](wb-dataprep/wb-wrangle-data/build-recipe/wb-ts-wrangling.html)
+      * [ SQL Editor ](wb-dataprep/wb-wrangle-data/wb-sql-editor.html)
+      * [ Publish a recipe ](wb-dataprep/wb-wrangle-data/wb-pub-recipe.html)
+    * [ Transform features ](wb-dataprep/transform-feat.html)
+    * [ Feature Discovery ](wb-dataprep/wb-perform-safer.html)
+    * [ Data preparation reference ](wb-dataprep/wb-data-ref/index.html)
+  * [ AI experimentation ](wb-experiment/index.html) [ AI experimentation ](wb-experiment/index.html)
+    * [ Create experiments ](wb-experiment/create-experiments/index.html) [ Create experiments ](wb-experiment/create-experiments/index.html)
+      * [ Create predictive experiments ](wb-experiment/create-experiments/create-predictive/index.html) [ Create predictive experiments ](wb-experiment/create-experiments/create-predictive/index.html)
+        * [ Supervised predictive modeling ](wb-experiment/create-experiments/create-predictive/ml-basic-experiment.html)
+        * [ Unsupervised predictive modeling ](wb-experiment/create-experiments/create-predictive/ml-unsupervised.html)
+        * [ Advanced experiment setup ](wb-experiment/create-experiments/create-predictive/ml-adv-experiment.html)
+      * [ Create time-aware experiments ](wb-experiment/create-experiments/create-time-aware/index.html) [ Create time-aware experiments ](wb-experiment/create-experiments/create-time-aware/index.html)
+        * [ Time-aware basic modeling ](wb-experiment/create-experiments/create-time-aware/ts-create-basic.html)
+        * [ Time-aware predictions ](wb-experiment/create-experiments/create-time-aware/ts-datetime.html)
+        * [ Predictions with feature transformations ](wb-experiment/create-experiments/create-time-aware/ts-pred-transforms.html)
+        * [ Time series forecasting ](wb-experiment/create-experiments/create-time-aware/ts-forecasting.html)
+        * [ Unsupervised time-aware modeling ](wb-experiment/create-experiments/create-time-aware/ts-unsupervised.html)
+    * [ Manage experiments ](wb-experiment/manage-experiments/index.html) [ Manage experiments ](wb-experiment/manage-experiments/index.html)
+      * [ Experiment setup ](wb-experiment/manage-experiments/setup.html)
+      * [ Analyze data insights ](wb-experiment/manage-experiments/experiment-data.html)
+      * [ Blueprint repository ](wb-experiment/manage-experiments/blueprint-repo.html)
+      * [ Model Leaderboard ](wb-experiment/manage-experiments/leaderboard.html)
+      * [ Experiment insights ](wb-experiment/manage-experiments/experiment-insights-tile.html)
+      * [ Compare models ](wb-experiment/manage-experiments/wb-model-compare.html)
+      * [ Add/retrain models ](wb-experiment/manage-experiments/experiment-add.html)
+      * [ Edit (composable) blueprints ](wb-experiment/manage-experiments/experiment-cml.html)
+    * [ Evaluate with model insights ](wb-experiment/experiment-insights/index.html) [ Evaluate with model insights ](wb-experiment/experiment-insights/index.html)
+      * [ Accuracy Over Space ](wb-experiment/experiment-insights/ml-acc-over-space.html)
+      * [ Accuracy Over Time ](wb-experiment/experiment-insights/ts-aot.html)
+      * [ Anomaly Assessment ](wb-experiment/experiment-insights/ts-anom-assessment.html)
+      * [ Anomaly Over Space ](wb-experiment/experiment-insights/ml-anom-over-space.html)
+      * [ Anomaly Over Time ](wb-experiment/experiment-insights/ts-anom-over-time.html)
+      * [ Attention Maps ](wb-experiment/experiment-insights/ml-attention-map.html)
+      * [ Blueprint ](wb-experiment/experiment-insights/ml-blueprint.html)
+      * [ Cluster Insights ](wb-experiment/experiment-insights/ml-cluster-insights.html)
+      * [ Coefficients ](wb-experiment/experiment-insights/ml-coefficients.html)
+      * [ Compliance documentation ](wb-experiment/experiment-insights/ml-compliance-doc.html)
+      * [ Confusion Matrix ](wb-experiment/experiment-insights/ml-confusion-matrix.html)
+      * [ Downloads tab ](wb-experiment/experiment-insights/ml-downloads.html)
+      * [ Eureqa Models ](wb-experiment/experiment-insights/ml-eureqa.html)
+      * [ Feature Effects ](wb-experiment/experiment-insights/ml-feature-effects.html)
+      * [ Feature Impact ](wb-experiment/experiment-insights/ml-feature-impact.html)
+      * [ Forecasting Accuracy ](wb-experiment/experiment-insights/ts-forecasting-accuracy.html)
+      * [ Forecast vs Actual ](wb-experiment/experiment-insights/ts-forecast-v-actual.html)
+      * [ Image Embeddings ](wb-experiment/experiment-insights/ml-image-embeddings.html)
+      * [ Individual Prediction Explanations ](wb-experiment/experiment-insights/ml-shap-predex.html)
+      * [ Individual Prediction Explanations (XEMP) ](wb-experiment/experiment-insights/ts-xemp-predex.html)
+      * [ Lift Chart ](wb-experiment/experiment-insights/ml-lift-chart.html)
+      * [ Log ](wb-experiment/experiment-insights/ml-log.html)
+      * [ Metric Scores ](wb-experiment/experiment-insights/ml-metric-scores.html)
+      * [ Model Info ](wb-experiment/experiment-insights/ml-model-info.html)
+      * [ Model Iterations ](wb-experiment/experiment-insights/ml-incremental.html)
+      * [ Multilabel Per-Label Metrics ](wb-experiment/experiment-insights/ml-multilabel.html)
+      * [ Neural Network Visualizer ](wb-experiment/experiment-insights/ml-neural-net.html)
+      * [ Period Accuracy ](wb-experiment/experiment-insights/ts-period-accuracy.html)
+      * [ Related Assets ](wb-experiment/experiment-insights/ml-assets.html)
+      * [ Residuals ](wb-experiment/experiment-insights/ml-residuals.html)
+      * [ ROC Curve ](wb-experiment/experiment-insights/ml-roc-curve.html)
+      * [ Series Insights ](wb-experiment/experiment-insights/ts-series-insights.html)
+      * [ SHAP Distributions Per Feature ](wb-experiment/experiment-insights/ml-shap-distribution.html)
+      * [ Stability ](wb-experiment/experiment-insights/ts-stability.html)
+      * [ Word Cloud ](wb-experiment/experiment-insights/ml-word-cloud.html)
+    * [ Make predictions ](wb-experiment/wb-predict.html)
+  * [ Applications ](wb-apps/index.html) [ Applications ](wb-apps/index.html)
+    * [ Custom applications ](wb-apps/custom-apps/index.html) [ Custom applications ](wb-apps/custom-apps/index.html)
+      * [ Create custom applications ](wb-apps/custom-apps/nxt-upload-custom-app.html)
+      * [ Host custom applications with DRApps ](wb-apps/custom-apps/nxt-host-custom-app.html)
+      * [ Manage applications ](wb-apps/custom-apps/nxt-manage-custom-app.html)
+      * [ Manage application sources ](wb-apps/custom-apps/nxt-manage-app-source.html)
+      * [ Create a chat generation Q&A application ](wb-apps/custom-apps/nxt-create-qa-app.html)
+    * [ Application templates ](wb-apps/app-templates/index.html) [ Application templates ](wb-apps/app-templates/index.html)
+      * [ Forecast Assistant ](wb-apps/app-templates/at-forecast-assist.html)
+      * [ Guarded RAG Assistant ](wb-apps/app-templates/at-rag-assist.html)
+      * [ Predictive Content Generator ](wb-apps/app-templates/at-content-gen.html)
+      * [ Predictive AI Starter ](wb-apps/app-templates/at-ai-starter.html)
+      * [ Talk to My Data Agent ](wb-apps/app-templates/at-talk-agent.html)
+      * [ Talk to My Docs ](wb-apps/app-templates/at-talk-docs.html)
+      * [ Cash flow forecasting ](wb-apps/app-templates/at-sap-fpa.html)
+      * [ Demand planning ](wb-apps/app-templates/at-sap-ibp.html)
+      * [ Pulumi tasks ](wb-apps/app-templates/pulumi-tasks/index.html) [ Pulumi tasks ](wb-apps/app-templates/pulumi-tasks/index.html)
+        * [ Deploy a custom model with Pulumi ](wb-apps/app-templates/pulumi-tasks/deploy-custom-model.html)
+        * [ Deploy a custom application with Pulumi ](wb-apps/app-templates/pulumi-tasks/deploy-dr-app.html)
+        * [ Deploy a governed custom LLM ](wb-apps/app-templates/pulumi-tasks/deploy-governed-llm.html)
+        * [ CI/CD setup for application templates ](wb-apps/app-templates/pulumi-tasks/cicd-tutorial.html)
+    * [ No-code applications ](wb-apps/no-code-apps/index.html) [ No-code applications ](wb-apps/no-code-apps/index.html)
+      * [ Manage applications ](wb-apps/no-code-apps/wb-app-manage.html)
+      * [ Create an application ](wb-apps/no-code-apps/wb-app-create.html)
+      * [ Edit and use applications ](wb-apps/no-code-apps/wb-app-edit.html)
+      * [ Application reference ](wb-apps/no-code-apps/wb-app-ref.html)
+  * [ DataRobot Notebooks ](wb-notebook/index.html) [ DataRobot Notebooks ](wb-notebook/index.html)
+    * [ Manage notebooks ](wb-notebook/wb-manage-nb/index.html) [ Manage notebooks ](wb-notebook/wb-manage-nb/index.html)
+      * [ Add notebooks ](wb-notebook/wb-manage-nb/wb-create-nb.html)
+      * [ Notebook settings ](wb-notebook/wb-manage-nb/wb-settings-nb.html)
+      * [ Notebook versioning ](wb-notebook/wb-manage-nb/wb-revise-nb.html)
+      * [ Notebook scheduling ](wb-notebook/wb-manage-nb/wb-schedule-nb.html)
+    * [ Notebook coding experience ](wb-notebook/wb-code-nb/index.html) [ Notebook coding experience ](wb-notebook/wb-code-nb/index.html)
+      * [ Environment management ](wb-notebook/wb-code-nb/wb-env-nb.html)
+      * [ Create and execute cells ](wb-notebook/wb-code-nb/wb-cell-nb.html)
+      * [ Cell actions ](wb-notebook/wb-code-nb/wb-action-nb.html)
+      * [ Code intelligence ](wb-notebook/wb-code-nb/wb-code-int.html)
+      * [ Notebook terminals ](wb-notebook/wb-code-nb/wb-terminal-nb.html)
+      * [ Azure OpenAI Service integration ](wb-notebook/wb-code-nb/wb-openai-nb.html)
+    * [ Codespaces ](wb-notebook/codespaces/index.html) [ Codespaces ](wb-notebook/codespaces/index.html)
+      * [ Add a codespace ](wb-notebook/codespaces/create-cs.html)
+      * [ Codespace sessions ](wb-notebook/codespaces/session-cs.html)
+      * [ Codespace scheduling ](wb-notebook/codespaces/schedule-cs.html)
+      * [ Convert notebooks to codespaces ](wb-notebook/codespaces/convert-cs.html)
+    * [ Notebook reference ](wb-notebook/wb-notebook-ref.html)
+  * [ Registry ](nxt-registry/index.html) [ Registry ](nxt-registry/index.html)
+    * [ Models ](nxt-registry/nxt-model-directory/index.html) [ Models ](nxt-registry/nxt-model-directory/index.html)
+      * [ Register DataRobot models ](nxt-registry/nxt-model-directory/nxt-register-dr-models.html)
+      * [ Register external models ](nxt-registry/nxt-model-directory/nxt-register-ext-models.html)
+      * [ Register custom models ](nxt-registry/nxt-model-directory/nxt-register-cus-models.html)
+      * [ Import and deploy with NVIDIA NIM ](nxt-registry/nxt-model-directory/nxt-import-nvidia-ngc.html)
+      * [ View and manage registered models ](nxt-registry/nxt-model-directory/nxt-view-manage-reg-models.html)
+      * [ Generate compliance documentation ](nxt-registry/nxt-model-directory/nxt-compliance-doc.html)
+      * [ View model insights ](nxt-registry/nxt-model-directory/nxt-model-insights.html)
+      * [ Manage key values ](nxt-registry/nxt-model-directory/nxt-key-values.html)
+      * [ Deploy registered models ](nxt-registry/nxt-model-directory/nxt-deploy-models.html)
+      * [ Access global models in Registry ](nxt-registry/nxt-model-directory/nxt-global-models.html)
+      * [ Import model packages into Registry ](nxt-registry/nxt-model-directory/nxt-registry-model-transfer.html)
+    * [ Workshop ](nxt-registry/nxt-model-workshop/index.html) [ Workshop ](nxt-registry/nxt-model-workshop/index.html)
+      * [ Create custom models ](nxt-registry/nxt-model-workshop/nxt-create-custom-model.html)
+      * [ View and manage custom models ](nxt-registry/nxt-model-workshop/nxt-view-manage-custom-models.html)
+      * [ Define custom model runtime parameters ](nxt-registry/nxt-model-workshop/nxt-define-custom-model-runtime-parameters.html)
+      * [ Test custom models ](nxt-registry/nxt-model-workshop/nxt-test-custom-model.html)
+      * [ Add custom model versions ](nxt-registry/nxt-model-workshop/nxt-custom-model-versions.html)
+      * [ View and manage a custom model's environment ](nxt-registry/nxt-model-workshop/nxt-view-manage-model-env.html)
+      * [ Create custom model proxies for external models ](nxt-registry/nxt-model-workshop/nxt-ext-model-proxy.html)
+      * [ Configure evaluation and moderation ](nxt-registry/nxt-model-workshop/nxt-configure-evaluation-moderation.html)
+      * [ Use NVIDIA NeMo Guardrails with DataRobot moderation ](nxt-registry/nxt-model-workshop/nxt-configure-nvidia-nim-evaluation-moderation.html)
+      * [ Deploy LLMs from the Hugging Face Hub ](nxt-registry/nxt-model-workshop/nxt-open-source-textgen-template.html)
+    * [ Data ](nxt-registry/nxt-data-registry/index.html) [ Data ](nxt-registry/nxt-data-registry/index.html)
+      * [ Add data to Registry ](nxt-registry/nxt-data-registry/nxt-add-data.html)
+      * [ Manage data assets ](nxt-registry/nxt-data-registry/nxt-manage-data.html)
+      * [ Explore registry data ](nxt-registry/nxt-data-registry/nxt-explore-data.html)
+    * [ Jobs ](nxt-registry/nxt-jobs-workshop/index.html) [ Jobs ](nxt-registry/nxt-jobs-workshop/index.html)
+      * [ Create custom jobs ](nxt-registry/nxt-jobs-workshop/nxt-create-jobs/index.html) [ Create custom jobs ](nxt-registry/nxt-jobs-workshop/nxt-create-jobs/index.html)
+        * [ Create a generic job ](nxt-registry/nxt-jobs-workshop/nxt-create-jobs/nxt-create-custom-job.html)
+        * [ Create a hosted metric job ](nxt-registry/nxt-jobs-workshop/nxt-create-jobs/nxt-create-hosted-metric-job.html)
+        * [ Create a notification job ](nxt-registry/nxt-jobs-workshop/nxt-create-jobs/nxt-create-notification-job.html)
+        * [ Create a retraining job ](nxt-registry/nxt-jobs-workshop/nxt-create-jobs/nxt-create-retraining-job.html)
+      * [ Manage key values ](nxt-registry/nxt-jobs-workshop/nxt-key-values-custom-jobs.html)
+      * [ View and manage jobs ](nxt-registry/nxt-jobs-workshop/nxt-view-manage-custom-jobs.html)
+      * [ Run and schedule jobs ](nxt-registry/nxt-jobs-workshop/nxt-run-custom-jobs.html)
+    * [ Environments ](nxt-registry/nxt-environment-workshop/index.html) [ Environments ](nxt-registry/nxt-environment-workshop/index.html)
+      * [ Use drop-in environments ](nxt-registry/nxt-environment-workshop/nxt-drop-in-envs.html)
+      * [ Create a custom environment ](nxt-registry/nxt-environment-workshop/nxt-create-custom-env.html)
+      * [ Add an execution environment ](nxt-registry/nxt-environment-workshop/nxt-add-custom-env.html)
+  * [ Console ](nxt-console/index.html) [ Console ](nxt-console/index.html)
+    * [ Dashboard and overview ](nxt-console/nxt-overview/index.html) [ Dashboard and overview ](nxt-console/nxt-overview/index.html)
+      * [ Deployments dashboard ](nxt-console/nxt-overview/nxt-dashboard.html)
+      * [ Deployment overview ](nxt-console/nxt-overview/nxt-overview.html)
+      * [ Deployment actions ](nxt-console/nxt-overview/nxt-deployment-actions.html)
+    * [ Deployment settings ](nxt-console/nxt-settings/index.html) [ Deployment settings ](nxt-console/nxt-settings/index.html)
+      * [ Set up service health monitoring ](nxt-console/nxt-settings/nxt-service-health-settings.html)
+      * [ Set up data drift monitoring ](nxt-console/nxt-settings/nxt-data-drift-settings.html)
+      * [ Set up accuracy monitoring ](nxt-console/nxt-settings/nxt-accuracy-settings.html)
+      * [ Set up fairness monitoring ](nxt-console/nxt-settings/nxt-fairness-settings.html)
+      * [ Set up custom metrics monitoring ](nxt-console/nxt-settings/nxt-custom-metrics-settings.html)
+      * [ Set up humility rules ](nxt-console/nxt-settings/nxt-humility-settings.html)
+      * [ Configure challengers ](nxt-console/nxt-settings/nxt-challengers-settings.html)
+      * [ Configure retraining ](nxt-console/nxt-settings/nxt-retraining-settings.html)
+      * [ Configure predictions settings ](nxt-console/nxt-settings/nxt-predictions-settings.html)
+      * [ Set up timeliness tracking ](nxt-console/nxt-settings/nxt-usage-settings.html)
+      * [ Configure data exploration ](nxt-console/nxt-settings/nxt-data-exploration-settings.html)
+      * [ Configure notifications ](nxt-console/nxt-settings/nxt-notification-settings.html)
+      * [ Configure resource settings ](nxt-console/nxt-settings/nxt-resource-settings.html)
+      * [ Configure quota settings ](nxt-console/nxt-settings/nxt-quota-settings.html)
+    * [ Monitoring ](nxt-console/nxt-monitoring/index.html) [ Monitoring ](nxt-console/nxt-monitoring/index.html)
+      * [ Service health ](nxt-console/nxt-monitoring/nxt-service-health.html)
+      * [ Data drift ](nxt-console/nxt-monitoring/nxt-data-drift.html)
+      * [ Accuracy ](nxt-console/nxt-monitoring/nxt-accuracy.html)
+      * [ Fairness ](nxt-console/nxt-monitoring/nxt-fairness.html)
+      * [ Usage ](nxt-console/nxt-monitoring/nxt-usage.html)
+      * [ Custom metrics ](nxt-console/nxt-monitoring/nxt-custom-metrics.html)
+      * [ Data exploration ](nxt-console/nxt-monitoring/nxt-data-exploration.html)
+      * [ Monitoring jobs ](nxt-console/nxt-monitoring/nxt-monitoring-jobs.html)
+      * [ Deployment reports ](nxt-console/nxt-monitoring/nxt-reports.html)
+      * [ Segmented analysis ](nxt-console/nxt-monitoring/nxt-segmented-analysis.html)
+      * [ Generative model monitoring ](nxt-console/nxt-monitoring/nxt-genai-monitoring.html)
+      * [ Batch monitoring ](nxt-console/nxt-monitoring/nxt-batch-monitoring.html)
+    * [ Predictions ](nxt-console/nxt-predictions/index.html) [ Predictions ](nxt-console/nxt-predictions/index.html)
+      * [ Make predictions ](nxt-console/nxt-predictions/nxt-make-predictions.html)
+      * [ Portable predictions ](nxt-console/nxt-predictions/nxt-portable-predictions.html)
+      * [ Prediction API snippets ](nxt-console/nxt-predictions/nxt-pred-api-snippets.html)
+      * [ Monitoring code snippets (external deployments) ](nxt-console/nxt-predictions/nxt-monitoring.html)
+      * [ Set prediction intervals (time series) ](nxt-console/nxt-predictions/nxt-prediction-intervals.html)
+      * [ Prediction jobs ](nxt-console/nxt-predictions/nxt-prediction-jobs.html)
+    * [ Mitigation ](nxt-console/nxt-mitigation/index.html) [ Mitigation ](nxt-console/nxt-mitigation/index.html)
+      * [ Challengers ](nxt-console/nxt-mitigation/nxt-challengers.html)
+      * [ Retraining ](nxt-console/nxt-mitigation/nxt-retraining.html)
+      * [ Humility ](nxt-console/nxt-mitigation/nxt-humility.html)
+    * [ Activity log ](nxt-console/nxt-activity-log/index.html) [ Activity log ](nxt-console/nxt-activity-log/index.html)
+      * [ MLOps events ](nxt-console/nxt-activity-log/nxt-mlops-events.html)
+      * [ Governance ](nxt-console/nxt-activity-log/nxt-governance.html)
+      * [ Agent events ](nxt-console/nxt-activity-log/nxt-agent-events.html)
+      * [ Model history ](nxt-console/nxt-activity-log/nxt-model-history.html)
+      * [ Standard output ](nxt-console/nxt-activity-log/nxt-runtime-logs.html)
+      * [ Moderation ](nxt-console/nxt-activity-log/nxt-moderation.html)
+      * [ Logs ](nxt-console/nxt-activity-log/nxt-otel-logs.html)
+      * [ Comments ](nxt-console/nxt-activity-log/nxt-comments.html)
+    * [ Prediction environments ](nxt-console/nxt-prediction-environments/index.html) [ Prediction environments ](nxt-console/nxt-prediction-environments/index.html)
+      * [ Add DataRobot Serverless prediction environments ](nxt-console/nxt-prediction-environments/nxt-pred-env.html)
+      * [ Add external prediction environments ](nxt-console/nxt-prediction-environments/nxt-ext-pred-env.html)
+      * [ Manage prediction environments ](nxt-console/nxt-prediction-environments/nxt-pred-env-manage.html)
+      * [ Deploy a model to a prediction environment ](nxt-console/nxt-prediction-environments/nxt-pred-env-deploy.html)
+      * [ Prediction environment integrations ](nxt-console/nxt-prediction-environments/nxt-prediction-environment-integrations/index.html) [ Prediction environment integrations ](nxt-console/nxt-prediction-environments/nxt-prediction-environment-integrations/index.html)
+        * [ Automated deployment and replacement of Scoring Code in AzureML ](nxt-console/nxt-prediction-environments/nxt-prediction-environment-integrations/nxt-azureml-pred-env-integration.html)
+        * [ Automated deployment and replacement in Sagemaker ](nxt-console/nxt-prediction-environments/nxt-prediction-environment-integrations/nxt-sagemaker-pred-env-integration.html)
+        * [ Automated deployment and replacement of Scoring Code in SAP AI Core ](nxt-console/nxt-prediction-environments/nxt-prediction-environment-integrations/nxt-sap-pred-env-integration.html)
+        * [ Automated deployment and replacement of Scoring Code in Snowflake ](nxt-console/nxt-prediction-environments/nxt-prediction-environment-integrations/nxt-snowflake-pred-env-integration.html)
+    * [ Notification templates ](nxt-console/nxt-notifications/index.html)
+  * [ Compliance ](nxt-template-builder/index.html) [ Compliance ](nxt-template-builder/index.html)
+    * [ Generate compliance documentation ](nxt-template-builder/nxt-generate-compliance-doc.html)
+    * [ Build compliance templates ](nxt-template-builder/nxt-build-doc-templates.html)
+    * [ Audit model code ](nxt-template-builder/audit-model-code.html)
+
+[For Self-Managed AI Platform users running v11.1, see the on-premise platform
+documentation __](/11.1/en/docs/index.html)
+
+NextGen UI documentation
+
+  * Workbench 
+  * Use Cases 
+  * Data preparation 
+  * Predictive experiments 
+  * Applications 
+  * DataRobot Notebooks 
+  * Registry 
+  * Console 
+  * Compliance 
+
+# NextGen UI documentation¶
+
+Learn every aspect of the DataRobot workflow, from importing data to deploying
+and managing models.
+
+  * #### [Workbench](wb-getstarted/index.html)¶
+
+Learn about Workbench migration, capabilities, and templates.
+
+  * #### [Use Cases](wb-usecase/index.html)¶
+
+Create experiment-based, iterative workflows in Workbench.
+
+  * #### [Data preparation](wb-dataprep/index.html)¶
+
+Ingest, transform, and store your data for experimentation.
+
+  * #### [Predictive experiments](wb-experiment/index.html)¶
+
+Build, compare, and manage models in predictive experiments.
+
+  * #### [Applications](wb-apps/index.html)¶
+
+Configure AI-powered applications and enable core DataRobot services.
+
+  * #### [DataRobot Notebooks](wb-notebook/index.html)¶
+
+Create interactive and executable computing documents.
+
+  * #### [Registry](nxt-registry/index.html)¶
+
+Create and manage models, jobs, environments, and custom applications.
+
+  * #### [Console](nxt-console/index.html)¶
+
+Deploy, monitor, manage, and govern models in production.
+
+  * #### [Compliance](nxt-template-builder/index.html)¶
+
+Generate, customize, and share automated compliance documentation.
+
+Back to top
+

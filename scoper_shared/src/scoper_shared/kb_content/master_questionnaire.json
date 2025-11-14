@@ -3,10 +3,18 @@
     "id": "q1",
     "text": "What is the primary data source for this project?",
     "type": "single_select",
-    "options": ["Database", "API", "File upload", "Streaming data"],
+    "options": [
+      "Database",
+      "API",
+      "File upload",
+      "Streaming data"
+    ],
     "required": true,
     "rationale": "Understanding the data source helps determine ingestion requirements",
-    "tracks": ["classic_ml", "time_series"]
+    "tracks": [
+      "classic_ml",
+      "time_series"
+    ]
   },
   {
     "id": "q2",
@@ -14,16 +22,475 @@
     "type": "free_text",
     "required": true,
     "rationale": "The target variable defines the prediction task",
-    "tracks": ["classic_ml", "time_series"]
+    "tracks": [
+      "classic_ml",
+      "time_series"
+    ]
   },
   {
     "id": "q3",
     "text": "What is the expected deployment environment?",
     "type": "single_select",
-    "options": ["Cloud", "On-premise", "Edge", "Hybrid"],
+    "options": [
+      "Cloud",
+      "On-premise",
+      "Edge",
+      "Hybrid"
+    ],
     "required": true,
     "rationale": "Deployment environment affects architecture decisions",
-    "tracks": ["classic_ml", "time_series", "nlp", "cv", "genai_rag"]
+    "tracks": [
+      "classic_ml",
+      "time_series",
+      "nlp",
+      "cv",
+      "genai_rag"
+    ]
+  },
+  {
+    "id": "q_ai_analyst_-_use_case_questionnaire_template_v02.docx_1",
+    "text": ". Business problem description",
+    "type": "free_text",
+    "options": null,
+    "required": true,
+    "rationale": "Extracted from AI Analyst - Use Case Questionnaire TEMPLATE v02.docx.md",
+    "tracks": [
+      "classic_ml"
+    ]
+  },
+  {
+    "id": "q_ai_analyst_-_use_case_questionnaire_template_v02.docx_2",
+    "text": ". Stakeholders and roles",
+    "type": "free_text",
+    "options": null,
+    "required": true,
+    "rationale": "Extracted from AI Analyst - Use Case Questionnaire TEMPLATE v02.docx.md",
+    "tracks": [
+      "classic_ml"
+    ]
+  },
+  {
+    "id": "q_ai_analyst_-_use_case_questionnaire_template_v02.docx_3",
+    "text": ". Who is the executive sponsor?",
+    "type": "free_text",
+    "options": null,
+    "required": true,
+    "rationale": "Extracted from AI Analyst - Use Case Questionnaire TEMPLATE v02.docx.md",
+    "tracks": [
+      "classic_ml"
+    ]
+  },
+  {
+    "id": "q_ai_analyst_-_use_case_questionnaire_template_v02.docx_4",
+    "text": ". How do you define “success” for this use case? E.g., impact on business process – greater productivity or automation E.g., usability – easy of use for consumers E.g., reproducibility – ease of updating the solution in the future, or using it as an example for similar use cases E.g., Ability to monitor the solution effectively",
+    "type": "bool",
+    "options": null,
+    "required": true,
+    "rationale": "Extracted from AI Analyst - Use Case Questionnaire TEMPLATE v02.docx.md",
+    "tracks": [
+      "classic_ml"
+    ]
+  },
+  {
+    "id": "q_ai_analyst_-_use_case_questionnaire_template_v02.docx_5",
+    "text": ". What preliminary estimates do you have for delivering potential value? E.g., qualitative: “transformative process improvement” E.g., $100k cost savings, $1M revenue generation, decrease in time/FTE to complete a task by 50%",
+    "type": "bool",
+    "options": null,
+    "required": true,
+    "rationale": "Extracted from AI Analyst - Use Case Questionnaire TEMPLATE v02.docx.md",
+    "tracks": [
+      "classic_ml"
+    ]
+  },
+  {
+    "id": "q_ai_analyst_-_use_case_questionnaire_template_v02.docx_6",
+    "text": ". When do you expect the chatbot to be deployed and deliver value?",
+    "type": "bool",
+    "options": null,
+    "required": true,
+    "rationale": "Extracted from AI Analyst - Use Case Questionnaire TEMPLATE v02.docx.md",
+    "tracks": [
+      "nlp",
+      "genai_rag"
+    ]
+  },
+  {
+    "id": "q_ai_analyst_-_use_case_questionnaire_template_v02.docx_7",
+    "text": ". What, if any, additional functionality/appearance customization will have to be added to the existing application template?",
+    "type": "free_text",
+    "options": null,
+    "required": true,
+    "rationale": "Extracted from AI Analyst - Use Case Questionnaire TEMPLATE v02.docx.md",
+    "tracks": [
+      "classic_ml"
+    ]
+  },
+  {
+    "id": "q_ai_analyst_-_use_case_questionnaire_template_v02.docx_8",
+    "text": ". What UI/UX framework is required to deliver the application? Streamlit, React, or ported to another application or site? Plans for Teams bot? Expected timeline for each?",
+    "type": "single_select",
+    "options": [],
+    "required": true,
+    "rationale": "Extracted from AI Analyst - Use Case Questionnaire TEMPLATE v02.docx.md",
+    "tracks": [
+      "classic_ml"
+    ]
+  },
+  {
+    "id": "q_ai_analyst_-_use_case_questionnaire_template_v02.docx_9",
+    "text": ". What file formats are required for retrieval?",
+    "type": "single_select",
+    "options": [],
+    "required": true,
+    "rationale": "Extracted from AI Analyst - Use Case Questionnaire TEMPLATE v02.docx.md",
+    "tracks": [
+      "genai_rag"
+    ]
+  },
+  {
+    "id": "q_ai_analyst_-_use_case_questionnaire_template_v02.docx_10",
+    "text": ". If database connectivity is required, can you provide a service account of some kind to connect? What is the authentication method? Basic username and password or do we need a token, oath, or something else?",
+    "type": "bool",
+    "options": null,
+    "required": true,
+    "rationale": "Extracted from AI Analyst - Use Case Questionnaire TEMPLATE v02.docx.md",
+    "tracks": [
+      "infrastructure"
+    ]
+  },
+  {
+    "id": "q_ai_analyst_-_use_case_questionnaire_template_v02.docx_11",
+    "text": ". Will each application user require access to unique docs? How is authentication to that data handled today?",
+    "type": "bool",
+    "options": null,
+    "required": true,
+    "rationale": "Extracted from AI Analyst - Use Case Questionnaire TEMPLATE v02.docx.md",
+    "tracks": [
+      "classic_ml"
+    ]
+  },
+  {
+    "id": "q_ai_analyst_-_use_case_questionnaire_template_v02.docx_12",
+    "text": ". Are there any specific regulatory compliance requirements that must be met (e.g GDPR, CCPA for data privacy)?",
+    "type": "bool",
+    "options": null,
+    "required": true,
+    "rationale": "Extracted from AI Analyst - Use Case Questionnaire TEMPLATE v02.docx.md",
+    "tracks": [
+      "classic_ml"
+    ]
+  },
+  {
+    "id": "q_ai_analyst_-_use_case_questionnaire_template_v02.docx_13",
+    "text": ". How large is the entire source doc collection that  the application will be using? What’s the frequency for updates/additions? i.e. # of existing Articulate sites, frequency of new courses being added, and similarly for each file format required",
+    "type": "bool",
+    "options": null,
+    "required": true,
+    "rationale": "Extracted from AI Analyst - Use Case Questionnaire TEMPLATE v02.docx.md",
+    "tracks": [
+      "classic_ml"
+    ]
+  },
+  {
+    "id": "q_ai_analyst_-_use_case_questionnaire_template_v02.docx_14",
+    "text": ". How many simultaneous users do you expect to leverage the application?",
+    "type": "bool",
+    "options": null,
+    "required": true,
+    "rationale": "Extracted from AI Analyst - Use Case Questionnaire TEMPLATE v02.docx.md",
+    "tracks": [
+      "genai_rag"
+    ]
+  },
+  {
+    "id": "q_ai_analyst_-_use_case_questionnaire_template_v02.docx_15",
+    "text": ". We recommend OpenAI or Anthropic LLMs to power the application. Do you have API keys that you could provide for one or both LLMs?",
+    "type": "bool",
+    "options": null,
+    "required": true,
+    "rationale": "Extracted from AI Analyst - Use Case Questionnaire TEMPLATE v02.docx.md",
+    "tracks": [
+      "nlp",
+      "infrastructure",
+      "genai_rag"
+    ]
+  },
+  {
+    "id": "q_ai_analyst_-_use_case_questionnaire_template_v02.docx_16",
+    "text": ". What level of ongoing support and maintenance do you anticipate?",
+    "type": "bool",
+    "options": null,
+    "required": true,
+    "rationale": "Extracted from AI Analyst - Use Case Questionnaire TEMPLATE v02.docx.md",
+    "tracks": [
+      "classic_ml"
+    ]
+  },
+  {
+    "id": "q_ai_analyst_-_use_case_questionnaire_template_v02.docx_17",
+    "text": ". What approvals are required before deploying a GenAI solution to production? What other security risks should we be aware of?",
+    "type": "free_text",
+    "options": null,
+    "required": true,
+    "rationale": "Extracted from AI Analyst - Use Case Questionnaire TEMPLATE v02.docx.md",
+    "tracks": [
+      "genai_rag"
+    ]
+  },
+  {
+    "id": "q_custom_application_-_use_case_questionnaire_template_v01.docx_1",
+    "text": ". Business Overview & Problem Definition",
+    "type": "free_text",
+    "options": null,
+    "required": true,
+    "rationale": "Extracted from Custom Application - Use Case Questionnaire TEMPLATE v01.docx.md",
+    "tracks": [
+      "classic_ml"
+    ]
+  },
+  {
+    "id": "q_custom_application_-_use_case_questionnaire_template_v01.docx_2",
+    "text": "1 Business problem description",
+    "type": "free_text",
+    "options": null,
+    "required": true,
+    "rationale": "Extracted from Custom Application - Use Case Questionnaire TEMPLATE v01.docx.md",
+    "tracks": [
+      "classic_ml"
+    ]
+  },
+  {
+    "id": "q_custom_application_-_use_case_questionnaire_template_v01.docx_3",
+    "text": "2. Stakeholders and roles",
+    "type": "free_text",
+    "options": null,
+    "required": true,
+    "rationale": "Extracted from Custom Application - Use Case Questionnaire TEMPLATE v01.docx.md",
+    "tracks": [
+      "classic_ml"
+    ]
+  },
+  {
+    "id": "q_custom_application_-_use_case_questionnaire_template_v01.docx_4",
+    "text": "3. Who is the executive sponsor?",
+    "type": "free_text",
+    "options": null,
+    "required": true,
+    "rationale": "Extracted from Custom Application - Use Case Questionnaire TEMPLATE v01.docx.md",
+    "tracks": [
+      "classic_ml"
+    ]
+  },
+  {
+    "id": "q_custom_application_-_use_case_questionnaire_template_v01.docx_5",
+    "text": "4 Is there a current solution of this problem?\u000bAt what stage (ideation/research/development/integration/production/sunsetting)? \u000bAny issues exist in the current process?",
+    "type": "bool",
+    "options": null,
+    "required": true,
+    "rationale": "Extracted from Custom Application - Use Case Questionnaire TEMPLATE v01.docx.md",
+    "tracks": [
+      "classic_ml"
+    ]
+  },
+  {
+    "id": "q_custom_application_-_use_case_questionnaire_template_v01.docx_6",
+    "text": "5 What is the end goal business outcome?",
+    "type": "free_text",
+    "options": null,
+    "required": true,
+    "rationale": "Extracted from Custom Application - Use Case Questionnaire TEMPLATE v01.docx.md",
+    "tracks": [
+      "classic_ml"
+    ]
+  },
+  {
+    "id": "q_custom_application_-_use_case_questionnaire_template_v01.docx_7",
+    "text": "6 Who are the **primary users** of the application? How many? What is the anticipated usage workload?",
+    "type": "single_select",
+    "options": [],
+    "required": true,
+    "rationale": "Extracted from Custom Application - Use Case Questionnaire TEMPLATE v01.docx.md",
+    "tracks": [
+      "classic_ml"
+    ]
+  },
+  {
+    "id": "q_custom_application_-_use_case_questionnaire_template_v01.docx_8",
+    "text": ". Success Definition",
+    "type": "free_text",
+    "options": null,
+    "required": true,
+    "rationale": "Extracted from Custom Application - Use Case Questionnaire TEMPLATE v01.docx.md",
+    "tracks": [
+      "classic_ml"
+    ]
+  },
+  {
+    "id": "q_custom_application_-_use_case_questionnaire_template_v01.docx_9",
+    "text": "1. How do you define “success” for this application? E.g., impact on business process – automation, cost savings, efficiency/productivity gains E.g., usability –: adoption rate, user engagement, ease of use E.g., reproducibility –  ability to update, re-use in future projects E.g. monitoring and/or governance - Ability to monitor the solution and govern the process and outcomes Scalability, security, functional completeness",
+    "type": "bool",
+    "options": null,
+    "required": true,
+    "rationale": "Extracted from Custom Application - Use Case Questionnaire TEMPLATE v01.docx.md",
+    "tracks": [
+      "classic_ml"
+    ]
+  },
+  {
+    "id": "q_custom_application_-_use_case_questionnaire_template_v01.docx_10",
+    "text": "2 What preliminary estimates do you have for delivering potential value - *quantitative benefits? E.g., $100k cost savings, $1M revenue generation, decrease in time/FTE to complete a task by 50%*",
+    "type": "bool",
+    "options": null,
+    "required": true,
+    "rationale": "Extracted from Custom Application - Use Case Questionnaire TEMPLATE v01.docx.md",
+    "tracks": [
+      "classic_ml"
+    ]
+  },
+  {
+    "id": "q_custom_application_-_use_case_questionnaire_template_v01.docx_11",
+    "text": "3 What are the expected *qualitative benefits? E.g. Transformative process improvement*",
+    "type": "single_select",
+    "options": [],
+    "required": true,
+    "rationale": "Extracted from Custom Application - Use Case Questionnaire TEMPLATE v01.docx.md",
+    "tracks": [
+      "classic_ml"
+    ]
+  },
+  {
+    "id": "q_custom_application_-_use_case_questionnaire_template_v01.docx_12",
+    "text": "4. When do you expect the chatbot to be deployed and start delivering value? What is the expected timeline to measure the value?",
+    "type": "bool",
+    "options": null,
+    "required": true,
+    "rationale": "Extracted from Custom Application - Use Case Questionnaire TEMPLATE v01.docx.md",
+    "tracks": [
+      "nlp",
+      "genai_rag"
+    ]
+  },
+  {
+    "id": "q_custom_application_-_use_case_questionnaire_template_v01.docx_13",
+    "text": ". What, if any, additional functionality/appearance customization will have to be added to the existing application template?",
+    "type": "free_text",
+    "options": null,
+    "required": true,
+    "rationale": "Extracted from Custom Application - Use Case Questionnaire TEMPLATE v01.docx.md",
+    "tracks": [
+      "classic_ml"
+    ]
+  },
+  {
+    "id": "q_custom_application_-_use_case_questionnaire_template_v01.docx_14",
+    "text": ". What UI/UX framework is required to deliver the application? Streamlit, React, or ported to another application or site? Plans for Teams bot? Expected timeline for each?",
+    "type": "single_select",
+    "options": [],
+    "required": true,
+    "rationale": "Extracted from Custom Application - Use Case Questionnaire TEMPLATE v01.docx.md",
+    "tracks": [
+      "classic_ml"
+    ]
+  },
+  {
+    "id": "q_custom_application_-_use_case_questionnaire_template_v01.docx_15",
+    "text": ". What file formats are required for retrieval?",
+    "type": "single_select",
+    "options": [],
+    "required": true,
+    "rationale": "Extracted from Custom Application - Use Case Questionnaire TEMPLATE v01.docx.md",
+    "tracks": [
+      "genai_rag"
+    ]
+  },
+  {
+    "id": "q_custom_application_-_use_case_questionnaire_template_v01.docx_16",
+    "text": ". If database connectivity is required, can you provide a service account of some kind to connect? What is the authentication method? Basic username and password or do we need a token, oath, or something else?",
+    "type": "bool",
+    "options": null,
+    "required": true,
+    "rationale": "Extracted from Custom Application - Use Case Questionnaire TEMPLATE v01.docx.md",
+    "tracks": [
+      "infrastructure"
+    ]
+  },
+  {
+    "id": "q_custom_application_-_use_case_questionnaire_template_v01.docx_17",
+    "text": ". Will each application user require access to unique docs? How is authentication to that data handled today?",
+    "type": "bool",
+    "options": null,
+    "required": true,
+    "rationale": "Extracted from Custom Application - Use Case Questionnaire TEMPLATE v01.docx.md",
+    "tracks": [
+      "classic_ml"
+    ]
+  },
+  {
+    "id": "q_custom_application_-_use_case_questionnaire_template_v01.docx_18",
+    "text": ". Are there any specific regulatory compliance requirements that must be met (e.g GDPR, CCPA for data privacy)?",
+    "type": "bool",
+    "options": null,
+    "required": true,
+    "rationale": "Extracted from Custom Application - Use Case Questionnaire TEMPLATE v01.docx.md",
+    "tracks": [
+      "classic_ml"
+    ]
+  },
+  {
+    "id": "q_custom_application_-_use_case_questionnaire_template_v01.docx_19",
+    "text": ". How large is the entire source doc collection that  the application will be using? What’s the frequency for updates/additions? i.e. # of existing Articulate sites, frequency of new courses being added, and similarly for each file format required",
+    "type": "bool",
+    "options": null,
+    "required": true,
+    "rationale": "Extracted from Custom Application - Use Case Questionnaire TEMPLATE v01.docx.md",
+    "tracks": [
+      "classic_ml"
+    ]
+  },
+  {
+    "id": "q_custom_application_-_use_case_questionnaire_template_v01.docx_20",
+    "text": ". How many simultaneous users do you expect to leverage the application?",
+    "type": "bool",
+    "options": null,
+    "required": true,
+    "rationale": "Extracted from Custom Application - Use Case Questionnaire TEMPLATE v01.docx.md",
+    "tracks": [
+      "genai_rag"
+    ]
+  },
+  {
+    "id": "q_custom_application_-_use_case_questionnaire_template_v01.docx_21",
+    "text": ". We recommend OpenAI or Anthropic LLMs to power the application. Do you have API keys that you could provide for one or both LLMs?",
+    "type": "bool",
+    "options": null,
+    "required": true,
+    "rationale": "Extracted from Custom Application - Use Case Questionnaire TEMPLATE v01.docx.md",
+    "tracks": [
+      "nlp",
+      "infrastructure",
+      "genai_rag"
+    ]
+  },
+  {
+    "id": "q_custom_application_-_use_case_questionnaire_template_v01.docx_22",
+    "text": ". What level of ongoing support and maintenance do you anticipate?",
+    "type": "bool",
+    "options": null,
+    "required": true,
+    "rationale": "Extracted from Custom Application - Use Case Questionnaire TEMPLATE v01.docx.md",
+    "tracks": [
+      "classic_ml"
+    ]
+  },
+  {
+    "id": "q_custom_application_-_use_case_questionnaire_template_v01.docx_23",
+    "text": ". What approvals are required before deploying a GenAI solution to production? What other security risks should we be aware of?",
+    "type": "free_text",
+    "options": null,
+    "required": true,
+    "rationale": "Extracted from Custom Application - Use Case Questionnaire TEMPLATE v01.docx.md",
+    "tracks": [
+      "genai_rag"
+    ]
   }
 ]
-
