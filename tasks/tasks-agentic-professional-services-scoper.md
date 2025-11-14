@@ -297,43 +297,43 @@ Update the file after completing each sub-task, not just after completing an ent
   - [ ] 3.4.9 Test agent locally using `task architecture_agent:cli -- execute --user_prompt "Sample questionnaire final"`
   - [x] 3.4.10 Create unit tests in `architecture_agent/tests/test_agent.py`
 
-- [ ] 4.0 Implement state machine orchestrator (in scoper_shared)
-  - [ ] 4.1 Create `scoper_shared/orchestrator.py` file
-  - [ ] 4.2 Define state enum: `INGEST`, `ANALYZE`, `ROUTE`, `KB_FETCH`, `Q_DRAFT`, `Q_CLARIFY`, `Q_FREEZE`, `PLAN_ARCH`, `DONE`
-  - [ ] 4.3 Implement `Orchestrator` class with state management
-  - [ ] 4.4 Add OpenTelemetry tracing setup: import `opentelemetry.trace`, create tracer, ensure OpenTelemetry instrumentation is available
-  - [ ] 4.5 Implement `INGEST` state handler that receives and validates `UseCaseInput` with tracing: create span "orchestrator.ingest", set attributes for input validation, add event when validation completes
-  - [ ] 4.6 Implement `ANALYZE` state handler that calls Requirement Analyzer Agent (import from requirement_analyzer_agent) with tracing: create span "orchestrator.analyze", set attributes for agent call, add nested span for agent execution, add event when analysis completes
-  - [ ] 4.7 Implement `ROUTE` state handler that calls Domain Router utility (from scoper_shared.utils) with tracing: create span "orchestrator.route", set attributes for selected tracks, add event when routing completes
-  - [ ] 4.8 Implement `KB_FETCH` state handler that calls KB Retriever utility (from scoper_shared.utils) with tracing: create span "orchestrator.kb_fetch", set attributes for KB retrieval, add nested span for KB operations, add event when KB fetch completes
-  - [ ] 4.9 Implement `Q_DRAFT` state handler that calls Questionnaire Agent (import from questionnaire_agent) with tracing: create span "orchestrator.q_draft", set attributes for agent call, add nested span for agent execution, add event when draft completes
-  - [ ] 4.10 Implement `Q_CLARIFY` state handler that manages bounded loop with Clarifier Agent (≤K questions, import from clarifier_agent) with tracing: create span "orchestrator.q_clarify", set attributes for clarification loop, add nested spans for each question iteration, set attributes for questions asked, answers received, add event when clarification loop completes
-  - [ ] 4.11 Implement `Q_FREEZE` gate condition: proceed only if ≥80% answered OR coverage ≥0.8 with tracing: create span "orchestrator.q_freeze", set attributes for answered_pct, coverage_estimate, gate decision, add event when gate evaluation completes
-  - [ ] 4.12 Implement `PLAN_ARCH` state handler that calls Architecture Agent with RAG context (import from architecture_agent) with tracing: create span "orchestrator.plan_arch", set attributes for agent call, RAG context size, add nested span for agent execution, add event when architecture generation completes
-  - [ ] 4.13 Implement `DONE` state handler that returns both artifacts (QuestionnaireFinal and ArchitecturePlan) with tracing: create span "orchestrator.done", set attributes for final artifacts, add event when workflow completes
-  - [ ] 4.14 Add top-level workflow tracing: create main span "scoper_workflow" that encompasses entire workflow, with nested spans for each state transition
-  - [ ] 4.15 Add error handling and retry logic for each state transition with tracing: set error attributes on spans, add error events
-  - [ ] 4.16 Add schema validation before each state transition (import from scoper_shared.schemas) with tracing: add validation spans with attributes for validation results
-  - [ ] 4.17 Create unit tests for orchestrator state transitions in `scoper_shared/tests/test_orchestrator.py`
+- [x] 4.0 Implement state machine orchestrator (in scoper_shared)
+  - [x] 4.1 Create `scoper_shared/orchestrator.py` file
+  - [x] 4.2 Define state enum: `INGEST`, `ANALYZE`, `ROUTE`, `KB_FETCH`, `Q_DRAFT`, `Q_CLARIFY`, `Q_FREEZE`, `PLAN_ARCH`, `DONE`
+  - [x] 4.3 Implement `Orchestrator` class with state management
+  - [x] 4.4 Add OpenTelemetry tracing setup: import `opentelemetry.trace`, create tracer, ensure OpenTelemetry instrumentation is available
+  - [x] 4.5 Implement `INGEST` state handler that receives and validates `UseCaseInput` with tracing: create span "orchestrator.ingest", set attributes for input validation, add event when validation completes
+  - [x] 4.6 Implement `ANALYZE` state handler that calls Requirement Analyzer Agent (import from requirement_analyzer_agent) with tracing: create span "orchestrator.analyze", set attributes for agent call, add nested span for agent execution, add event when analysis completes
+  - [x] 4.7 Implement `ROUTE` state handler that calls Domain Router utility (from scoper_shared.utils) with tracing: create span "orchestrator.route", set attributes for selected tracks, add event when routing completes
+  - [x] 4.8 Implement `KB_FETCH` state handler that calls KB Retriever utility (from scoper_shared.utils) with tracing: create span "orchestrator.kb_fetch", set attributes for KB retrieval, add nested span for KB operations, add event when KB fetch completes
+  - [x] 4.9 Implement `Q_DRAFT` state handler that calls Questionnaire Agent (import from questionnaire_agent) with tracing: create span "orchestrator.q_draft", set attributes for agent call, add nested span for agent execution, add event when draft completes
+  - [x] 4.10 Implement `Q_CLARIFY` state handler that manages bounded loop with Clarifier Agent (≤K questions, import from clarifier_agent) with tracing: create span "orchestrator.q_clarify", set attributes for clarification loop, add nested spans for each question iteration, set attributes for questions asked, answers received, add event when clarification loop completes
+  - [x] 4.11 Implement `Q_FREEZE` gate condition: proceed only if ≥80% answered OR coverage ≥0.8 with tracing: create span "orchestrator.q_freeze", set attributes for answered_pct, coverage_estimate, gate decision, add event when gate evaluation completes
+  - [x] 4.12 Implement `PLAN_ARCH` state handler that calls Architecture Agent with RAG context (import from architecture_agent) with tracing: create span "orchestrator.plan_arch", set attributes for agent call, RAG context size, add nested span for agent execution, add event when architecture generation completes
+  - [x] 4.13 Implement `DONE` state handler that returns both artifacts (QuestionnaireFinal and ArchitecturePlan) with tracing: create span "orchestrator.done", set attributes for final artifacts, add event when workflow completes
+  - [x] 4.14 Add top-level workflow tracing: create main span "scoper_workflow" that encompasses entire workflow, with nested spans for each state transition
+  - [x] 4.15 Add error handling and retry logic for each state transition with tracing: set error attributes on spans, add error events
+  - [x] 4.16 Add schema validation before each state transition (import from scoper_shared.schemas) with tracing: add validation spans with attributes for validation results
+  - [x] 4.17 Create unit tests for orchestrator state transitions in `scoper_shared/tests/test_orchestrator.py`
 
-- [ ] 5.0 Integrate agent with web API and frontend
-  - [ ] 5.1 Create a main orchestrator entry point (could be in scoper_shared or a separate orchestrator service)
-  - [ ] 5.2 The orchestrator will coordinate calls to all 4 agents (requirement_analyzer_agent, questionnaire_agent, clarifier_agent, architecture_agent)
-  - [ ] 5.3 Create `web/app/api/v1/scoper.py` FastAPI router
-  - [ ] 5.4 Implement `POST /api/v1/scoper/start` endpoint that accepts `UseCaseInput` and initiates workflow
-  - [ ] 5.5 Implement `GET /api/v1/scoper/{workflow_id}/state` endpoint to get current workflow state
-  - [ ] 5.6 Implement `POST /api/v1/scoper/{workflow_id}/clarify` endpoint to submit clarification answers
-  - [ ] 5.7 Implement `GET /api/v1/scoper/{workflow_id}/results` endpoint to retrieve final artifacts
-  - [ ] 5.8 Add workflow state persistence (store in database or session)
-  - [ ] 5.9 Create `frontend_web/src/api/scoper/` directory and API client functions
-  - [ ] 5.10 Implement `startScoping()`, `getWorkflowState()`, `submitClarification()`, `getResults()` API functions
-  - [ ] 5.11 Create `frontend_web/src/pages/Scoper.tsx` main page component
-  - [ ] 5.12 Create `frontend_web/src/components/ScoperWorkflow.tsx` to display workflow state and progress
-  - [ ] 5.13 Create `frontend_web/src/components/ClarificationQuestion.tsx` for displaying and answering questions one at a time
-  - [ ] 5.14 Create `frontend_web/src/components/QuestionnaireView.tsx` to display final questionnaire as structured Q&As
-  - [ ] 5.15 Create `frontend_web/src/components/ArchitecturePlanView.tsx` to render architecture plan markdown
-  - [ ] 5.16 Add download buttons for Questionnaire (JSON) and ArchitecturePlan (Markdown)
-  - [ ] 5.17 Add route configuration in `frontend_web/src/routesConfig.tsx` for `/scoper` path
+- [x] 5.0 Integrate agent with web API and frontend
+  - [x] 5.1 Create a main orchestrator entry point (could be in scoper_shared or a separate orchestrator service)
+  - [x] 5.2 The orchestrator will coordinate calls to all 4 agents (requirement_analyzer_agent, questionnaire_agent, clarifier_agent, architecture_agent)
+  - [x] 5.3 Create `web/app/api/v1/scoper.py` FastAPI router
+  - [x] 5.4 Implement `POST /api/v1/scoper/start` endpoint that accepts `UseCaseInput` and initiates workflow
+  - [x] 5.5 Implement `GET /api/v1/scoper/{workflow_id}/state` endpoint to get current workflow state
+  - [x] 5.6 Implement `POST /api/v1/scoper/{workflow_id}/clarify` endpoint to submit clarification answers
+  - [x] 5.7 Implement `GET /api/v1/scoper/{workflow_id}/results` endpoint to retrieve final artifacts
+  - [x] 5.8 Add workflow state persistence (store in database or session)
+  - [x] 5.9 Create `frontend_web/src/api/scoper/` directory and API client functions
+  - [x] 5.10 Implement `startScoping()`, `getWorkflowState()`, `submitClarification()`, `getResults()` API functions
+  - [x] 5.11 Create `frontend_web/src/pages/Scoper.tsx` main page component
+  - [x] 5.12 Create `frontend_web/src/components/ScoperWorkflow.tsx` to display workflow state and progress
+  - [x] 5.13 Create `frontend_web/src/components/ClarificationQuestion.tsx` for displaying and answering questions one at a time
+  - [x] 5.14 Create `frontend_web/src/components/QuestionnaireView.tsx` to display final questionnaire as structured Q&As
+  - [x] 5.15 Create `frontend_web/src/components/ArchitecturePlanView.tsx` to render architecture plan markdown
+  - [x] 5.16 Add download buttons for Questionnaire (JSON) and ArchitecturePlan (Markdown)
+  - [x] 5.17 Add route configuration in `frontend_web/src/routesConfig.tsx` for `/scoper` path
   - [ ] 5.18 Create integration tests for API endpoints in `web/tests/integration/test_scoper.py`
   - [ ] 5.19 Create `infra/infra/requirement_analyzer_agent.py` for Pulumi deployment (based on `infra/infra/writer_agent.py`)
   - [ ] 5.20 Create `infra/infra/questionnaire_agent.py` for Pulumi deployment

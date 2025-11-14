@@ -13,6 +13,7 @@ dependencies = [
     "asyncpg>=0.30.0",
     "chainlit>=2.8.3",
     "core",
+    "scoper_shared",
     "datarobot-asgi-middleware>=0.2.0",
     "datarobot[auth-authlib,core]>=3.9.1",
     "fastapi[standard]>=0.115.11",
@@ -43,6 +44,7 @@ dev = [
 
 [tool.uv.sources]
 core = { path = "core", editable = true }
+scoper_shared = { path = "../scoper_shared", editable = true }
 
 [build-system]
 requires = ["hatchling>=1.18.0"]

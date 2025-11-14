@@ -1,10 +1,10 @@
 <p align="center">
-  <a href="https://github.com/datarobot-community/datarobot-agent-application">
+  <a href="https://github.com/carolinesfer/solutions_sizing_app">
     <img src="./.github/datarobot_logo.avif" width="600px" alt="DataRobot Logo"/>
   </a>
 </p>
 <p align="center">
-    <span style="font-size: 1.5em; font-weight: bold; display: block;">DataRobot Agentic Workflow Application Template</span>
+    <span style="font-size: 1.5em; font-weight: bold; display: block;">Agentic Professional Services Scoper</span>
 </p>
 
 <p align="center">
@@ -16,282 +16,397 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/datarobot-community/datarobot-agent-application/tags">
-    <img src="https://img.shields.io/github/v/tag/datarobot-community/datarobot-agent-application?label=version" alt="Latest Release">
+  <a href="https://github.com/carolinesfer/solutions_sizing_app">
+    <img src="https://img.shields.io/github/v/tag/carolinesfer/solutions_sizing_app?label=version" alt="Latest Release">
   </a>
-  <a href="/LICENSE">
-    <img src="https://img.shields.io/github/license/datarobot-community/datarobot-agent-application" alt="License">
+  <a href="/LICENSE.txt">
+    <img src="https://img.shields.io/github/license/carolinesfer/solutions_sizing_app" alt="License">
   </a>
 </p>
 
-This repository provides a ready-to-use application template for building and deploying agentic workflows with
-multi-agent frameworks, a fastapi backend server, a react frontend, and an MCP server. The template
-streamlines the process of setting up new workflows with minimal configuration requirements.
-They support local development and testing, as well as one-command deployments to production environments
-within DataRobot.
+## 📖 Overview
 
-```diff
--IMPORTANT: This repository updates frequently. Make sure to update your
--local branch regularly to obtain the latest changes.
+The **Agentic Professional Services Scoper** is an AI-powered system that standardizes and accelerates the Professional Services scoping process. It consumes initial customer requirements and rapidly generates high-quality, DataRobot-contextualized solution designs and questionnaires.
+
+This application is built on the [DataRobot Agentic Workflow Application template](https://github.com/datarobot-community/datarobot-agent-application) and implements a **4-agent pipeline** using **pydantic-ai** to extract requirements, generate tailored questionnaires, conduct clarification loops, and produce solution architecture plans.
+
+### ✨ Key Features
+
+- **Multi-Agent Architecture**: Four specialized agents working in sequence to scope Professional Services engagements
+- **Structured Data Contracts**: Pydantic schemas ensure type safety and validation throughout the workflow
+- **Knowledge Base Integration**: Master Questionnaires and Platform Guides provide domain-specific context
+- **OpenTelemetry Tracing**: Comprehensive observability for debugging and monitoring
+- **DataRobot Platform Integration**: Built for deployment and management within DataRobot's ecosystem
+- **FastAPI Backend**: RESTful API for workflow orchestration
+- **React Frontend**: Modern TypeScript UI for user interaction
+
+---
+
+## 🗂️ Repository Structure
+
+```
+solutions_sizing_app/
+├── requirement_analyzer_agent/    # Agent 1: Extracts facts and gaps from user input
+├── questionnaire_agent/           # Agent 2: Generates tailored questionnaires
+├── clarifier_agent/               # Agent 3: Conducts clarification loop (up to K=5 questions)
+├── architecture_agent/            # Agent 4: Generates solution architecture plans
+├── scoper_shared/                 # Shared components (schemas, utilities, KB content)
+│   ├── schemas.py                 # Pydantic data models
+│   ├── orchestrator.py            # State machine orchestrator (to be implemented)
+│   ├── utils/                     # Domain Router, KB Retriever, RAG System
+│   ├── kb_content/                # Master Questionnaires and Platform Guides
+│   └── tests/                     # Unit tests for shared components
+├── writer_agent/                  # Example agent template (LangGraph-based)
+├── web/                           # FastAPI backend server
+├── frontend_web/                  # React frontend with TypeScript
+├── mcp_server/                     # MCP server for tool integration
+├── infra/                         # Pulumi Infrastructure as Code
+└── tasks/                         # Project documentation (PRD, EDD, task list)
 ```
 
 ---
 
-# Table of contents
+## 🚀 Quick Start
 
-- [Installation](#installation)
-- [Run your agent](#run-your-agent)
-- [Develop your agent](#develop-your-agent)
-- [Deploy your agent](#deploy-your-agent)
-- [Get help](#get-help)
+### Prerequisites
 
-
-# Installation
-
-```diff
--IMPORTANT: This repository is only compatible with macOS and Linux operating systems.
-```
-
-> If you are using Windows, consider using a [DataRobot codespace](https://docs.datarobot.com/en/docs/workbench/wb-notebook/codespaces/index.html), Windows Subsystem for Linux (WSL), or a virtual machine running a supported OS.
-
-## Prerequisite tools
-
-Ensure you have the following tools installed and on your system at the required version (or newer).
-It is **recommended to install the tools system-wide** rather than in a virtual environment to ensure they are available in your terminal session.
-
-The following tools are required to install and run the agent application template.
-For detailed installation instructions, see [Installation instructions](https://docs.datarobot.com/en/docs/agentic-ai/agentic-develop/agentic-install.html#installation-instructions) in the DataRobot documentation.
+Ensure you have the following tools installed:
 
 | Tool         | Version    | Description                     | Installation guide            |
 |--------------|------------|---------------------------------|-------------------------------|
 | **dr-cli**   | >= 0.1.8   | The DataRobot CLI.              | [dr-cli installation guide](https://github.com/datarobot-oss/cli?tab=readme-ov-file#installation) |
 | **git**      | >= 2.30.0  | A version control system.       | [git installation guide](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) |
-| **uv**       | >= 0.6.10  | A Python package manager.       | [uv installation guide](https://docs.astral.sh/uv/getting-started/installation/)     |
+| **uv**       | >= 0.7.0   | A Python package manager.       | [uv installation guide](https://docs.astral.sh/uv/getting-started/installation/)     |
 | **Pulumi**   | >= 3.163.0 | An Infrastructure as Code tool. | [Pulumi installation guide](https://www.pulumi.com/docs/iac/download-install/)        |
 | **Taskfile** | >= 3.43.3  | A task runner.                  | [Taskfile installation guide](https://taskfile.dev/docs/installation)                 |
 | **NodeJS**   | >= 24      | JavaScript runtime for frontend development. | [NodeJS installation guide](https://nodejs.org/en/download/)                |
 
-> **IMPORTANT**: You will also need a compatible C++ compiler and build tools installed on your system to compile some Python packages.
+> **IMPORTANT**: This repository is only compatible with macOS and Linux operating systems. For Windows, consider using a [DataRobot codespace](https://docs.datarobot.com/en/docs/workbench/wb-notebook/codespaces/index.html), Windows Subsystem for Linux (WSL), or a virtual machine.
 
-### Development Container (experimental)
+### Installation
 
-[devcontainers](https://containers.dev/) allows using a container environment for local development experience. It is integrated with
-[modern IDEs, such as VSCode and PyCharm](https://containers.dev/supporting), and [Dev Container CLI](https://containers.dev/supporting#devcontainer-cli) allows you to integrate it with Terminal-centric development experience.
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/carolinesfer/solutions_sizing_app.git
+   cd solutions_sizing_app
+   ```
 
-> This can also be used as a solution for Windows development.
+2. **Prepare the application:**
+   ```bash
+   task start
+   ```
+   This interactive wizard will guide you through configuration options.
 
-```diff
--[Docker Desktop](https://docs.docker.com/desktop/) is the recomended backend for running devcontainers, but any docker-compatible backend is supported.
-```
+3. **Install dependencies for all agents:**
+   ```bash
+   task requirement_analyzer_agent:install
+   task questionnaire_agent:install
+   task clarifier_agent:install
+   task architecture_agent:install
+   ```
 
-This template offers a devcontainer with all pre-requisites installed. To start working in it, simply open the template in PyCharm (version >= 2023.2, Pro) or VSCode, and IDE will prompt you to re-open in a container:
+---
 
-![Open in Dev Container PyCharm](docs/img/pycharm-devcontainer.png)
+## 🏗️ Architecture
 
-![Open in Dev Container VSCode](docs/img/vscode-devcontainer.png)
+### Agent Pipeline
 
+The system implements a **4-agent sequential pipeline**:
 
-If you work directly in the terminal, do:
+1. **Requirement Analyzer Agent** (`requirement_analyzer_agent/`)
+   - **Input**: `UseCaseInput` (paragraph, transcript, use_case_title)
+   - **Output**: `FactExtractionModel` (requirements, gaps, domain keywords)
+   - **Purpose**: Extracts facts and identifies informational gaps from raw user input
 
-```shell
-devcontainer up --workspace-folder .
-devcontainer exec --workspace-folder . /bin/sh
-```
+2. **Questionnaire Agent** (`questionnaire_agent/`)
+   - **Input**: `FactExtractionModel` + Master Questions (from KB)
+   - **Output**: `QuestionnaireDraft` (selected questions + delta questions for gaps)
+   - **Purpose**: Generates tailored questionnaires by selecting relevant questions and creating new ones for gaps
 
-## Prepare application
+3. **Clarifier Agent** (`clarifier_agent/`)
+   - **Input**: `QuestionnaireDraft` + Current Answers
+   - **Output**: `QuestionnaireFinal` (compiled Q&A pairs)
+   - **Purpose**: Conducts bounded clarification loop (up to K=5 questions) to fill high-impact gaps
 
-As the last step, do `task start` to prepare you local development environment. An interactive wizard will guide you though selection of
-configuration options
+4. **Architecture Agent** (`architecture_agent/`)
+   - **Input**: `QuestionnaireFinal` + RAG Context (Platform Guides)
+   - **Output**: `ArchitecturePlan` (10-16 steps) + Markdown string
+   - **Purpose**: Generates step-by-step solution architecture plans grounded in DataRobot best practices
 
-<details>
+### Shared Components (`scoper_shared/`)
 
-<summary>☂️ Configuration options explained</summary>
+- **Schemas** (`schemas.py`): Pydantic data models for all agent inputs/outputs
+- **Domain Router** (`utils/domain_router.py`): Routes use cases to domain tracks (time_series, nlp, cv, genai_rag, classic_ml)
+- **KB Retriever** (`utils/kb_retriever.py`): Fetches Master Questionnaires and Platform Guides
+- **RAG System** (`utils/rag_system.py`): Vector search for Platform Guides (to be implemented in task 6.0)
+- **Orchestrator** (`orchestrator.py`): State machine managing workflow execution (to be implemented in task 4.0)
+- **Knowledge Base** (`kb_content/`): Master Questionnaires (JSON) and Platform Guides (Markdown)
 
-## LLM configuration
+### Technology Stack
 
-Agentic Application supports multiple flexible LLM options including:
+- **Agent Framework**: `pydantic-ai` (all 4 agents)
+- **Backend**: FastAPI with AG-UI protocol support
+- **Frontend**: React with TypeScript
+- **Infrastructure**: Pulumi for DataRobot deployment
+- **Observability**: OpenTelemetry for distributed tracing
+- **Data Validation**: Pydantic v2 with strict type checking
 
-- LLM Blueprint with LLM Gateway (default)
-- LLM Blueprint with an External LLM
-- Already Deployed Text Generation model in DataRobot
+---
 
-### LLM Configuration Recommended Option
+## 🛠️ Usage
 
-You can edit the LLM configuration by manually changing which configuration is active.
-Simply run:
+### Local Development
 
-```sh
-ln -sf ../configurations/<chosen_configuration> infra/infra/llm.py
-```
-
-After doing so, you'll likely want to edit the llm.py to have the correct model selected. Particularly
-for non-LLM Gateway options.
-
-### LLM Configuration Alternative Option
-
-If you want to do it dynamically, you can set it as a configuration value with:
-
-```sh
-INFRA_ENABLE_LLM=<chosen_configuration>
-```
-
-from the list of options in the `infra/configurations/llm` folder.
-
-Here are some examples of each configuration using the dynamic option described above:
-
-#### LLM Blueprint with LLM Gateway (default)
-
-Default option is LLM Gateway if not specified in your `.env` file.
-
-```sh
-INFRA_ENABLE_LLM=blueprint_with_llm_gateway.py
-```
-
-#### Existing LLM Deployment in DataRobot
-
-Uncomment and configure these in your `.env` file:
-
-```sh
-TEXTGEN_DEPLOYMENT_ID=<your_deployment_id>
-INFRA_ENABLE_LLM=deployed_llm.py
-```
-
-#### External LLM Provider
-
-Configure an LLM with an external LLM provider like Azure, Bedrock, Anthropic, or VertexAI. Here's an Azure AI example:
-
-```sh
-INFRA_ENABLE_LLM=blueprint_with_external_llm.py
-LLM_DEFAULT_MODEL="azure/gpt-4o"
-OPENAI_API_VERSION='2024-08-01-preview'
-OPENAI_API_BASE='https://<your_custom_endpoint>.openai.azure.com'
-OPENAI_API_DEPLOYMENT_ID='<your deployment_id>'
-OPENAI_API_KEY='<your_api_key>'
-```
-
-See the [DataRobot documentation](https://docs.datarobot.com/en/docs/gen-ai/playground-tools/deploy-llm.html) for details on other providers.
-
-In addition to the changes for the `.env` file, you can also edit the respective llm.py file to make additional changes
-such as the default LLM, temperature, top_p, etc within the chosen configuration
-
-
-## OAuth Applications
-
-The template can work with files stored in Google Drive and Box.
-In order to give it access to those files, you need to configure OAuth Applications.
-
-### Google OAuth Application
-
-- Go to [Google API Console](https://console.developers.google.com/) from your Google account
-- Navigate to "APIs & Services" > "Enabled APIs & services" > "Enable APIs and services" search for Drive, and add it.
-- Navigate to "APIs & Services" > "OAuth consent screen" and make sure you have your consent screen configured. You may have both "External" and "Internal" audience types.
-- Navigate to "APIs & Services" > "Credentials" and click on the "Create Credentials" button. Select "OAuth client ID".
-- Select "Web application" as Application type, fill in "Name" & "Authorized redirect URIs" fields. For example, for local development, the redirect URL will be:
-  - `http://localhost:5173/oauth/callback` - local vite dev server (used by frontend folks)
-  - `http://localhost:8080/oauth/callback` - web-proxied frontend
-  - `http://localhost:8080/api/v1/oauth/callback/` - the local web API (optional).
-  - For production, you'll want to add your DataRobot callback URL. For example, in US Prod it is `https://app.datarobot.com/custom_applications/{appId}/oauth/callback`. For any installation of DataRobot it is `https://<datarobot-endpoint>/custom_applications/{appId}/oauth/callback`.
-- Hit the "Create" button when you are done.
-- Copy the "Client ID" and "Client Secret" values from the created OAuth client ID and set them in the template env variables as `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` correspondingly.
-- Make sure you have the "Google Drive API" enabled in the "APIs & Services" > "Library" section. Otherwise, you will get 403 errors.
-- Finally, go to "APIs & Services" > "OAuth consent screen" > "Data Access" and make sure you have the following scopes selected:
-  - `openid`
-  - `https://www.googleapis.com/auth/userinfo.email`
-  - `https://www.googleapis.com/auth/userinfo.profile`
-  - `https://www.googleapis.com/auth/drive.readonly`
-
-### Box OAuth Application
-
-- Head to [Box Developer Console](https://app.box.com/developers/console) from your Box account
-- Create a new platform application, then select "Custom App" type
-- Fill in "Application Name" and select "Purpose" (e.g. "Integration"). Then, fill in three more info fields. The actual selection doesn't matter.
-- Select "User Authentication (OAuth 2.0)" as Authentication Method and click on the "Create App" button
-- In the "OAuth 2.0 Redirect URIs" section, please fill in callback URLs you want to use.
-  - `http://localhost:5173/oauth/callback` - local vite dev server (used by frontend folks)
-  - `http://localhost:8080/oauth/callback` - web-proxied frontend
-  - `http://localhost:8080/api/v1/oauth/callback/` - the local web API (optional).
-  - For production, you'll want to add your DataRobot callback URL. For example, in US Prod it is `https://app.datarobot.com/custom_applications/{appId}/oauth/callback`.
-- Hit "Save Changes" after that.
-- Under the "Application Scopes", please make sure you have both `Read all files and folders stored in Box` and "Write all files and folders store in Box" checkboxes selected. We need both because we need to "write" to the log that we've downloaded the selected files.
-- Finally, under the "OAuth 2.0 Credentials" section, you should be able to find your Client ID and Client Secret pair to setup in the template env variables as `BOX_CLIENT_ID` and `BOX_CLIENT_SECRET` correspondingly.
-
-After you've set those in your project `.env` file, on the next Pulumi Up, we'll create OAuth
-providers in your DataRobot installation. To view and manage those and verify they are working
-navigate to `<your_datarobot_url>/account/oauth-providers` or in US production: https://app.datarobot.com/account/oauth-providers.
-
-Additionally, the Pulumi output variables get used to populate those providers for your Codespace and
-local development environment as well.
-
-</details>
-
-
-# Run your agent
-
-## Option 1: autoreload for backend, static frontend
+#### Option 1: Full Application (Backend + Frontend + Agents)
 
 Build the frontend:
-```shell
+```bash
 task frontend_web:build
 ```
 
-Start the application:
-
-```shell
+Start the backend:
+```bash
 task web:dev
 ```
 
-Start the writer agent:
-
-```shell
-task writer_agent:dev
+Start all agents (in separate terminals):
+```bash
+task requirement_analyzer_agent:dev
+task questionnaire_agent:dev
+task clarifier_agent:dev
+task architecture_agent:dev
 ```
 
-And go to http://localhost:8080.
+Access the application at http://localhost:8080
 
-## Option 2: autoreload for all components
+#### Option 2: Individual Agent Testing
 
-Instead of `task frontend_web:build` do `task frontend_web:dev`, and go to http://localhost:5173/
+Test each agent independently using the CLI:
 
-## Option 3 (experimental): just agent playground
-
-If you want to test just the agent without application you can do:
-
-```shell
-
-task writer_agent:dev
+**Requirement Analyzer Agent:**
+```bash
+task requirement_analyzer_agent:cli -- execute --user_prompt '{"paragraph": "We need to predict customer churn using historical data", "use_case_title": "Customer Churn Prediction"}'
 ```
 
-then:
-```shell
-task writer_agent:chainlit
+**Questionnaire Agent:**
+```bash
+task questionnaire_agent:cli -- execute --user_prompt '{"use_case_title": "Customer Churn", "technical_confidence_score": 0.85, "key_extracted_requirements": ["Predict churn"], "domain_keywords": ["classic_ml"], "identified_gaps": []}'
 ```
 
-This will start a separate frontend application just for your local agent at http://localhost:8083/.
+**Clarifier Agent:**
+```bash
+task clarifier_agent:cli -- execute --user_prompt '{"questions": [...], "selected_from_master_ids": [...], "delta_questions": [], "coverage_estimate": 0.75}'
+```
 
-# Develop your agent
+**Architecture Agent:**
+```bash
+task architecture_agent:cli -- execute --user_prompt '{"qas": [{"id": "q1", "answer": "Database"}], "answered_pct": 0.9, "gaps": []}'
+```
 
-Once setup is complete, you are ready customize your agent, allowing you to add your own logic and functionality to the agent.
-See the following documentation for more details:
+#### Option 3: Agent Playground (Chainlit)
 
-- [Customize your agent](https://docs.datarobot.com/en/docs/agentic-ai/agentic-develop/agentic-development.html)
-- [Add tools to your agent](https://docs.datarobot.com/en/docs/agentic-ai/agentic-develop/agentic-tools-integrate.html)
-- [Configure LLM providers](https://docs.datarobot.com/en/docs/agentic-ai/agentic-develop/agentic-llm-providers.html)
-- [Use the agent CLI](https://docs.datarobot.com/en/docs/agentic-ai/agentic-develop/agentic-cli-guide.html)
-- [Add Python requirements](https://docs.datarobot.com/en/docs/agentic-ai/agentic-develop/agentic-python-packages.html)
+For interactive testing of individual agents:
 
-# Deploy your agent
+```bash
+task requirement_analyzer_agent:dev
+task requirement_analyzer_agent:chainlit
+```
 
-After you tested your agent locally, just run
+Access at http://localhost:8083/
 
-```shell
+### Build and Deploy
+
+**Build agents for LLM Playground testing:**
+```bash
+task requirement_analyzer_agent:build
+task questionnaire_agent:build
+task clarifier_agent:build
+task architecture_agent:build
+```
+
+**Deploy all agents to DataRobot:**
+```bash
+task requirement_analyzer_agent:deploy
+task questionnaire_agent:deploy
+task clarifier_agent:deploy
+task architecture_agent:deploy
+```
+
+**Test deployed agents:**
+```bash
+task requirement_analyzer_agent:cli -- execute-deployment --user_prompt "..." --deployment_id <deployment_id>
+```
+
+---
+
+## 📦 Key Components
+
+### Agents
+
+Each agent follows the DataRobot Agentic Workflow Application template structure:
+
+- `custom_model/agent.py` - Main agent implementation using pydantic-ai
+- `custom_model/custom.py` - DataRobot integration hooks (`load_model`, `chat`)
+- `custom_model/config.py` - Agent configuration and environment variables
+- `custom_model/helpers.py` - Utility functions and response formatting
+- `custom_model/model-metadata.yaml` - Agent metadata and runtime parameters
+- `cli.py` - Command-line interface for testing
+- `dev.py` - Development server entry point
+- `README.md` - Agent-specific documentation
+
+### Shared Components
+
+- **`scoper_shared/schemas.py`**: All Pydantic data models
+  - `UseCaseInput`, `FactExtractionModel`, `Question`, `QuestionnaireDraft`, `QuestionnaireFinal`, `ArchitectureStep`, `ArchitecturePlan`
+
+- **`scoper_shared/utils/domain_router.py`**: Routes use cases to domain tracks based on keywords
+
+- **`scoper_shared/utils/kb_retriever.py`**: Fetches Master Questionnaires and Platform Guides
+
+- **`scoper_shared/kb_content/`**: Knowledge Base content
+  - `master_questionnaire.json`: Canonical questions organized by domain tracks
+  - `platform_guides/`: Internal DataRobot documentation (Markdown)
+
+---
+
+## 🔧 Configuration
+
+### LLM Configuration
+
+The application supports multiple LLM configuration options. See the [original template documentation](#prepare-application) for details on:
+- LLM Blueprint with LLM Gateway (default)
+- LLM Blueprint with External LLM
+- Already Deployed Text Generation model in DataRobot
+
+### Environment Variables
+
+Each agent can be configured via environment variables or `.env` file:
+
+- `LLM_DEFAULT_MODEL`: Default model to use (e.g., `"datarobot/azure/gpt-4o-mini"`)
+- `LLM_DEPLOYMENT_ID`: DataRobot deployment ID (if using deployed model)
+- `USE_DATAROBOT_LLM_GATEWAY`: Enable DataRobot LLM Gateway
+- `<AGENT>_AGENT_ENDPOINT`: Agent endpoint URL (e.g., `REQUIREMENT_ANALYZER_AGENT_ENDPOINT`)
+
+---
+
+## ✅ Requirements
+
+- Python 3.10+ (tested up to 3.12)
+- Node.js 24+
+- DataRobot account with appropriate permissions
+- OpenAI API key (or DataRobot LLM Gateway configuration)
+
+---
+
+## 📄 Documentation
+
+- **[Product Requirements Document (PRD)](./tasks/Solutions-Agent-PRD-gdrive.md)**: Business requirements and success metrics
+- **[Engineering Design Document (EDD)](./tasks/Solutions-Agent-Unified-EDD-gdrive.md)**: Technical architecture and implementation details
+- **[Task List](./tasks/tasks-agentic-professional-services-scoper.md)**: Detailed implementation checklist
+- **[Agent Development Guidelines](./AGENTS.md)**: Coding standards and best practices
+- **[DataRobot Agent Development Docs](https://docs.datarobot.com/en/docs/agentic-ai/agentic-develop/agentic-development.html)**: Official DataRobot documentation
+- **[OpenTelemetry Tracing Docs](https://docs.datarobot.com/en/docs/agentic-ai/agentic-develop/agentic-tracing.html)**: Observability and tracing
+
+### Agent-Specific Documentation
+
+- [Requirement Analyzer Agent](./requirement_analyzer_agent/README.md)
+- [Questionnaire Agent](./questionnaire_agent/README.md)
+- [Clarifier Agent](./clarifier_agent/README.md)
+- [Architecture Agent](./architecture_agent/README.md)
+
+---
+
+## 🧪 Testing
+
+Run unit tests for each component:
+
+```bash
+# Test shared components
+cd scoper_shared && pytest
+
+# Test individual agents
+task requirement_analyzer_agent:test
+task questionnaire_agent:test
+task clarifier_agent:test
+task architecture_agent:test
+```
+
+---
+
+## 🚢 Deployment
+
+Deploy all components to DataRobot:
+
+```bash
+# Deploy all agents
 task deploy
+
+# Or deploy individually
+task requirement_analyzer_agent:deploy
+task questionnaire_agent:deploy
+task clarifier_agent:deploy
+task architecture_agent:deploy
 ```
 
-to deploy it to DataRobot.
+The deployment process uses Pulumi to:
+- Create DataRobot Custom Model deployments
+- Configure execution environments
+- Set up runtime parameters
+- Register agents in the Model Registry
 
-# Get help
+---
 
-If you encounter issues or have questions, try the following:
+## 🔍 Observability
 
-- [Contact DataRobot](https://docs.datarobot.com/en/docs/get-started/troubleshooting/general-help.html) for support.
-- Open an issue on the [GitHub repository](https://github.com/datarobot-community/datarobot-agent-application).
+All agents include **OpenTelemetry tracing** for:
+- Agent execution flow
+- LLM API calls
+- Utility function execution (Domain Router, KB Retriever)
+- State transitions (when orchestrator is implemented)
+- Input/output attributes
+- Error tracking
+
+Traces can be viewed in DataRobot's monitoring dashboard or exported to external observability platforms.
+
+---
+
+## 🤝 Contributing
+
+This project follows DataRobot's coding standards and best practices. See [AGENTS.md](./AGENTS.md) for detailed guidelines.
+
+Key principles:
+- **Type Safety**: All functions must have type annotations
+- **Documentation**: Google-style docstrings for all public APIs
+- **Testing**: Aim for 90%+ test coverage
+- **Code Quality**: Ruff for linting and formatting
+- **DataRobot Integration**: All components designed for DataRobot platform deployment
+
+---
+
+## 📝 Changelog
+
+See [CHANGELOG.md](./CHANGELOG.md) for version history and changes.
+
+---
+
+## ❤️ Acknowledgements
+
+- Built on the [DataRobot Agentic Workflow Application template](https://github.com/datarobot-community/datarobot-agent-application)
+- Uses [pydantic-ai](https://github.com/pydantic/pydantic-ai) for agent framework
+- Powered by [DataRobot](https://datarobot.com) platform
+
+---
+
+## 📞 Get Help
+
+If you encounter issues or have questions:
+
+- [Contact DataRobot Support](https://docs.datarobot.com/en/docs/get-started/troubleshooting/general-help.html)
+- Open an issue on the [GitHub repository](https://github.com/carolinesfer/solutions_sizing_app)
+- Review the [task list](./tasks/tasks-agentic-professional-services-scoper.md) for implementation status
+
+---
+
+## 📜 License
+
+This project is licensed under the Apache License 2.0 - see [LICENSE.txt](./LICENSE.txt) for details.

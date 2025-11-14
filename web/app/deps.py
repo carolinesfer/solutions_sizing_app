@@ -31,6 +31,7 @@ from app.messages import MessageRepository
 from app.users.identity import IdentityRepository
 from app.users.tokens import Tokens
 from app.users.user import UserRepository
+from app.workflows import WorkflowRepository
 
 logger = logging.getLogger(__name__)
 
@@ -46,6 +47,7 @@ class Deps:
     message_repo: MessageRepository
     tokens: Tokens
     user_repo: UserRepository
+    workflow_repo: WorkflowRepository
     stream_manager: AGUIStreamManager[UUID]
 
 
@@ -109,6 +111,7 @@ async def create_deps(
 
     chat_repo = ChatRepository(db)
     message_repo = MessageRepository(db)
+    workflow_repo = WorkflowRepository(db)
 
     stream_manager = create_stream_manager(
         name="agent",
@@ -127,6 +130,7 @@ async def create_deps(
         auth=oauth,
         tokens=Tokens(oauth, identity_repo),
         db=db,
+        workflow_repo=workflow_repo,
         stream_manager=stream_manager,
     )
 
