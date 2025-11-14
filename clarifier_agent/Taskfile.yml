@@ -176,19 +176,19 @@ tasks:
     silent: true
   build:
     desc: 🏗️ [clarifier_agent] Build agent for LLM Playground testing (creates CustomModel and Playground via Pulumi)
+    dir: ../infra
     cmds:
       - echo 'Building clarifier_agent for LLM Playground testing'
       - echo 'This will create the CustomModel and Playground via Pulumi'
       - echo 'Note - This builds all agents. To build only this agent, use Pulumi targeting directly.'
-      - cd ../infra
       - AGENT_DEPLOY=0 uv run pulumi up --yes
       - echo '✅ Agent built! Check Pulumi outputs for Playground URL'
   deploy:
     desc: 🚀 [clarifier_agent] Deploy agent for production use (creates Deployment via Pulumi)
+    dir: ../infra
     cmds:
       - echo 'Deploying clarifier_agent for production'
       - echo 'This will create the Deployment via Pulumi'
       - echo 'Note - This deploys all agents. To deploy only this agent, use Pulumi targeting directly.'
-      - cd ../infra
       - AGENT_DEPLOY=1 uv run pulumi up --yes
       - echo '✅ Agent deployed! Check Pulumi outputs for Deployment ID'

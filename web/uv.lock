@@ -1034,7 +1034,7 @@ name = "exceptiongroup"
 version = "1.3.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "typing-extensions", marker = "python_full_version < '3.13'" },
+    { name = "typing-extensions", marker = "python_full_version < '3.11'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/0b/9f/a65090624ecf468cdca03533906e7c69ed7588582240cfe7cc9e770b50eb/exceptiongroup-1.3.0.tar.gz", hash = "sha256:b241f5885f560bc56a59ee63ca4c6a8bfa46ae4ad651af316d4e81817bb9fd88", size = 29749, upload-time = "2025-05-10T17:42:51.123Z" }
 wheels = [
@@ -4532,6 +4532,40 @@ wheels = [
 ]
 
 [[package]]
+name = "scoper-shared"
+version = "0.1.0"
+source = { editable = "../scoper_shared" }
+dependencies = [
+    { name = "opentelemetry-api" },
+    { name = "opentelemetry-sdk" },
+    { name = "pydantic" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "chromadb", marker = "extra == 'rag'", specifier = ">=0.4.0" },
+    { name = "faiss-cpu", marker = "extra == 'rag'", specifier = ">=1.7.4" },
+    { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.15.0" },
+    { name = "opentelemetry-api", specifier = ">=1.33.0,<2.0.0" },
+    { name = "opentelemetry-sdk", specifier = ">=1.33.0" },
+    { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=4.2.0" },
+    { name = "pydantic", specifier = ">=2.6.1" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = ">=7.4.0" },
+    { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=1.2.0" },
+    { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=6.1.1" },
+    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.12.0" },
+    { name = "sentence-transformers", marker = "extra == 'rag'", specifier = ">=2.2.0" },
+]
+provides-extras = ["dev", "rag"]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "pytest", specifier = ">=9.0.1" },
+    { name = "pytest-asyncio", specifier = ">=1.3.0" },
+]
+extras = []
+
+[[package]]
 name = "sentry-sdk"
 version = "2.43.0"
 source = { registry = "https://pypi.org/simple" }
@@ -5175,6 +5209,7 @@ dependencies = [
     { name = "pydantic-settings" },
     { name = "python-dotenv" },
     { name = "ruff" },
+    { name = "scoper-shared" },
     { name = "sqlmodel" },
     { name = "uvicorn" },
 ]
@@ -5224,6 +5259,7 @@ requires-dist = [
     { name = "python-dotenv", specifier = ">=1.0.1" },
     { name = "respx", marker = "extra == 'dev'", specifier = ">=0.22.0" },
     { name = "ruff", specifier = ">=0.3.0" },
+    { name = "scoper-shared", editable = "../scoper_shared" },
     { name = "sqlmodel", specifier = ">=0.0.24" },
     { name = "uvicorn", specifier = ">=0.22.0" },
 ]

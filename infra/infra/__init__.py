@@ -29,10 +29,25 @@ project_dir = Path(__file__).parent.parent
 if use_case_id := os.environ.get("DATAROBOT_DEFAULT_USE_CASE"):
     pulumi.info(f"Using existing use case '{use_case_id}'")
 
-    use_case = datarobot.UseCase.get(
-        id=use_case_id,
-        resource_name="Agentic Writer [PRE-EXISTING]",
-    )
+    # Try to get by ID first (if it looks like an ID - UUID format or alphanumeric)
+    # DataRobot Use Case IDs are typically 24-character alphanumeric strings
+    import re
+    # Check if it looks like a DataRobot ID (24+ chars, alphanumeric, no spaces)
+    looks_like_id = bool(re.match(r'^[a-zA-Z0-9]{20,}$', use_case_id.strip()))
+    
+    if looks_like_id:
+        # Try to get existing Use Case by ID
+        use_case = datarobot.UseCase.get(
+            id=use_case_id.strip(),
+            resource_name="Agentic Writer [PRE-EXISTING]",
+        )
+    else:
+        # It's a name, not an ID - create a new Use Case with that name
+        pulumi.info(f"'{use_case_id}' appears to be a name, not an ID. Creating new Use Case with this name.")
+        use_case = datarobot.UseCase(
+            resource_name=use_case_id.strip(),  # Use the provided name
+            description="""This application is a template for Generative AI agentic solutions""",
+        )
 else:
     use_case = datarobot.UseCase(
         resource_name=f"Agentic Writer [{PROJECT_NAME}]",

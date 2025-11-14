@@ -31,7 +31,7 @@ def build_frontend() -> command.local.Command:
 
     build_react_app = command.local.Command(
         f"Agentic Writer [{PROJECT_NAME}] Build Frontend",
-        create=f"cd {frontend_dir} && npm install && npm run build",
+        create=f'cd "{frontend_dir}" && npm install && npm run build',
         triggers=[str(time.time())],  # This will cause rebuild every time
         opts=pulumi.ResourceOptions(
             # This resource should be created first
