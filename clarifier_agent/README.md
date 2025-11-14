@@ -96,6 +96,6 @@ The agent includes OpenTelemetry tracing to monitor:
 
 - [DataRobot Agent Development Documentation](https://docs.datarobot.com/en/docs/agentic-ai/agentic-develop/agentic-development.html)
 - [DataRobot OpenTelemetry Tracing Documentation](https://docs.datarobot.com/en/docs/agentic-ai/agentic-develop/agentic-tracing.html)
-- [Agentic Professional Services Scoper PRD](../tasks/Solutions-Agent-PRD-gdrive.md)
-- [Agentic Professional Services Scoper EDD](../tasks/Solutions-Agent-Unified-EDD-gdrive.md)
+- [Agentic Professional Services Scoper PRD](../tasks/Solutions-Agent-PRD.md)
+- [Agentic Professional Services Scoper EDD](../tasks/Solutions-Agent-Unified-EDD.md)
 

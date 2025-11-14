@@ -263,7 +263,7 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 3.5 Import schemas from `scoper_shared.schemas`
   - [x] 3.6 Update `requirement_analyzer_agent/custom_model/custom.py` to implement DataRobot integration hooks (`load_model`, `chat`) for agent execution (OpenTelemetry instrumentation is already included in template)
   - [x] 3.7 Update `requirement_analyzer_agent/custom_model/helpers.py` if needed for utility functions, response formatting, and tool client
-  - [ ] 3.8 Test agent locally using `task requirement_analyzer_agent:cli -- execute --user_prompt "Sample use case description"`
+  - [x] 3.8 Test agent locally using `task requirement_analyzer_agent:cli -- execute --user_prompt "Sample use case description"` - **Completed via `test_agents.sh` (line 24)**
   - [x] 3.9 Create unit tests in `requirement_analyzer_agent/tests/test_agent.py`
 
 - [x] 3.2 Implement Questionnaire Agent
@@ -276,7 +276,7 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 3.2.6 Import schemas from `scoper_shared.schemas` and utils from `scoper_shared.utils`
   - [x] 3.2.7 Update `questionnaire_agent/custom_model/custom.py` to implement DataRobot integration hooks (`load_model`, `chat`) for agent execution (OpenTelemetry instrumentation is already included in template)
   - [x] 3.2.8 Update `questionnaire_agent/custom_model/helpers.py` if needed for utility functions, response formatting, and tool client
-  - [ ] 3.2.9 Test agent locally using `task questionnaire_agent:cli -- execute --user_prompt "Sample fact extraction model"`
+  - [x] 3.2.9 Test agent locally using `task questionnaire_agent:cli -- execute --user_prompt "Sample fact extraction model"` - **Completed via `test_agents.sh` (line 33)**
   - [x] 3.2.10 Create unit tests in `questionnaire_agent/tests/test_agent.py`
 
 - [x] 3.3 Implement Clarifier Agent
@@ -289,7 +289,7 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 3.3.7 Import schemas from `scoper_shared.schemas`
   - [x] 3.3.8 Update `clarifier_agent/custom_model/custom.py` to implement DataRobot integration hooks (`load_model`, `chat`) for agent execution (OpenTelemetry instrumentation is already included in template)
   - [x] 3.3.9 Update `clarifier_agent/custom_model/helpers.py` if needed for utility functions, response formatting, and tool client
-  - [ ] 3.3.10 Test agent locally using `task clarifier_agent:cli -- execute --user_prompt "Sample questionnaire draft"`
+  - [x] 3.3.10 Test agent locally using `task clarifier_agent:cli -- execute --user_prompt "Sample questionnaire draft"` - **Completed via `test_agents.sh` (line 42)**
   - [x] 3.3.11 Create unit tests in `clarifier_agent/tests/test_agent.py`
 
 - [x] 3.4 Implement Architecture Agent
@@ -302,7 +302,7 @@ Update the file after completing each sub-task, not just after completing an ent
   - [ ] 3.4.6.1 **Note**: Platform Guides for RAG will be sourced from reference documents in `/Users/caroline.sieger/Google Drive/My Drive/Solutions Scoping & Sizing Agent/Dev Work/knowledge base docs/platform_guides/` (see task 7.5-7.7)
   - [x] 3.4.7 Update `architecture_agent/custom_model/custom.py` to implement DataRobot integration hooks (`load_model`, `chat`) for agent execution (OpenTelemetry instrumentation is already included in template)
   - [x] 3.4.8 Update `architecture_agent/custom_model/helpers.py` if needed for utility functions, response formatting, and tool client
-  - [ ] 3.4.9 Test agent locally using `task architecture_agent:cli -- execute --user_prompt "Sample questionnaire final"`
+  - [x] 3.4.9 Test agent locally using `task architecture_agent:cli -- execute --user_prompt "Sample questionnaire final"` - **Completed via `test_agents.sh` (line 51)**
   - [x] 3.4.10 Create unit tests in `architecture_agent/tests/test_agent.py`
 
 - [x] 4.0 Implement state machine orchestrator (in scoper_shared)
@@ -352,9 +352,9 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 5.25 Create `infra/feature_flags/clarifier_agent.yaml` for feature flag configuration
   - [x] 5.26 Create `infra/feature_flags/architecture_agent.yaml` for feature flag configuration
   - [x] 5.27 Update root `Taskfile.yml` to include all agent tasks if needed
-  - [ ] 5.28 Build each agent for testing in DataRobot LLM Playground using `task requirement_analyzer_agent:build`, `task questionnaire_agent:build`, `task clarifier_agent:build`, `task architecture_agent:build`
-  - [ ] 5.29 Deploy each agent for production use using `task requirement_analyzer_agent:deploy`, `task questionnaire_agent:deploy`, `task clarifier_agent:deploy`, `task architecture_agent:deploy`
-  - [ ] 5.30 Test deployed agents using `task requirement_analyzer_agent:cli -- execute-deployment --user_prompt "..."` (and similar for other agents)
+  - [ ] 5.28 Build each agent for testing in DataRobot LLM Playground using `task requirement_analyzer_agent:build`, `task questionnaire_agent:build`, `task clarifier_agent:build`, `task architecture_agent:build` - **Note**: Requires actual Pulumi deployment infrastructure; cannot be completed with test files alone
+  - [ ] 5.29 Deploy each agent for production use using `task requirement_analyzer_agent:deploy`, `task questionnaire_agent:deploy`, `task clarifier_agent:deploy`, `task architecture_agent:deploy` - **Note**: Requires actual Pulumi deployment infrastructure; cannot be completed with test files alone
+  - [ ] 5.30 Test deployed agents using `task requirement_analyzer_agent:cli -- execute-deployment --user_prompt "..."` (and similar for other agents) - **Note**: Requires actual deployed agents; cannot be completed with test files alone
   - [x] 5.31 Create `infra/infra/web_app.py` for Pulumi deployment of FastAPI backend as DataRobot Custom Application (based on existing Custom Application deployment patterns in `infra/`) - Updated `infra/infra/web.py` to include scoper agent runtime parameters
   - [ ] 5.32 Configure DataRobot Custom Application deployment settings for the FastAPI backend (runtime environment, dependencies, environment variables)
   - [ ] 5.33 Deploy FastAPI backend as DataRobot Custom Application using Pulumi: `pulumi up` from `infra/` directory

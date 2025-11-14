@@ -85,7 +85,7 @@ The agent uses the following system prompt:
 ## Knowledge Base Integration
 
 The agent uses `scoper_shared.utils.kb_retriever` to:
-- Fetch Master Questionnaire from `scoper_shared/kb_content/master_questionnaire.json`
+- Fetch Master Questionnaire from `scoper_shared/src/scoper_shared/kb_content/master_questionnaire.json`
 - Filter questions based on domain tracks and extracted facts
 
 ## OpenTelemetry Tracing
@@ -102,6 +102,6 @@ The agent includes OpenTelemetry tracing to monitor:
 
 - [DataRobot Agent Development Documentation](https://docs.datarobot.com/en/docs/agentic-ai/agentic-develop/agentic-development.html)
 - [DataRobot OpenTelemetry Tracing Documentation](https://docs.datarobot.com/en/docs/agentic-ai/agentic-develop/agentic-tracing.html)
-- [Agentic Professional Services Scoper PRD](../tasks/Solutions-Agent-PRD-gdrive.md)
-- [Agentic Professional Services Scoper EDD](../tasks/Solutions-Agent-Unified-EDD-gdrive.md)
+- [Agentic Professional Services Scoper PRD](../tasks/Solutions-Agent-PRD.md)
+- [Agentic Professional Services Scoper EDD](../tasks/Solutions-Agent-Unified-EDD.md)
 

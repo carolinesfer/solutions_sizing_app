@@ -51,17 +51,25 @@ solutions_sizing_app/
 ├── clarifier_agent/               # Agent 3: Conducts clarification loop (up to K=5 questions)
 ├── architecture_agent/            # Agent 4: Generates solution architecture plans
 ├── scoper_shared/                 # Shared components (schemas, utilities, KB content)
-│   ├── schemas.py                 # Pydantic data models
-│   ├── orchestrator.py            # State machine orchestrator managing workflow execution
-│   ├── utils/                     # Domain Router, KB Retriever, RAG System (to be implemented)
-│   ├── kb_content/                # Master Questionnaires and Platform Guides
+│   ├── src/scoper_shared/        # Package source code (src/ layout)
+│   │   ├── schemas.py            # Pydantic data models
+│   │   ├── orchestrator.py       # State machine orchestrator managing workflow execution
+│   │   ├── utils/                # Domain Router, KB Retriever, RAG System (to be implemented)
+│   │   │   ├── domain_router.py  # Routes use cases to domain tracks
+│   │   │   └── kb_retriever.py   # Fetches Master Questionnaires and Platform Guides
+│   │   └── kb_content/           # Master Questionnaires and Platform Guides
+│   │       └── master_questionnaire.json
 │   └── tests/                     # Unit tests for shared components
 ├── writer_agent/                  # Example agent template (LangGraph-based)
 ├── web/                           # FastAPI backend server
 ├── frontend_web/                  # React frontend with TypeScript
 ├── mcp_server/                     # MCP server for tool integration
 ├── infra/                         # Pulumi Infrastructure as Code
-└── tasks/                         # Project documentation (PRD, EDD, task list)
+├── tasks/                         # Project documentation (PRD, EDD, task list)
+├── test_agents.sh                # Quick CLI test script for all agents
+├── test_all_agents.py             # Comprehensive Python test script for full workflow
+├── TESTING.md                     # Complete testing guide and documentation
+└── TEST_FILES_EXPLANATION.md     # Explanation of testing file consolidation
 ```
 
 ---
@@ -135,12 +143,14 @@ The system implements a **4-agent sequential pipeline**:
 
 ### Shared Components (`scoper_shared/`)
 
-- **Schemas** (`schemas.py`): Pydantic data models for all agent inputs/outputs
-- **Domain Router** (`utils/domain_router.py`): Routes use cases to domain tracks (time_series, nlp, cv, genai_rag, classic_ml)
-- **KB Retriever** (`utils/kb_retriever.py`): Fetches Master Questionnaires and Platform Guides
-- **RAG System** (`utils/rag_system.py`): Vector search for Platform Guides using DataRobot's managed Vector Database (to be implemented in task 6.0)
-- **Orchestrator** (`orchestrator.py`): State machine managing workflow execution with 9 states (INGEST → ANALYZE → ROUTE → KB_FETCH → Q_DRAFT → Q_CLARIFY → Q_FREEZE → PLAN_ARCH → DONE)
-- **Knowledge Base** (`kb_content/`): Master Questionnaires (JSON) and Platform Guides (Markdown)
+The `scoper_shared` package uses a `src/` layout for proper Python packaging:
+
+- **Schemas** (`src/scoper_shared/schemas.py`): Pydantic data models for all agent inputs/outputs
+- **Domain Router** (`src/scoper_shared/utils/domain_router.py`): Routes use cases to domain tracks (time_series, nlp, cv, genai_rag, classic_ml)
+- **KB Retriever** (`src/scoper_shared/utils/kb_retriever.py`): Fetches Master Questionnaires and Platform Guides
+- **RAG System** (`src/scoper_shared/utils/rag_system.py`): Vector search for Platform Guides using DataRobot's managed Vector Database (to be implemented in task 6.0)
+- **Orchestrator** (`src/scoper_shared/orchestrator.py`): State machine managing workflow execution with 9 states (INGEST → ANALYZE → ROUTE → KB_FETCH → Q_DRAFT → Q_CLARIFY → Q_FREEZE → PLAN_ARCH → DONE)
+- **Knowledge Base** (`src/scoper_shared/kb_content/`): Master Questionnaires (JSON) and Platform Guides (Markdown)
 
 ### Technology Stack
 
@@ -199,7 +209,17 @@ task architecture_agent:dev
 
 #### Option 3: Individual Agent Testing
 
-Test each agent independently using the CLI:
+**Quick Test All Agents (Recommended):**
+```bash
+# Automated Python script - tests all 4 agents in sequence
+cd requirement_analyzer_agent
+PYTHONPATH=.. uv run python ../test_all_agents.py
+
+# Or use the shell script for quick CLI tests
+./test_agents.sh
+```
+
+**Test Individual Agents via CLI:**
 
 **Requirement Analyzer Agent:**
 ```bash
@@ -220,6 +240,8 @@ task clarifier_agent:cli -- execute --user_prompt '{"questions": [...], "selecte
 ```bash
 task architecture_agent:cli -- execute --user_prompt '{"qas": [{"id": "q1", "answer": "Database"}], "answered_pct": 0.9, "gaps": []}'
 ```
+
+See [TESTING.md](./TESTING.md) for comprehensive testing documentation.
 
 #### Option 4: Agent Playground (Chainlit)
 
@@ -317,21 +339,23 @@ Each agent follows the DataRobot Agentic Workflow Application template structure
 
 ### Shared Components
 
-- **`scoper_shared/schemas.py`**: All Pydantic data models
+The `scoper_shared` package uses a `src/` layout for proper Python packaging:
+
+- **`scoper_shared/src/scoper_shared/schemas.py`**: All Pydantic data models
   - `UseCaseInput`, `FactExtractionModel`, `Question`, `QuestionnaireDraft`, `QuestionnaireFinal`, `ArchitectureStep`, `ArchitecturePlan`
 
-- **`scoper_shared/orchestrator.py`**: State machine orchestrator managing the complete workflow
+- **`scoper_shared/src/scoper_shared/orchestrator.py`**: State machine orchestrator managing the complete workflow
   - 9 workflow states: INGEST → ANALYZE → ROUTE → KB_FETCH → Q_DRAFT → Q_CLARIFY → Q_FREEZE → PLAN_ARCH → DONE
   - State persistence and recovery
   - Gate conditions (e.g., ≥80% answered or coverage ≥0.8)
 
-- **`scoper_shared/utils/domain_router.py`**: Routes use cases to domain tracks based on keywords
+- **`scoper_shared/src/scoper_shared/utils/domain_router.py`**: Routes use cases to domain tracks based on keywords
 
-- **`scoper_shared/utils/kb_retriever.py`**: Fetches Master Questionnaires and Platform Guides
+- **`scoper_shared/src/scoper_shared/utils/kb_retriever.py`**: Fetches Master Questionnaires and Platform Guides
 
-- **`scoper_shared/kb_content/`**: Knowledge Base content
+- **`scoper_shared/src/scoper_shared/kb_content/`**: Knowledge Base content
   - `master_questionnaire.json`: Canonical questions organized by domain tracks
-  - `platform_guides/`: Internal DataRobot documentation (Markdown)
+  - `platform_guides/`: Internal DataRobot documentation (Markdown) - to be organized by track subdirectories
 
 ### Web API
 
@@ -360,18 +384,40 @@ Each agent follows the DataRobot Agentic Workflow Application template structure
 
 ### LLM Configuration
 
-The application supports multiple LLM configuration options. See the [original template documentation](#prepare-application) for details on:
-- LLM Blueprint with LLM Gateway (default)
-- LLM Blueprint with External LLM
-- Already Deployed Text Generation model in DataRobot
+The application supports multiple LLM configuration options with **automatic detection**:
+
+**Option 1: DataRobot LLM Gateway (Recommended - Auto-detected)**
+```bash
+# Set in .env file
+DATAROBOT_API_TOKEN=your-datarobot-api-token
+DATAROBOT_ENDPOINT=https://app.datarobot.com/api/v2
+INFRA_ENABLE_LLM=gateway_direct.py
+```
+
+When `INFRA_ENABLE_LLM=gateway_direct.py` is set, agents automatically use DataRobot LLM Gateway. No need to explicitly set `USE_DATAROBOT_LLM_GATEWAY=1`.
+
+**Option 2: Direct OpenAI**
+```bash
+# Set in .env file
+OPENAI_API_KEY=your-openai-api-key
+# Unset or remove INFRA_ENABLE_LLM
+```
+
+**Option 3: Already Deployed Text Generation model in DataRobot**
+```bash
+LLM_DEPLOYMENT_ID=your-deployment-id
+```
 
 ### Environment Variables
 
 Each agent can be configured via environment variables or `.env` file:
 
-- `LLM_DEFAULT_MODEL`: Default model to use (e.g., `"datarobot/azure/gpt-4o-mini"`)
+- `LLM_DEFAULT_MODEL`: Default model to use (e.g., `"azure/gpt-4o-mini"` for LLM Gateway)
 - `LLM_DEPLOYMENT_ID`: DataRobot deployment ID (if using deployed model)
-- `USE_DATAROBOT_LLM_GATEWAY`: Enable DataRobot LLM Gateway
+- `USE_DATAROBOT_LLM_GATEWAY`: Explicitly enable DataRobot LLM Gateway (auto-detected from `INFRA_ENABLE_LLM`)
+- `INFRA_ENABLE_LLM`: Infrastructure LLM configuration (set to `gateway_direct.py` for auto-detection)
+- `DATAROBOT_API_TOKEN`: DataRobot API token (required for LLM Gateway)
+- `DATAROBOT_ENDPOINT`: DataRobot API endpoint (required for LLM Gateway)
 - `<AGENT>_AGENT_ENDPOINT`: Agent endpoint URL (e.g., `REQUIREMENT_ANALYZER_AGENT_ENDPOINT`)
 
 ---
@@ -390,9 +436,11 @@ Each agent can be configured via environment variables or `.env` file:
 - **[Product Requirements Document (PRD)](./tasks/Solutions-Agent-PRD.md)**: Business requirements and success metrics
 - **[Engineering Design Document (EDD)](./tasks/Solutions-Agent-Unified-EDD.md)**: Technical architecture and implementation details
 - **[Task List](./tasks/tasks-agentic-professional-services-scoper.md)**: Detailed implementation checklist and progress tracking
+- **[Testing Guide](./TESTING.md)**: Comprehensive testing documentation and methods
 - **[Agent Development Guidelines](./AGENTS.md)**: Coding standards and best practices
 - **[Evaluation Guide](./EVALUATION.md)**: Pydantic Evals evaluation framework usage
 - **[DataRobot Agent Development Docs](https://docs.datarobot.com/en/docs/agentic-ai/agentic-develop/agentic-development.html)**: Official DataRobot documentation
+- **[DataRobot LLM Gateway Docs](https://docs.datarobot.com/en/docs/gen-ai/genai-code/dr-llm-gateway.html)**: LLM Gateway usage and configuration
 - **[OpenTelemetry Tracing Docs](https://docs.datarobot.com/en/docs/agentic-ai/agentic-develop/agentic-tracing.html)**: Observability and tracing
 - **[Pydantic Evals Docs](https://ai.pydantic.dev/evals/)**: Evaluation framework documentation
 
@@ -407,13 +455,27 @@ Each agent can be configured via environment variables or `.env` file:
 
 ## 🧪 Testing
 
+See **[TESTING.md](./TESTING.md)** for comprehensive testing documentation and guides.
+
+### Quick Start Testing
+
+**Test all 4 agents in sequence:**
+```bash
+# Automated Python script (recommended)
+cd requirement_analyzer_agent
+PYTHONPATH=.. uv run python ../test_all_agents.py
+
+# Or quick CLI tests
+./test_agents.sh
+```
+
 ### Unit Tests
 
 Run unit tests for each component:
 
 ```bash
-# Test shared components
-cd scoper_shared && pytest
+# Test shared components (from repository root)
+cd scoper_shared && PYTHONPATH=.. uv run pytest tests/
 
 # Test individual agents
 task requirement_analyzer_agent:test
@@ -431,16 +493,16 @@ All agents use [Pydantic Evals](https://ai.pydantic.dev/evals/) for systematic e
 
 ```bash
 # Requirement Analyzer Agent
-cd requirement_analyzer_agent && python tests/test_evals.py
+cd requirement_analyzer_agent && uv run python tests/test_evals.py
 
 # Questionnaire Agent
-cd questionnaire_agent && python tests/test_evals.py
+cd questionnaire_agent && uv run python tests/test_evals.py
 
 # Clarifier Agent
-cd clarifier_agent && python tests/test_evals.py
+cd clarifier_agent && uv run python tests/test_evals.py
 
 # Architecture Agent
-cd architecture_agent && python tests/test_evals.py
+cd architecture_agent && uv run python tests/test_evals.py
 ```
 
 See [EVALUATION.md](./EVALUATION.md) for detailed evaluation documentation.
@@ -451,6 +513,7 @@ See [EVALUATION.md](./EVALUATION.md) for detailed evaluation documentation.
 - **Agents**: Unit tests for each agent's core logic and output validation
 - **Pydantic Evals**: Systematic evaluation datasets with custom evaluators for each agent
 - **Web API**: Integration tests for all scoper endpoints (workflow creation, state management, clarification, results)
+- **End-to-End Testing**: `test_all_agents.py` tests the complete workflow from Requirement Analyzer → Questionnaire → Clarifier → Architecture
 
 ---
 
