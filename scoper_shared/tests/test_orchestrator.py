@@ -175,11 +175,11 @@ class TestOrchestratorWorkflow:
     """Test full workflow execution."""
 
     @pytest.mark.asyncio
-    @patch("scoper_shared.orchestrator.RequirementAnalyzerAgent")
+    @patch("requirement_analyzer_agent.custom_model.agent.RequirementAnalyzerAgent")
     @patch("scoper_shared.orchestrator.domain_router")
-    @patch("scoper_shared.orchestrator.KBRetriever")
-    @patch("scoper_shared.orchestrator.QuestionnaireAgent")
-    @patch("scoper_shared.orchestrator.ArchitectureAgent")
+    @patch("scoper_shared.utils.kb_retriever.KBRetriever")
+    @patch("questionnaire_agent.custom_model.agent.QuestionnaireAgent")
+    @patch("architecture_agent.custom_model.agent.ArchitectureAgent")
     async def test_run_until_clarification(
         self,
         mock_arch_agent: MagicMock,
@@ -220,7 +220,7 @@ class TestOrchestratorWorkflow:
         assert orchestrator.state.questionnaire_draft == sample_questionnaire_draft
 
     @pytest.mark.asyncio
-    @patch("scoper_shared.orchestrator.ClarifierAgent")
+    @patch("clarifier_agent.custom_model.agent.ClarifierAgent")
     async def test_clarification_loop(
         self,
         mock_clarifier: MagicMock,
@@ -256,7 +256,7 @@ class TestOrchestratorWorkflow:
         assert orchestrator.state.questionnaire_final == sample_questionnaire_final
 
     @pytest.mark.asyncio
-    @patch("scoper_shared.orchestrator.ArchitectureAgent")
+    @patch("architecture_agent.custom_model.agent.ArchitectureAgent")
     async def test_q_freeze_gate_passes(
         self,
         mock_arch_agent: MagicMock,
@@ -336,7 +336,7 @@ class TestOrchestratorErrorHandling:
     """Test error handling in orchestrator."""
 
     @pytest.mark.asyncio
-    @patch("scoper_shared.orchestrator.RequirementAnalyzerAgent")
+    @patch("requirement_analyzer_agent.custom_model.agent.RequirementAnalyzerAgent")
     async def test_analyze_state_error(
         self,
         mock_req_agent: MagicMock,

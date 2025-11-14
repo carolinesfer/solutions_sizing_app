@@ -334,34 +334,41 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 5.15 Create `frontend_web/src/components/ArchitecturePlanView.tsx` to render architecture plan markdown
   - [x] 5.16 Add download buttons for Questionnaire (JSON) and ArchitecturePlan (Markdown)
   - [x] 5.17 Add route configuration in `frontend_web/src/routesConfig.tsx` for `/scoper` path
-  - [ ] 5.18 Create integration tests for API endpoints in `web/tests/integration/test_scoper.py`
-  - [ ] 5.19 Create `infra/infra/requirement_analyzer_agent.py` for Pulumi deployment (based on `infra/infra/writer_agent.py`)
-  - [ ] 5.20 Create `infra/infra/questionnaire_agent.py` for Pulumi deployment
-  - [ ] 5.21 Create `infra/infra/clarifier_agent.py` for Pulumi deployment
-  - [ ] 5.22 Create `infra/infra/architecture_agent.py` for Pulumi deployment
-  - [ ] 5.23 Create `infra/feature_flags/requirement_analyzer_agent.yaml` for feature flag configuration
-  - [ ] 5.24 Create `infra/feature_flags/questionnaire_agent.yaml` for feature flag configuration
-  - [ ] 5.25 Create `infra/feature_flags/clarifier_agent.yaml` for feature flag configuration
-  - [ ] 5.26 Create `infra/feature_flags/architecture_agent.yaml` for feature flag configuration
-  - [ ] 5.27 Update root `Taskfile.yml` to include all agent tasks if needed
+  - [x] 5.18 Create integration tests for API endpoints in `web/tests/integration/test_scoper.py`
+  - [x] 5.19 Create `infra/infra/requirement_analyzer_agent.py` for Pulumi deployment (based on `infra/infra/writer_agent.py`)
+  - [x] 5.20 Create `infra/infra/questionnaire_agent.py` for Pulumi deployment
+  - [x] 5.21 Create `infra/infra/clarifier_agent.py` for Pulumi deployment
+  - [x] 5.22 Create `infra/infra/architecture_agent.py` for Pulumi deployment
+  - [x] 5.23 Create `infra/feature_flags/requirement_analyzer_agent.yaml` for feature flag configuration
+  - [x] 5.24 Create `infra/feature_flags/questionnaire_agent.yaml` for feature flag configuration
+  - [x] 5.25 Create `infra/feature_flags/clarifier_agent.yaml` for feature flag configuration
+  - [x] 5.26 Create `infra/feature_flags/architecture_agent.yaml` for feature flag configuration
+  - [x] 5.27 Update root `Taskfile.yml` to include all agent tasks if needed
   - [ ] 5.28 Build each agent for testing in DataRobot LLM Playground using `task requirement_analyzer_agent:build`, `task questionnaire_agent:build`, `task clarifier_agent:build`, `task architecture_agent:build`
   - [ ] 5.29 Deploy each agent for production use using `task requirement_analyzer_agent:deploy`, `task questionnaire_agent:deploy`, `task clarifier_agent:deploy`, `task architecture_agent:deploy`
   - [ ] 5.30 Test deployed agents using `task requirement_analyzer_agent:cli -- execute-deployment --user_prompt "..."` (and similar for other agents)
+  - [x] 5.31 Create `infra/infra/web_app.py` for Pulumi deployment of FastAPI backend as DataRobot Custom Application (based on existing Custom Application deployment patterns in `infra/`) - Updated `infra/infra/web.py` to include scoper agent runtime parameters
+  - [ ] 5.32 Configure DataRobot Custom Application deployment settings for the FastAPI backend (runtime environment, dependencies, environment variables)
+  - [ ] 5.33 Deploy FastAPI backend as DataRobot Custom Application using Pulumi: `pulumi up` from `infra/` directory
+  - [ ] 5.34 Verify Custom Application deployment: test API endpoints are accessible and can communicate with deployed agents
 
-- [ ] 6.0 Set up RAG system for Platform Guides (in scoper_shared)
+- [ ] 6.0 Set up RAG system for Platform Guides using DataRobot's managed Vector Database (in scoper_shared)
   - [ ] 6.1 Create `scoper_shared/utils/rag_system.py` file
-  - [ ] 6.2 Install and configure FAISS or Chroma library in `scoper_shared/pyproject.toml`
-  - [ ] 6.3 Implement `RAGSystem` class with vector store initialization
-  - [ ] 6.4 Implement `load_documents()` method that reads Markdown files from `scoper_shared/kb_content/platform_guides/` and chunks them
-  - [ ] 6.5 Add OpenTelemetry tracing to `load_documents()`: create span "rag_system.load_documents", set attributes for number of files loaded, total chunks created, add nested spans for file reading and chunking operations, add event when loading completes
-  - [ ] 6.6 Implement `embed_documents()` method that creates embeddings for document chunks
-  - [ ] 6.7 Add OpenTelemetry tracing to `embed_documents()`: create span "rag_system.embed_documents", set attributes for number of chunks embedded, embedding model used, add nested span for embedding API calls, add event when embedding completes
-  - [ ] 6.8 Implement `search()` method that takes query (from QuestionnaireFinal) and returns top N relevant chunks
-  - [ ] 6.9 Add OpenTelemetry tracing to `search()`: create span "rag_system.search", set attributes for query text, query length, top N requested, create nested span "vector_search" for similarity search, set attributes for number of results returned, similarity scores, add event when search completes
-  - [ ] 6.10 Architecture Agent will import and use RAG system from `scoper_shared.utils.rag_system` to provide context before generation
-  - [ ] 6.11 Add configuration for embedding model (use DataRobot LLM Gateway or external provider)
-  - [ ] 6.12 Create unit tests for RAG system in `scoper_shared/tests/test_rag.py`
-  - [ ] 6.13 Test RAG retrieval with sample queries and verify relevant context is returned
+  - [ ] 6.2 Add `datarobot` Python package to `scoper_shared/pyproject.toml` dependencies (for Vector Database and GenAI SDK access)
+  - [ ] 6.3 Implement `RAGSystem` class that initializes DataRobot Vector Database connection using `datarobot.VectorDatabase` APIs (refer to [DataRobot GenAI Documentation](https://docs.datarobot.com/en/docs/gen-ai/genai-code/index.html))
+  - [ ] 6.4 Implement `initialize_vector_database()` method that creates or connects to a DataRobot Vector Database instance using `datarobot.VectorDatabase.create()` or `datarobot.VectorDatabase.get()` APIs
+  - [ ] 6.5 Implement `load_documents()` method that reads Markdown files from `scoper_shared/kb_content/platform_guides/` and chunks them into appropriate sizes for vector storage
+  - [ ] 6.6 Add OpenTelemetry tracing to `load_documents()`: create span "rag_system.load_documents", set attributes for number of files loaded, total chunks created, add nested spans for file reading and chunking operations, add event when loading completes
+  - [ ] 6.7 Implement `embed_and_store()` method that creates embeddings using DataRobot's embedding capabilities (via LLM Gateway or DataRobot's managed embedding service) and stores them in the Vector Database using `datarobot.VectorDatabase.insert()` or similar APIs
+  - [ ] 6.8 Add OpenTelemetry tracing to `embed_and_store()`: create span "rag_system.embed_and_store", set attributes for number of chunks embedded, embedding model used, vector database instance ID, add nested span for embedding API calls, add event when storage completes
+  - [ ] 6.9 Implement `search()` method that takes query (from QuestionnaireFinal) and uses `datarobot.VectorDatabase.search()` or similar APIs to retrieve top N relevant chunks from DataRobot's managed Vector Database
+  - [ ] 6.10 Add OpenTelemetry tracing to `search()`: create span "rag_system.search", set attributes for query text, query length, top N requested, vector database instance ID, create nested span "vector_search" for DataRobot Vector Database search, set attributes for number of results returned, similarity scores, add event when search completes
+  - [ ] 6.11 Architecture Agent will import and use RAG system from `scoper_shared.utils.rag_system` to provide context before generation
+  - [ ] 6.12 Add configuration for DataRobot Vector Database connection (endpoint, authentication, database ID) and embedding model (use DataRobot LLM Gateway or DataRobot's managed embedding service)
+  - [ ] 6.13 Create unit tests for RAG system in `scoper_shared/tests/test_rag.py` (mock DataRobot Vector Database APIs for testing)
+  - [ ] 6.14 Test RAG retrieval with sample queries using DataRobot Vector Database and verify relevant context is returned
+  - [ ] 6.15 Update Architecture Agent (`architecture_agent/custom_model/agent.py`) to use RAG system: Replace placeholder `KBRetriever.get_platform_guides()` call (lines 115-148) with `RAGSystem.search()` using DataRobot Vector Database. Update the `run()` method to perform vector search based on `QuestionnaireFinal` content to retrieve relevant chunks instead of concatenating all platform guides
+  - [ ] 6.16 Update Orchestrator (`scoper_shared/orchestrator.py`) PLAN_ARCH state handler: Replace direct `KBRetriever.get_platform_guides()` call (lines 514-522) with `RAGSystem.search()` to perform vector search based on `QuestionnaireFinal` content. This ensures the Architecture Agent receives semantically relevant context from DataRobot's Vector Database instead of all platform guides
 
 - [ ] 7.0 Create initial Knowledge Base content (Master Questionnaires and Platform Guides in scoper_shared)
   - [ ] 7.1 Create `scoper_shared/kb_content/platform_guides/` directory

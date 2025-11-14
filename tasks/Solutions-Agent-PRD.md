@@ -111,7 +111,7 @@ The goodness of the generated artifacts will be assessed via **Manual Review** b
 
 * **Access to DataRobot Context:** Ensuring the agent has reliable, up-to-date access to internal documentation and successful project examples is critical. A strategy for sanitizing and loading this proprietary knowledge must be developed
 * **Call Recording Quality:** Dependence on the quality and format of call recording transcripts could limit the agent's effectiveness. Input data standardization will be necessary
-* **RAG System Implementation:** The MVP requires a functional RAG system to query Internal Platform Guides. This must be implemented using vector search (e.g., FAISS or Chroma) to provide relevant context to the Architecture Agent
+* **RAG System Implementation:** The MVP requires a functional RAG system to query Internal Platform Guides. This must be implemented using **DataRobot's managed Vector Database** to provide relevant context to the Architecture Agent. The RAG system will be integrated via DataRobot's GenAI capabilities and Python SDK.
 * **Knowledge Base Content:** The Master Questionnaire and Platform Guides must be properly structured and maintained. Initial content must be extracted from referenced Google Docs/Sheets and converted to the required formats (JSON for questionnaires, Markdown for guides)
 
 ## **5\. Functional Requirements**
@@ -125,18 +125,57 @@ The system must implement the following functional requirements:
 5. **Clarification Loop:** Agent 3 must ask up to K questions (default K=5) to the user, one at a time, preferring single-choice or boolean questions
 6. **Coverage Gate:** The system must enforce the Q_FREEZE gate condition (≥80% answered OR coverage ≥0.8) before proceeding to architecture generation
 7. **Architecture Generation:** Agent 4 must generate an ArchitecturePlan with 10-16 steps, each including inputs and outputs fields, plus assumptions and risks lists
-8. **RAG Context:** Agent 4 must receive relevant context from Internal Platform Guides via the RAG system before generating the architecture
+8. **RAG Context:** Agent 4 must receive relevant context from Internal Platform Guides via the RAG system before generating the architecture. The RAG system must use DataRobot's managed Vector Database for storing and querying embeddings.
 9. **Schema Validation:** All agent outputs must be validated against their respective Pydantic schemas before state transitions
 10. **Error Handling:** The system must handle and report errors at each state, allowing for retry or manual intervention
 
-## **6\. Technical Considerations**
+## **6\. Technical Considerations (DataRobot Platform)**
 
-* **Technology Stack:** Python 3.10+, LLMs (Gemini), Pydantic, Agent Framework (e.g., Pydantic Agents)
-* **Architecture Pattern:** Hybrid State Machine/Pipeline pattern to enforce structure while allowing bounded user interaction
+This section specifies how the feature will be built, deployed, and managed on the DataRobot platform.
+
+### **6.1 Deployment**
+
+* **Deployment Target:** This feature will be deployed as a **DataRobot Custom Application** for unified governance, monitoring, and security. The FastAPI backend (`web/`) will be deployed as the main Custom Application, and all four agents will be deployed as separate DataRobot Agentic Workflow deployments.
+* **Model Registry:** All four agents (Requirement Analyzer, Questionnaire, Clarifier, Architecture) must be registered in the **DataRobot Model Registry** and available as scalable DataRobot Deployments.
+* **Infrastructure as Code:** Deployment will be managed using **Pulumi** with the DataRobot Pulumi provider (`@pulumi/datarobot`) to automate agent deployment, execution environment configuration, and runtime parameter management.
+
+### **6.2 Agentic AI Framework**
+
+* **Agent Development:** All four agents must be developed, tested, and deployed using **DataRobot's Agentic AI framework** ([Agentic AI Documentation](https://docs.datarobot.com/en/docs/agentic-ai/agentic-develop/index.html)). Each agent will be hosted as a DataRobot Application for testing, monitoring, and production use.
+* **Agent Lifecycle:** DataRobot will manage the agent lifecycle, state, and interaction logging. Each agent's `custom_model/` directory must include the required DataRobot integration hooks (`load_model`, `chat`) as specified in the [Agent Development Documentation](https://docs.datarobot.com/en/docs/agentic-ai/agentic-develop/agentic-development.html).
+* **OpenTelemetry Tracing:** All agents and the orchestrator must utilize **OpenTelemetry** as documented in the [DataRobot Tracing Documentation](https://docs.datarobot.com/en/docs/agentic-ai/agentic-develop/agentic-tracing.html) to capture tool execution, intermediate outputs, and state transitions.
+
+### **6.3 Generative AI & RAG**
+
+* **Vector Database:** The RAG system for Platform Guides **must** utilize **DataRobot's managed Vector Database** for storing and querying embeddings. Do not use local or standalone vector stores like FAISS or Chroma. The Architecture Agent will use DataRobot's GenAI capabilities to retrieve relevant context from Platform Guides.
+* **RAG Implementation:** Use DataRobot's pre-built RAG tools and prompt templates (available in the LLM Playground) as a starting point, and integrate them via the Python SDK. The RAG system will be implemented in `scoper_shared/utils/rag_system.py` and will leverage DataRobot's managed Vector Database APIs.
+* **GenAI SDK:** All interactions with DataRobot's GenAI capabilities will use the `datarobot` Python package and DataRobot APIs as documented in the [GenAI Documentation](https://docs.datarobot.com/en/docs/gen-ai/genai-code/index.html).
+
+### **6.4 Technology Stack**
+
+* **Python Version:** Python 3.10+ (tested up to 3.12)
+* **Agent Framework:** `pydantic-ai` for all four agents (as shown in the example agent implementation)
 * **Data Contracts:** All data flow between agents must use strict Pydantic models (UseCaseInput, FactExtractionModel, QuestionnaireDraft, QuestionnaireFinal, ArchitecturePlan)
-* **Knowledge Base Storage:** Master Questionnaires stored as JSON files, Platform Guides stored as Markdown files in a known directory structure (e.g., `/kb_content/`)
-* **Vector Search:** RAG system must use vector search (FAISS or Chroma) to retrieve top N relevant chunks from Platform Guides
-* **State Management:** Orchestrator must manage state transitions and enforce gate conditions
+* **Backend Framework:** FastAPI for the web API server
+* **Frontend Framework:** React with TypeScript
+* **Database:** SQLite/PostgreSQL for workflow state persistence (via SQLModel)
+* **Infrastructure:** Pulumi for Infrastructure as Code
+
+### **6.5 DataRobot SDK & API Integration**
+
+* **Primary SDK:** All programmatic interactions with the DataRobot platform must use the `datarobot` Python package, including:
+  - Agent deployment and management
+  - LLM Gateway configuration
+  - Vector Database operations for RAG
+  - Model Registry registration
+  - Runtime parameter management
+* **API Documentation:** Refer to the [DataRobot API Documentation](https://docs.datarobot.com/en/docs/api/index.html) for detailed usage patterns.
+
+### **6.6 Architecture Pattern**
+
+* **Hybrid State Machine/Pipeline:** The system uses a hybrid state machine/pipeline pattern to enforce structure while allowing bounded user interaction. The orchestrator (`scoper_shared/orchestrator.py`) manages state transitions and enforces gate conditions.
+* **Knowledge Base Storage:** Master Questionnaires stored as JSON files, Platform Guides stored as Markdown files in a known directory structure (e.g., `scoper_shared/kb_content/`). These will be loaded into DataRobot's Vector Database for RAG operations.
+* **State Management:** Orchestrator manages state transitions and enforces gate conditions, with all state persisted in the database for workflow resumption.
 
 ## **7\. Non-Goals (Out of Scope)**
 
@@ -146,3 +185,13 @@ The system must implement the following functional requirements:
 * **Synchronous Chat:** The MVP will **not** be a real-time, single-session chatbot. The clarification loop is explicitly asynchronous (one question at a time)
 * **In-App Editing:** The user will **not** be able to edit the generated artifacts within this tool. The tool's purpose is generation and export
 * **UI for KB Management:** This PRD does **not** include requirements for a UI to manage the Knowledge Base (e.g., editing Master Questions or platform guides). KB management is expected to be done via file system updates
+
+## **8\. Open Questions**
+
+The following questions remain open and may need clarification during implementation:
+
+1. **Vector Database Configuration:** What is the specific DataRobot Vector Database endpoint and authentication mechanism for RAG operations? How will embeddings be generated and stored?
+2. **Agent Deployment Strategy:** Should all four agents be deployed to the same DataRobot environment, or can they be distributed across environments? What are the networking requirements between agents?
+3. **Workflow State Persistence:** What is the expected retention period for workflow state in the database? Should completed workflows be archived or deleted after a certain period?
+4. **LLM Model Selection:** Which specific LLM models should be used for each agent? Should all agents use the same model, or can different models be configured per agent based on task complexity?
+5. **Error Recovery:** What is the expected behavior when an agent fails mid-workflow? Should the system support workflow resumption from the last successful state?

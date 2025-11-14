@@ -25,6 +25,7 @@ dev = [
     "mypy>=1.15.0",
     "pre-commit>=4.2.0",
     "pydantic>=2.6.1",
+    "pydantic-evals>=0.1.0",
     "pytest-cov>=6.1.1",
     "pytest>=7.4.0",
     "pytest-asyncio>=1.2.0",
@@ -173,6 +174,9 @@ override-dependencies = [
 
 [tool.uv.workspace]
 members = ["../scoper_shared"]
+
+[tool.uv.sources]
+scoper_shared = { workspace = true }
 
 [dependency-groups]
 extras = []
