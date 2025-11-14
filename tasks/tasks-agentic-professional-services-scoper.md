@@ -178,50 +178,50 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 0.6.12 Create `requirement_analyzer_agent/README.md` with agent documentation
   - [x] 0.6.13 Update `requirement_analyzer_agent/custom_model/pyproject.toml` with required dependencies (pydantic-ai, scoper_shared, etc.)
 
-- [ ] 0.7 Set up questionnaire_agent folder structure (based on writer_agent template)
-  - [ ] 0.7.1 Create `questionnaire_agent/` directory at repository root
-  - [ ] 0.7.2 Copy `writer_agent/pyproject.toml` to `questionnaire_agent/pyproject.toml` and update name/description
-  - [ ] 0.7.3 Copy `writer_agent/Taskfile.yml` to `questionnaire_agent/Taskfile.yml` and update agent-specific tasks
-  - [ ] 0.7.4 Copy `writer_agent/custom_model/` structure to `questionnaire_agent/custom_model/` (including `__init__.py`, `helpers.py`, `config.py`)
-  - [ ] 0.7.5 Update `questionnaire_agent/custom_model/__init__.py` (package initialization)
-  - [ ] 0.7.6 Update `questionnaire_agent/custom_model/config.py` for questionnaire agent
-  - [ ] 0.7.7 Update `questionnaire_agent/custom_model/helpers.py` if needed for utility functions, response formatting, and tool client
-  - [ ] 0.7.8 Update `questionnaire_agent/custom_model/model-metadata.yaml` for questionnaire agent (agent configuration, runtime parameters, deployment settings)
-  - [ ] 0.7.9 Copy `writer_agent/cli.py` to `questionnaire_agent/cli.py` and update
-  - [ ] 0.7.10 Copy `writer_agent/dev.py` to `questionnaire_agent/dev.py` and update
-  - [ ] 0.7.11 Create `questionnaire_agent/tests/` directory and copy `writer_agent/tests/conftest.py` if needed
-  - [ ] 0.7.12 Create `questionnaire_agent/README.md` with agent documentation
-  - [ ] 0.7.13 Update `questionnaire_agent/custom_model/pyproject.toml` with required dependencies (pydantic-ai, scoper_shared, etc.)
+- [x] 0.7 Set up questionnaire_agent folder structure (based on writer_agent template)
+  - [x] 0.7.1 Create `questionnaire_agent/` directory at repository root
+  - [x] 0.7.2 Copy `writer_agent/pyproject.toml` to `questionnaire_agent/pyproject.toml` and update name/description
+  - [x] 0.7.3 Copy `writer_agent/Taskfile.yml` to `questionnaire_agent/Taskfile.yml` and update agent-specific tasks
+  - [x] 0.7.4 Copy `writer_agent/custom_model/` structure to `questionnaire_agent/custom_model/` (including `__init__.py`, `helpers.py`, `config.py`)
+  - [x] 0.7.5 Update `questionnaire_agent/custom_model/__init__.py` (package initialization)
+  - [x] 0.7.6 Update `questionnaire_agent/custom_model/config.py` for questionnaire agent
+  - [x] 0.7.7 Update `questionnaire_agent/custom_model/helpers.py` if needed for utility functions, response formatting, and tool client
+  - [x] 0.7.8 Update `questionnaire_agent/custom_model/model-metadata.yaml` for questionnaire agent (agent configuration, runtime parameters, deployment settings)
+  - [x] 0.7.9 Copy `writer_agent/cli.py` to `questionnaire_agent/cli.py` and update
+  - [x] 0.7.10 Copy `writer_agent/dev.py` to `questionnaire_agent/dev.py` and update
+  - [x] 0.7.11 Create `questionnaire_agent/tests/` directory and copy `writer_agent/tests/conftest.py` if needed
+  - [x] 0.7.12 Create `questionnaire_agent/README.md` with agent documentation
+  - [x] 0.7.13 Update `questionnaire_agent/custom_model/pyproject.toml` with required dependencies (pydantic-ai, scoper_shared, etc.)
 
-- [ ] 0.8 Set up clarifier_agent folder structure (based on writer_agent template)
-  - [ ] 0.8.1 Create `clarifier_agent/` directory at repository root
-  - [ ] 0.8.2 Copy `writer_agent/pyproject.toml` to `clarifier_agent/pyproject.toml` and update name/description
-  - [ ] 0.8.3 Copy `writer_agent/Taskfile.yml` to `clarifier_agent/Taskfile.yml` and update agent-specific tasks
-  - [ ] 0.8.4 Copy `writer_agent/custom_model/` structure to `clarifier_agent/custom_model/` (including `__init__.py`, `helpers.py`, `config.py`)
-  - [ ] 0.8.5 Update `clarifier_agent/custom_model/__init__.py` (package initialization)
-  - [ ] 0.8.6 Update `clarifier_agent/custom_model/config.py` for clarifier agent
-  - [ ] 0.8.7 Update `clarifier_agent/custom_model/helpers.py` if needed for utility functions, response formatting, and tool client
-  - [ ] 0.8.8 Update `clarifier_agent/custom_model/model-metadata.yaml` for clarifier agent (agent configuration, runtime parameters, deployment settings)
-  - [ ] 0.8.9 Copy `writer_agent/cli.py` to `clarifier_agent/cli.py` and update
-  - [ ] 0.8.10 Copy `writer_agent/dev.py` to `clarifier_agent/dev.py` and update
-  - [ ] 0.8.11 Create `clarifier_agent/tests/` directory and copy `writer_agent/tests/conftest.py` if needed
-  - [ ] 0.8.12 Create `clarifier_agent/README.md` with agent documentation
-  - [ ] 0.8.13 Update `clarifier_agent/custom_model/pyproject.toml` with required dependencies (pydantic-ai, scoper_shared, etc.)
+- [x] 0.8 Set up clarifier_agent folder structure (based on writer_agent template)
+  - [x] 0.8.1 Create `clarifier_agent/` directory at repository root
+  - [x] 0.8.2 Copy `writer_agent/pyproject.toml` to `clarifier_agent/pyproject.toml` and update name/description
+  - [x] 0.8.3 Copy `writer_agent/Taskfile.yml` to `clarifier_agent/Taskfile.yml` and update agent-specific tasks
+  - [x] 0.8.4 Copy `writer_agent/custom_model/` structure to `clarifier_agent/custom_model/` (including `__init__.py`, `helpers.py`, `config.py`)
+  - [x] 0.8.5 Update `clarifier_agent/custom_model/__init__.py` (package initialization)
+  - [x] 0.8.6 Update `clarifier_agent/custom_model/config.py` for clarifier agent
+  - [x] 0.8.7 Update `clarifier_agent/custom_model/helpers.py` if needed for utility functions, response formatting, and tool client
+  - [x] 0.8.8 Update `clarifier_agent/custom_model/model-metadata.yaml` for clarifier agent (agent configuration, runtime parameters, deployment settings)
+  - [x] 0.8.9 Copy `writer_agent/cli.py` to `clarifier_agent/cli.py` and update
+  - [x] 0.8.10 Copy `writer_agent/dev.py` to `clarifier_agent/dev.py` and update
+  - [x] 0.8.11 Create `clarifier_agent/tests/` directory and copy `writer_agent/tests/conftest.py` if needed
+  - [x] 0.8.12 Create `clarifier_agent/README.md` with agent documentation
+  - [x] 0.8.13 Update `clarifier_agent/custom_model/pyproject.toml` with required dependencies (pydantic-ai, scoper_shared, etc.)
 
-- [ ] 0.9 Set up architecture_agent folder structure (based on writer_agent template)
-  - [ ] 0.9.1 Create `architecture_agent/` directory at repository root
-  - [ ] 0.9.2 Copy `writer_agent/pyproject.toml` to `architecture_agent/pyproject.toml` and update name/description
-  - [ ] 0.9.3 Copy `writer_agent/Taskfile.yml` to `architecture_agent/Taskfile.yml` and update agent-specific tasks
-  - [ ] 0.9.4 Copy `writer_agent/custom_model/` structure to `architecture_agent/custom_model/` (including `__init__.py`, `helpers.py`, `config.py`)
-  - [ ] 0.9.5 Update `architecture_agent/custom_model/__init__.py` (package initialization)
-  - [ ] 0.9.6 Update `architecture_agent/custom_model/config.py` for architecture agent
-  - [ ] 0.9.7 Update `architecture_agent/custom_model/helpers.py` if needed for utility functions, response formatting, and tool client
-  - [ ] 0.9.8 Update `architecture_agent/custom_model/model-metadata.yaml` for architecture agent (agent configuration, runtime parameters, deployment settings)
-  - [ ] 0.9.9 Copy `writer_agent/cli.py` to `architecture_agent/cli.py` and update
-  - [ ] 0.9.10 Copy `writer_agent/dev.py` to `architecture_agent/dev.py` and update
-  - [ ] 0.9.11 Create `architecture_agent/tests/` directory and copy `writer_agent/tests/conftest.py` if needed
-  - [ ] 0.9.12 Create `architecture_agent/README.md` with agent documentation
-  - [ ] 0.9.13 Update `architecture_agent/custom_model/pyproject.toml` with required dependencies (pydantic-ai, scoper_shared, etc.)
+- [x] 0.9 Set up architecture_agent folder structure (based on writer_agent template)
+  - [x] 0.9.1 Create `architecture_agent/` directory at repository root
+  - [x] 0.9.2 Copy `writer_agent/pyproject.toml` to `architecture_agent/pyproject.toml` and update name/description
+  - [x] 0.9.3 Copy `writer_agent/Taskfile.yml` to `architecture_agent/Taskfile.yml` and update agent-specific tasks
+  - [x] 0.9.4 Copy `writer_agent/custom_model/` structure to `architecture_agent/custom_model/` (including `__init__.py`, `helpers.py`, `config.py`)
+  - [x] 0.9.5 Update `architecture_agent/custom_model/__init__.py` (package initialization)
+  - [x] 0.9.6 Update `architecture_agent/custom_model/config.py` for architecture agent
+  - [x] 0.9.7 Update `architecture_agent/custom_model/helpers.py` if needed for utility functions, response formatting, and tool client
+  - [x] 0.9.8 Update `architecture_agent/custom_model/model-metadata.yaml` for architecture agent (agent configuration, runtime parameters, deployment settings)
+  - [x] 0.9.9 Copy `writer_agent/cli.py` to `architecture_agent/cli.py` and update
+  - [x] 0.9.10 Copy `writer_agent/dev.py` to `architecture_agent/dev.py` and update
+  - [x] 0.9.11 Create `architecture_agent/tests/` directory and copy `writer_agent/tests/conftest.py` if needed
+  - [x] 0.9.12 Create `architecture_agent/README.md` with agent documentation
+  - [x] 0.9.13 Update `architecture_agent/custom_model/pyproject.toml` with required dependencies (pydantic-ai, scoper_shared, etc.)
 
 - [ ] 1.0 Set up Pydantic data models and schemas (in scoper_shared)
   - [ ] 1.1 Create `scoper_shared/schemas.py` file
