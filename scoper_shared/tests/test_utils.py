@@ -261,3 +261,60 @@ class TestKBRetriever:
             assert "general" in guides
             assert "common" in guides
 
+    def test_get_platform_guides_subdirectory_structure(self) -> None:
+        """Test loading platform guides from subdirectory structure (task 7.6)."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            kb_dir = Path(tmpdir)
+            guides_dir = kb_dir / "platform_guides"
+            guides_dir.mkdir()
+
+            # Create subdirectory structure
+            time_series_dir = guides_dir / "time_series"
+            time_series_dir.mkdir()
+            (time_series_dir / "doc1.md").write_text("# Time Series Doc 1\nContent 1")
+            (time_series_dir / "doc2.md").write_text("# Time Series Doc 2\nContent 2")
+
+            nlp_dir = guides_dir / "nlp"
+            nlp_dir.mkdir()
+            (nlp_dir / "nlp_guide.md").write_text("# NLP Guide\nNLP content")
+
+            general_dir = guides_dir / "general"
+            general_dir.mkdir()
+            (general_dir / "overview.md").write_text("# Overview\nGeneral content")
+
+            retriever = KBRetriever(kb_content_dir=kb_dir)
+            guides = retriever.get_platform_guides(["time_series", "nlp"])
+
+            # Check that tracks are loaded
+            assert "time_series" in guides
+            assert "nlp" in guides
+            # Check that multiple files are concatenated
+            assert "Time Series Doc 1" in guides["time_series"]
+            assert "Time Series Doc 2" in guides["time_series"]
+            assert "Content 1" in guides["time_series"]
+            assert "Content 2" in guides["time_series"]
+            # Check that general guides are also loaded
+            assert "general" in guides
+            assert "Overview" in guides["general"]
+
+    def test_get_platform_guides_subdirectory_preferred_over_flat(self) -> None:
+        """Test that subdirectory structure is preferred over flat structure."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            kb_dir = Path(tmpdir)
+            guides_dir = kb_dir / "platform_guides"
+            guides_dir.mkdir()
+
+            # Create both subdirectory and flat file
+            time_series_dir = guides_dir / "time_series"
+            time_series_dir.mkdir()
+            (time_series_dir / "doc1.md").write_text("# Subdirectory Content")
+            (guides_dir / "time_series.md").write_text("# Flat File Content")
+
+            retriever = KBRetriever(kb_content_dir=kb_dir)
+            guides = retriever.get_platform_guides(["time_series"])
+
+            # Should load from subdirectory, not flat file
+            assert "time_series" in guides
+            assert "Subdirectory Content" in guides["time_series"]
+            assert "Flat File Content" not in guides["time_series"]
+

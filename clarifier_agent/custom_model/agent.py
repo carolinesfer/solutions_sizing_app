@@ -21,9 +21,11 @@ to fill high-impact gaps through user interaction.
 
 from typing import Any, Optional
 
+import datarobot as dr
 from opentelemetry import trace
 from pydantic_ai import Agent
 from pydantic_ai.models.openai import OpenAIModel
+from pydantic_ai.providers.openai import OpenAIProvider
 
 from config import Config
 from scoper_shared.schemas import QuestionnaireDraft, QuestionnaireFinal, Question
@@ -34,12 +36,47 @@ tracer = trace.get_tracer(__name__)
 # System prompt for Clarifier Agent
 SYSTEM_PROMPT = """You are an interviewer. You will be given a QuestionnaireDraft and a list of current answers. Your goal is to fill the remaining high-impact gaps. Ask up to K (e.g., K=5) high-value follow-up questions to the user, one at a time. Prefer single-choice or boolean questions. Once the loop is complete, compile all Q&A pairs and output *only* the Pydantic QuestionnaireFinal JSON."""
 
-# Create the agent with structured output
-clarifier_agent = Agent(
-    model=OpenAIModel("gpt-4o-mini"),
-    system_prompt=SYSTEM_PROMPT,
-    result_type=QuestionnaireFinal,
-)
+
+def _create_model(model_name: str) -> OpenAIModel:
+    """
+    Create an OpenAIModel configured for either DataRobot LLM Gateway or direct OpenAI.
+
+    Args:
+        model_name: Model identifier (e.g., "azure/gpt-4o-mini" for LLM Gateway or "gpt-4o-mini" for OpenAI).
+
+    Returns:
+        Configured OpenAIModel instance.
+    """
+    if config.use_datarobot_llm_gateway:
+        # Use DataRobot LLM Gateway
+        dr_client = dr.Client()
+        base_url = f"{dr_client.endpoint.rstrip('/')}/genai/llmgw"
+        api_key = dr_client.token
+        # Create OpenAIProvider for DataRobot LLM Gateway
+        provider = OpenAIProvider(
+            base_url=base_url,
+            api_key=api_key,
+        )
+        return OpenAIModel(
+            model_name,
+            provider=provider,
+        )
+    else:
+        # Use direct OpenAI (requires OPENAI_API_KEY)
+        return OpenAIModel(model_name)
+
+
+# Create the agent with structured output (lazy initialization for LLM Gateway)
+# Only create agent at module level if not using LLM Gateway (to avoid auth issues at import time)
+if not config.use_datarobot_llm_gateway:
+    clarifier_agent = Agent(
+        model=_create_model("gpt-4o-mini"),
+        system_prompt=SYSTEM_PROMPT,
+        output_type=QuestionnaireFinal,
+    )
+else:
+    # For LLM Gateway, create agent lazily in __init__ to avoid auth at import time
+    clarifier_agent = None
 
 
 class ClarifierAgent:
@@ -60,20 +97,27 @@ class ClarifierAgent:
         Args:
             model_name: Optional model name to use. If None, uses config default.
             api_key: Optional API key for LLM. If None, uses environment/config.
+                      Ignored when using DataRobot LLM Gateway (uses DataRobot API token).
             max_questions: Maximum number of questions to ask (default: 5).
         """
         self.model_name = model_name or config.llm_default_model
         self.api_key = api_key
         self.max_questions = max_questions
-        # Update agent model if custom model provided
-        if model_name:
-            self.agent = Agent(
-                model=OpenAIModel(model_name),
-                system_prompt=SYSTEM_PROMPT,
-                result_type=QuestionnaireFinal,
-            )
-        else:
+        # Create model with appropriate configuration
+        model = _create_model(self.model_name)
+        # Override api_key if provided and not using LLM Gateway
+        if api_key and not config.use_datarobot_llm_gateway:
+            provider = OpenAIProvider(api_key=api_key)
+            model = OpenAIModel(self.model_name, provider=provider)
+        # Use global agent if available and not using LLM Gateway, otherwise create new one
+        if clarifier_agent is not None and not config.use_datarobot_llm_gateway and not model_name:
             self.agent = clarifier_agent
+        else:
+            self.agent = Agent(
+                model=model,
+                system_prompt=SYSTEM_PROMPT,
+                output_type=QuestionnaireFinal,
+            )
 
     async def ask_question(
         self, draft: QuestionnaireDraft, current_answers: list[dict[str, Any]], question_num: int

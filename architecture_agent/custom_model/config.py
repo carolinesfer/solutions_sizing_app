@@ -33,8 +33,10 @@ class Config(DataRobotAppFrameworkBaseSettings):
     """
 
     llm_deployment_id: str | None = None
-    llm_default_model: str = "datarobot/azure/gpt-4o-mini"
-    use_datarobot_llm_gateway: bool = False
+    llm_default_model: str = "azure/gpt-4o-mini"  # Model ID for DataRobot LLM Gateway (without 'datarobot/' prefix)
+    use_datarobot_llm_gateway: bool = Field(
+        default=False, validation_alias="USE_DATAROBOT_LLM_GATEWAY"
+    )
     mcp_deployment_id: str | None = None
     external_mcp_url: str | None = None
 
@@ -48,6 +50,16 @@ class Config(DataRobotAppFrameworkBaseSettings):
         if parsed_url.port:
             return parsed_url.port
         raise ValueError(f"No port in {self.agent_endpoint}")
+
+    @model_validator(mode="after")
+    def auto_enable_llm_gateway_from_infra(self) -> "Config":
+        """Automatically enable LLM Gateway if INFRA_ENABLE_LLM=gateway_direct.py is set."""
+        import os
+        infra_enable_llm = os.getenv("INFRA_ENABLE_LLM", "")
+        if infra_enable_llm == "gateway_direct.py" and not self.use_datarobot_llm_gateway:
+            # If INFRA_ENABLE_LLM=gateway_direct.py is set, automatically enable LLM Gateway
+            self.use_datarobot_llm_gateway = True
+        return self
 
     @model_validator(mode="before")
     @classmethod

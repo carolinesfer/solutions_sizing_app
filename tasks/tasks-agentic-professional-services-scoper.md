@@ -3,10 +3,16 @@
 **Repository:** [solutions_sizing_app](https://github.com/carolinesfer/solutions_sizing_app)  
 **Base Template:** Forked from [datarobot-agent-application](https://github.com/datarobot-community/datarobot-agent-application)  
 **Related Documents:** 
-- [PRD: Solutions-Agent-PRD-gdrive.md](./Solutions-Agent-PRD-gdrive.md)
-- [EDD: Solutions-Agent-Unified-EDD-gdrive.md](./Solutions-Agent-Unified-EDD-gdrive.md)
+- [PRD: Solutions-Agent-PRD.md](./Solutions-Agent-PRD.md)
+- [EDD: Solutions-Agent-Unified-EDD.md](./Solutions-Agent-Unified-EDD.md)
 - [DataRobot Agent Development Documentation](https://docs.datarobot.com/en/docs/agentic-ai/agentic-develop/agentic-development.html)
 - [DataRobot OpenTelemetry Tracing Documentation](https://docs.datarobot.com/en/docs/agentic-ai/agentic-develop/agentic-tracing.html)
+
+**Reference Knowledge Base Documents:**
+- **Master Questionnaires (Agent 2)**: `/Users/caroline.sieger/Google Drive/My Drive/Solutions Scoping & Sizing Agent/Dev Work/knowledge base docs/questionnaires/`
+  - Contains: SCOPING MASTER SHEET.pdf, APP QUESTIONNAIRES.pdf, various questionnaire templates
+- **Platform Guides (Agent 4)**: `/Users/caroline.sieger/Google Drive/My Drive/Solutions Scoping & Sizing Agent/Dev Work/knowledge base docs/platform_guides/`
+  - Contains: DataRobot documentation (Markdown), Pulumi documentation, GitHub community examples
 
 ## Repository Context
 
@@ -51,13 +57,13 @@ According to the [DataRobot tracing documentation](https://docs.datarobot.com/en
 ## Relevant Files
 
 ### Shared Components (scoper_shared/)
-- `scoper_shared/schemas.py` - All Pydantic data models (UseCaseInput, FactExtractionModel, QuestionnaireDraft, QuestionnaireFinal, ArchitecturePlan, Question, ArchitectureStep)
-- `scoper_shared/orchestrator.py` - State machine orchestrator managing workflow states
-- `scoper_shared/utils/domain_router.py` - Domain Router utility (U1)
-- `scoper_shared/utils/kb_retriever.py` - KB Retriever utility (U2)
-- `scoper_shared/utils/rag_system.py` - RAG system for Platform Guides vector search
-- `scoper_shared/kb_content/master_questionnaire.json` - Master Questionnaire KB content
-- `scoper_shared/kb_content/platform_guides/` - Directory for Platform Guides Markdown files
+- `scoper_shared/src/scoper_shared/schemas.py` - All Pydantic data models (UseCaseInput, FactExtractionModel, QuestionnaireDraft, QuestionnaireFinal, ArchitecturePlan, Question, ArchitectureStep)
+- `scoper_shared/src/scoper_shared/orchestrator.py` - State machine orchestrator managing workflow states
+- `scoper_shared/src/scoper_shared/utils/domain_router.py` - Domain Router utility (U1)
+- `scoper_shared/src/scoper_shared/utils/kb_retriever.py` - KB Retriever utility (U2)
+- `scoper_shared/src/scoper_shared/utils/rag_system.py` - RAG system for Platform Guides vector search
+- `scoper_shared/src/scoper_shared/kb_content/master_questionnaire.json` - Master Questionnaire KB content (extracted from reference documents in Google Drive - see task 7.2-7.4)
+- `scoper_shared/src/scoper_shared/kb_content/platform_guides/` - Directory for Platform Guides Markdown files (copied from reference documents in Google Drive - see task 7.5-7.7)
 - `scoper_shared/pyproject.toml` - Shared dependencies
 - `scoper_shared/tests/test_schemas.py` - Unit tests for Pydantic schemas
 - `scoper_shared/tests/test_orchestrator.py` - Unit tests for state machine orchestrator
@@ -160,7 +166,7 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 0.5.1 Create `scoper_shared/` directory at repository root
   - [x] 0.5.2 Create `scoper_shared/pyproject.toml` for shared dependencies
   - [x] 0.5.3 Create `scoper_shared/utils/` directory
-  - [x] 0.5.4 Create `scoper_shared/kb_content/` directory
+  - [x] 0.5.4 Create `scoper_shared/src/scoper_shared/kb_content/` directory
   - [x] 0.5.5 Create `scoper_shared/tests/` directory
 
 - [x] 0.6 Set up requirement_analyzer_agent folder structure (based on writer_agent template)
@@ -224,7 +230,7 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 0.9.13 Update `architecture_agent/custom_model/pyproject.toml` with required dependencies (pydantic-ai, scoper_shared, etc.)
 
 - [x] 1.0 Set up Pydantic data models and schemas (in scoper_shared)
-  - [x] 1.1 Create `scoper_shared/schemas.py` file
+  - [x] 1.1 Create `scoper_shared/src/scoper_shared/schemas.py` file
   - [x] 1.2 Implement `UseCaseInput` schema with `paragraph`, `transcript` (optional), and `use_case_title` fields
   - [x] 1.3 Implement `FactExtractionModel` schema with `use_case_title`, `technical_confidence_score`, `key_extracted_requirements`, `domain_keywords`, and `identified_gaps` fields
   - [x] 1.4 Implement `Question` schema with `id`, `text`, `type` (Literal), `options`, `required`, `rationale`, and `tracks` fields
@@ -233,21 +239,21 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 1.7 Implement `QuestionnaireFinal` schema with `qas`, `answered_pct`, and `gaps` fields
   - [x] 1.8 Implement `ArchitecturePlan` schema with `steps` (10-16 items), `assumptions`, `risks`, and `notes` fields
   - [x] 1.9 Add Google-style docstrings to all schemas explaining their purpose and usage
-  - [x] 1.10 Create unit tests for schema validation in `scoper_shared/tests/test_schemas.py`
+  - [x] 1.10 Create unit tests for schema validation in `scoper_shared/tests/test_schemas.py` (tests remain at root level)
 
 - [x] 2.0 Implement Knowledge Base infrastructure (KB Retriever and Domain Router in scoper_shared)
-  - [x] 2.1 Create `scoper_shared/utils/__init__.py` file
-  - [x] 2.2 Implement `scoper_shared/utils/domain_router.py` with `domain_router()` function that takes `FactExtractionModel` and returns list of track strings
+  - [x] 2.1 Create `scoper_shared/src/scoper_shared/utils/__init__.py` file
+  - [x] 2.2 Implement `scoper_shared/src/scoper_shared/utils/domain_router.py` with `domain_router()` function that takes `FactExtractionModel` and returns list of track strings
   - [x] 2.3 Add keyword matching logic for tracks: `time_series`, `nlp`, `cv`, `genai_rag`, and default `classic_ml`
   - [x] 2.4 Add OpenTelemetry tracing to `domain_router()` function: create span "domain_router", set attributes for input FactExtractionModel fields, selected tracks, add event when routing completes
-  - [x] 2.5 Create `scoper_shared/utils/kb_retriever.py` with `KBRetriever` class
-  - [x] 2.6 Implement `get_master_questionnaire()` method that reads JSON file from `scoper_shared/kb_content/master_questionnaire.json` and parses into list of `Question` objects
+  - [x] 2.5 Create `scoper_shared/src/scoper_shared/utils/kb_retriever.py` with `KBRetriever` class
+  - [x] 2.6 Implement `get_master_questionnaire()` method that reads JSON file from `scoper_shared/src/scoper_shared/kb_content/master_questionnaire.json` and parses into list of `Question` objects (file will be created from reference documents - see task 7.2-7.4)
   - [x] 2.7 Add OpenTelemetry tracing to `get_master_questionnaire()`: create span "kb_retriever.get_master_questionnaire", set attributes for file path, question count, add event when parsing completes
-  - [x] 2.8 Implement `get_platform_guides()` method that loads Markdown files from `scoper_shared/kb_content/platform_guides/` directory
+  - [x] 2.8 Implement `get_platform_guides()` method that loads Markdown files from `scoper_shared/src/scoper_shared/kb_content/platform_guides/` directory (files will be copied from reference documents - see task 7.5-7.7)
   - [x] 2.9 Add filtering logic to return guides based on selected tracks
   - [x] 2.10 Add OpenTelemetry tracing to `get_platform_guides()`: create span "kb_retriever.get_platform_guides", set attributes for selected tracks, number of guides found, file paths, add event when filtering completes
-  - [x] 2.11 Create unit tests for `domain_router()` function in `scoper_shared/tests/test_utils.py`
-  - [x] 2.12 Create unit tests for `KBRetriever` class in `scoper_shared/tests/test_utils.py`
+  - [x] 2.11 Create unit tests for `domain_router()` function in `scoper_shared/tests/test_utils.py` (tests remain at root level)
+  - [x] 2.12 Create unit tests for `KBRetriever` class in `scoper_shared/tests/test_utils.py` (tests remain at root level)
 
 - [x] 3.0 Implement Requirement Analyzer Agent
   - [x] 3.1 Implement `requirement_analyzer_agent/custom_model/agent.py` with `RequirementAnalyzerAgent` class using pydantic-ai (main MyAgent class with core workflow logic)
@@ -265,6 +271,7 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 3.2.2 Configure Agent 2 system prompt in `agent.py`: "You are a scoping specialist. You will be given a FactExtractionModel..."
   - [x] 3.2.3 Implement `run()` method that takes `FactExtractionModel` and Master Questions, returns `QuestionnaireDraft`
   - [x] 3.2.4 Add logic to select relevant questions from Master KB (via scoper_shared.utils.kb_retriever) and generate delta_questions for gaps
+  - [ ] 3.2.4.1 **Note**: Master Questions will be extracted from reference documents in `/Users/caroline.sieger/Google Drive/My Drive/Solutions Scoping & Sizing Agent/Dev Work/knowledge base docs/questionnaires/` (see task 7.2-7.4)
   - [x] 3.2.5 Add OpenTelemetry tracing to `run()` method: create span "questionnaire_agent.run", set attributes for input FactExtractionModel fields, create nested span "question_selection" for KB retrieval, set attributes for number of master questions available, number selected, create nested span "delta_question_generation" for gap questions, set attributes for number of gaps, delta questions generated, coverage_estimate, add event when questionnaire draft completes
   - [x] 3.2.6 Import schemas from `scoper_shared.schemas` and utils from `scoper_shared.utils`
   - [x] 3.2.7 Update `questionnaire_agent/custom_model/custom.py` to implement DataRobot integration hooks (`load_model`, `chat`) for agent execution (OpenTelemetry instrumentation is already included in template)
@@ -292,13 +299,14 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 3.4.4 Ensure Agent 4 generates 10-16 steps with inputs/outputs fields populated
   - [x] 3.4.5 Add OpenTelemetry tracing to `run()` method: create span "architecture_agent.run", set attributes for input QuestionnaireFinal fields, create nested span "rag_context_retrieval" for RAG search, set attributes for query, number of chunks retrieved, create nested span "architecture_generation" for LLM call, set attributes for number of steps generated, number of assumptions, number of risks, add event when architecture plan completes
   - [x] 3.4.6 Import schemas from `scoper_shared.schemas` and RAG system from `scoper_shared.utils.rag_system`
+  - [ ] 3.4.6.1 **Note**: Platform Guides for RAG will be sourced from reference documents in `/Users/caroline.sieger/Google Drive/My Drive/Solutions Scoping & Sizing Agent/Dev Work/knowledge base docs/platform_guides/` (see task 7.5-7.7)
   - [x] 3.4.7 Update `architecture_agent/custom_model/custom.py` to implement DataRobot integration hooks (`load_model`, `chat`) for agent execution (OpenTelemetry instrumentation is already included in template)
   - [x] 3.4.8 Update `architecture_agent/custom_model/helpers.py` if needed for utility functions, response formatting, and tool client
   - [ ] 3.4.9 Test agent locally using `task architecture_agent:cli -- execute --user_prompt "Sample questionnaire final"`
   - [x] 3.4.10 Create unit tests in `architecture_agent/tests/test_agent.py`
 
 - [x] 4.0 Implement state machine orchestrator (in scoper_shared)
-  - [x] 4.1 Create `scoper_shared/orchestrator.py` file
+  - [x] 4.1 Create `scoper_shared/src/scoper_shared/orchestrator.py` file
   - [x] 4.2 Define state enum: `INGEST`, `ANALYZE`, `ROUTE`, `KB_FETCH`, `Q_DRAFT`, `Q_CLARIFY`, `Q_FREEZE`, `PLAN_ARCH`, `DONE`
   - [x] 4.3 Implement `Orchestrator` class with state management
   - [x] 4.4 Add OpenTelemetry tracing setup: import `opentelemetry.trace`, create tracer, ensure OpenTelemetry instrumentation is available
@@ -314,7 +322,7 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 4.14 Add top-level workflow tracing: create main span "scoper_workflow" that encompasses entire workflow, with nested spans for each state transition
   - [x] 4.15 Add error handling and retry logic for each state transition with tracing: set error attributes on spans, add error events
   - [x] 4.16 Add schema validation before each state transition (import from scoper_shared.schemas) with tracing: add validation spans with attributes for validation results
-  - [x] 4.17 Create unit tests for orchestrator state transitions in `scoper_shared/tests/test_orchestrator.py`
+  - [x] 4.17 Create unit tests for orchestrator state transitions in `scoper_shared/tests/test_orchestrator.py` (tests remain at root level)
 
 - [x] 5.0 Integrate agent with web API and frontend
   - [x] 5.1 Create a main orchestrator entry point (could be in scoper_shared or a separate orchestrator service)
@@ -353,11 +361,11 @@ Update the file after completing each sub-task, not just after completing an ent
   - [ ] 5.34 Verify Custom Application deployment: test API endpoints are accessible and can communicate with deployed agents
 
 - [ ] 6.0 Set up RAG system for Platform Guides using DataRobot's managed Vector Database (in scoper_shared)
-  - [ ] 6.1 Create `scoper_shared/utils/rag_system.py` file
+  - [ ] 6.1 Create `scoper_shared/src/scoper_shared/utils/rag_system.py` file
   - [ ] 6.2 Add `datarobot` Python package to `scoper_shared/pyproject.toml` dependencies (for Vector Database and GenAI SDK access)
   - [ ] 6.3 Implement `RAGSystem` class that initializes DataRobot Vector Database connection using `datarobot.VectorDatabase` APIs (refer to [DataRobot GenAI Documentation](https://docs.datarobot.com/en/docs/gen-ai/genai-code/index.html))
   - [ ] 6.4 Implement `initialize_vector_database()` method that creates or connects to a DataRobot Vector Database instance using `datarobot.VectorDatabase.create()` or `datarobot.VectorDatabase.get()` APIs
-  - [ ] 6.5 Implement `load_documents()` method that reads Markdown files from `scoper_shared/kb_content/platform_guides/` and chunks them into appropriate sizes for vector storage
+  - [ ] 6.5 Implement `load_documents()` method that reads Markdown files from `scoper_shared/src/scoper_shared/kb_content/platform_guides/` and chunks them into appropriate sizes for vector storage (files will be copied from reference documents in Google Drive - see task 7.5-7.7)
   - [ ] 6.6 Add OpenTelemetry tracing to `load_documents()`: create span "rag_system.load_documents", set attributes for number of files loaded, total chunks created, add nested spans for file reading and chunking operations, add event when loading completes
   - [ ] 6.7 Implement `embed_and_store()` method that creates embeddings using DataRobot's embedding capabilities (via LLM Gateway or DataRobot's managed embedding service) and stores them in the Vector Database using `datarobot.VectorDatabase.insert()` or similar APIs
   - [ ] 6.8 Add OpenTelemetry tracing to `embed_and_store()`: create span "rag_system.embed_and_store", set attributes for number of chunks embedded, embedding model used, vector database instance ID, add nested span for embedding API calls, add event when storage completes
@@ -365,19 +373,38 @@ Update the file after completing each sub-task, not just after completing an ent
   - [ ] 6.10 Add OpenTelemetry tracing to `search()`: create span "rag_system.search", set attributes for query text, query length, top N requested, vector database instance ID, create nested span "vector_search" for DataRobot Vector Database search, set attributes for number of results returned, similarity scores, add event when search completes
   - [ ] 6.11 Architecture Agent will import and use RAG system from `scoper_shared.utils.rag_system` to provide context before generation
   - [ ] 6.12 Add configuration for DataRobot Vector Database connection (endpoint, authentication, database ID) and embedding model (use DataRobot LLM Gateway or DataRobot's managed embedding service)
-  - [ ] 6.13 Create unit tests for RAG system in `scoper_shared/tests/test_rag.py` (mock DataRobot Vector Database APIs for testing)
+  - [ ] 6.13 Create unit tests for RAG system in `scoper_shared/tests/test_rag.py` (mock DataRobot Vector Database APIs for testing; tests remain at root level)
   - [ ] 6.14 Test RAG retrieval with sample queries using DataRobot Vector Database and verify relevant context is returned
-  - [ ] 6.15 Update Architecture Agent (`architecture_agent/custom_model/agent.py`) to use RAG system: Replace placeholder `KBRetriever.get_platform_guides()` call (lines 115-148) with `RAGSystem.search()` using DataRobot Vector Database. Update the `run()` method to perform vector search based on `QuestionnaireFinal` content to retrieve relevant chunks instead of concatenating all platform guides
-  - [ ] 6.16 Update Orchestrator (`scoper_shared/orchestrator.py`) PLAN_ARCH state handler: Replace direct `KBRetriever.get_platform_guides()` call (lines 514-522) with `RAGSystem.search()` to perform vector search based on `QuestionnaireFinal` content. This ensures the Architecture Agent receives semantically relevant context from DataRobot's Vector Database instead of all platform guides
+  - [ ] 6.15 Update Architecture Agent (`architecture_agent/custom_model/agent.py`) to use RAG system: Replace placeholder `KBRetriever.get_platform_guides()` call (lines 115-148) with `RAGSystem.search()` using DataRobot Vector Database. Update the `run()` method to perform vector search based on `QuestionnaireFinal` content to retrieve relevant chunks instead of concatenating all platform guides. **Note**: Platform guides will be loaded from files copied from reference documents (see task 7.5-7.7)
+  - [ ] 6.16 Update Orchestrator (`scoper_shared/src/scoper_shared/orchestrator.py`) PLAN_ARCH state handler: Replace direct `KBRetriever.get_platform_guides()` call (lines 514-522) with `RAGSystem.search()` to perform vector search based on `QuestionnaireFinal` content. This ensures the Architecture Agent receives semantically relevant context from DataRobot's Vector Database instead of all platform guides. **Note**: Platform guides will be loaded from files copied from reference documents (see task 7.5-7.7)
 
 - [ ] 7.0 Create initial Knowledge Base content (Master Questionnaires and Platform Guides in scoper_shared)
-  - [ ] 7.1 Create `scoper_shared/kb_content/platform_guides/` directory
-  - [ ] 7.2 Extract questions from referenced Google Sheets/Docs (SCOPING MASTER SHEET, APP QUESTIONNAIRES, etc.)
-  - [ ] 7.3 Convert extracted questions to JSON format matching `Question` schema
-  - [ ] 7.4 Create `scoper_shared/kb_content/master_questionnaire.json` file with all questions, including `tracks` field for domain filtering
-  - [ ] 7.5 Extract content from Internal Platform Guides (DataRobot docs, GitHub repos, presentations)
-  - [ ] 7.6 Convert platform guide content to Markdown format
-  - [ ] 7.7 Organize platform guides by domain/track (time_series.md, nlp.md, cv.md, genai_rag.md, classic_ml.md) in `scoper_shared/kb_content/platform_guides/`
-  - [ ] 7.8 Create placeholder/example content if source documents are not immediately available
-  - [ ] 7.9 Document the KB content structure and update process in `scoper_shared/kb_content/README.md`
+  - [ ] 7.1 Create `scoper_shared/src/scoper_shared/kb_content/platform_guides/` directory (if not exists)
+  - [ ] 7.2 Extract questions from reference documents in `/Users/caroline.sieger/Google Drive/My Drive/Solutions Scoping & Sizing Agent/Dev Work/knowledge base docs/questionnaires/`:
+    - [ ] 7.2.1 Parse `SCOPING MASTER SHEET.pdf` to extract canonical questions
+    - [ ] 7.2.2 Parse `APP QUESTIONNAIRES.pdf` to extract application-specific questions
+    - [ ] 7.2.3 Review `AI Analyst - Use Case Questionnaire TEMPLATE v02.docx.md` and `Custom Application - Use Case Questionnaire TEMPLATE v01.docx.md` for additional question patterns
+    - [ ] 7.2.4 Review `Use Case Deep Dive Workshop (Production).pdf` and `.txt` for workshop questions
+    - [ ] 7.2.5 Review `Complexity Questionnaire for Predictive AI TEMPLATE.pdf` and `Catalyst Build Phase Scoping TEMPLATE.pdf` for specialized questionnaires
+  - [ ] 7.3 Convert extracted questions to JSON format matching `Question` schema:
+    - [ ] 7.3.1 Map each question to `Question` fields: `id`, `text`, `type`, `options` (if applicable), `required`, `rationale`, `tracks`
+    - [ ] 7.3.2 Assign appropriate `tracks` values (`classic_ml`, `time_series`, `nlp`, `cv`, `genai_rag`) based on question content
+    - [ ] 7.3.3 Ensure question IDs are unique and follow a consistent naming convention (e.g., `q_<category>_<number>`)
+  - [ ] 7.4 Create `scoper_shared/src/scoper_shared/kb_content/master_questionnaire.json` file with all extracted questions, properly formatted as JSON array of `Question` objects
+  - [ ] 7.5 Copy and organize platform guide content from reference documents in `/Users/caroline.sieger/Google Drive/My Drive/Solutions Scoping & Sizing Agent/Dev Work/knowledge base docs/platform_guides/`:
+    - [ ] 7.5.1 Copy DataRobot documentation files (`docs.datarobot.com-*.md`) - these are already in Markdown format
+    - [ ] 7.5.2 Copy Pulumi documentation files (`www.pulumi.com-*.md`) for infrastructure guidance
+    - [ ] 7.5.3 Copy GitHub community files (`github.com-datarobot-community-*.md`) for examples and patterns
+    - [ ] 7.5.4 Review `DataRobot Time Series II - Current.pdf` and convert to Markdown if needed for time series track
+  - [ ] 7.6 Organize platform guides by domain/track in `scoper_shared/src/scoper_shared/kb_content/platform_guides/`:
+    - [ ] 7.6.1 Create subdirectories or prefix files by track: `time_series/`, `nlp/`, `cv/`, `genai_rag/`, `classic_ml/`, `infrastructure/`, `general/`
+    - [ ] 7.6.2 Categorize DataRobot docs by topic (e.g., MLOPS docs → `classic_ml/`, Time Series docs → `time_series/`, App Builder docs → `genai_rag/`)
+    - [ ] 7.6.3 Place Pulumi docs in `infrastructure/` subdirectory
+    - [ ] 7.6.4 Place general/overview docs in `general/` subdirectory
+  - [ ] 7.7 Verify all platform guide files are in Markdown format (`.md` extension) - most reference files are already in Markdown, but convert any PDFs if needed
+  - [ ] 7.8 Document the KB content structure, source locations, and update process in `scoper_shared/src/scoper_shared/kb_content/README.md`:
+    - [ ] 7.8.1 Document the source location of reference documents
+    - [ ] 7.8.2 Explain the question extraction and JSON conversion process
+    - [ ] 7.8.3 Document the platform guide organization structure
+    - [ ] 7.8.4 Provide instructions for updating KB content when new reference documents are added
 

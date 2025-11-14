@@ -22,9 +22,11 @@ from a Master Knowledge Base and creating new questions for identified gaps.
 import json
 from typing import Any
 
+import datarobot as dr
 from opentelemetry import trace
 from pydantic_ai import Agent
 from pydantic_ai.models.openai import OpenAIModel
+from pydantic_ai.providers.openai import OpenAIProvider
 
 from config import Config
 from scoper_shared.schemas import FactExtractionModel, QuestionnaireDraft
@@ -40,12 +42,47 @@ SYSTEM_PROMPT = """You are a scoping specialist. You will be given a FactExtract
 3. Populate the rationale field for any delta questions you create.
 4. You must output *only* the Pydantic QuestionnaireDraft JSON."""
 
-# Create the agent with structured output
-questionnaire_agent = Agent(
-    model=OpenAIModel("gpt-4o-mini"),
-    system_prompt=SYSTEM_PROMPT,
-    result_type=QuestionnaireDraft,
-)
+
+def _create_model(model_name: str) -> OpenAIModel:
+    """
+    Create an OpenAIModel configured for either DataRobot LLM Gateway or direct OpenAI.
+
+    Args:
+        model_name: Model identifier (e.g., "azure/gpt-4o-mini" for LLM Gateway or "gpt-4o-mini" for OpenAI).
+
+    Returns:
+        Configured OpenAIModel instance.
+    """
+    if config.use_datarobot_llm_gateway:
+        # Use DataRobot LLM Gateway
+        dr_client = dr.Client()
+        base_url = f"{dr_client.endpoint.rstrip('/')}/genai/llmgw"
+        api_key = dr_client.token
+        # Create OpenAIProvider for DataRobot LLM Gateway
+        provider = OpenAIProvider(
+            base_url=base_url,
+            api_key=api_key,
+        )
+        return OpenAIModel(
+            model_name,
+            provider=provider,
+        )
+    else:
+        # Use direct OpenAI (requires OPENAI_API_KEY)
+        return OpenAIModel(model_name)
+
+
+# Create the agent with structured output (lazy initialization for LLM Gateway)
+# Only create agent at module level if not using LLM Gateway (to avoid auth issues at import time)
+if not config.use_datarobot_llm_gateway:
+    questionnaire_agent = Agent(
+        model=_create_model("gpt-4o-mini"),
+        system_prompt=SYSTEM_PROMPT,
+        output_type=QuestionnaireDraft,
+    )
+else:
+    # For LLM Gateway, create agent lazily in __init__ to avoid auth at import time
+    questionnaire_agent = None
 
 
 class QuestionnaireAgent:
@@ -64,19 +101,26 @@ class QuestionnaireAgent:
         Args:
             model_name: Optional model name to use. If None, uses config default.
             api_key: Optional API key for LLM. If None, uses environment/config.
+                      Ignored when using DataRobot LLM Gateway (uses DataRobot API token).
         """
         self.model_name = model_name or config.llm_default_model
         self.api_key = api_key
         self.kb_retriever = KBRetriever()
-        # Update agent model if custom model provided
-        if model_name:
-            self.agent = Agent(
-                model=OpenAIModel(model_name),
-                system_prompt=SYSTEM_PROMPT,
-                result_type=QuestionnaireDraft,
-            )
-        else:
+        # Create model with appropriate configuration
+        model = _create_model(self.model_name)
+        # Override api_key if provided and not using LLM Gateway
+        if api_key and not config.use_datarobot_llm_gateway:
+            provider = OpenAIProvider(api_key=api_key)
+            model = OpenAIModel(self.model_name, provider=provider)
+        # Use global agent if available and not using LLM Gateway, otherwise create new one
+        if questionnaire_agent is not None and not config.use_datarobot_llm_gateway and not model_name:
             self.agent = questionnaire_agent
+        else:
+            self.agent = Agent(
+                model=model,
+                system_prompt=SYSTEM_PROMPT,
+                output_type=QuestionnaireDraft,
+            )
 
     async def run(self, facts: FactExtractionModel) -> QuestionnaireDraft:
         """
