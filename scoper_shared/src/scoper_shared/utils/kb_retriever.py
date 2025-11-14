@@ -132,15 +132,18 @@ class KBRetriever:
         """
         Load Platform Guides from Markdown files based on selected tracks.
 
-        This method loads all .md files from the platform_guides directory
-        and filters them based on the selected tracks. Files are matched by
-        track name (e.g., "time_series.md", "nlp.md").
+        This method supports two directory structures:
+        1. Subdirectory structure (preferred): `platform_guides/{track}/*.md` - loads all .md files from track subdirectories
+        2. Flat structure (backward compatible): `platform_guides/{track}.md` - loads single file per track
+
+        Files are organized by track name (e.g., `time_series/`, `nlp/`, `classic_ml/`, etc.).
+        Multiple files in a track subdirectory are concatenated with separators.
 
         Args:
             selected_tracks: List of track strings to filter guides (e.g., ['time_series', 'nlp']).
 
         Returns:
-            Dictionary mapping track names to guide content (markdown text).
+            Dictionary mapping track names to guide content (concatenated markdown text).
 
         Example:
             ```python
@@ -161,27 +164,71 @@ class KBRetriever:
 
             # Load guides for each selected track
             for track in selected_tracks:
-                guide_path = self.platform_guides_dir / f"{track}.md"
-                if guide_path.exists():
+                track_dir = self.platform_guides_dir / track
+                track_file = self.platform_guides_dir / f"{track}.md"
+
+                track_content_parts: list[str] = []
+
+                # First, try subdirectory structure (preferred for task 7.6)
+                if track_dir.exists() and track_dir.is_dir():
+                    # Load all .md files from the track subdirectory
+                    md_files = sorted(track_dir.glob("*.md"))
+                    for md_file in md_files:
+                        try:
+                            with open(md_file, "r", encoding="utf-8") as f:
+                                content = f.read()
+                                # Add file header for context
+                                track_content_parts.append(f"## {md_file.name}\n\n{content}")
+                        except Exception as e:
+                            span.record_exception(e)
+                            # Continue loading other files even if one fails
+                            continue
+
+                # Fallback to flat structure (backward compatible)
+                elif track_file.exists() and track_file.is_file():
                     try:
-                        with open(guide_path, "r", encoding="utf-8") as f:
-                            guides[track] = f.read()
+                        with open(track_file, "r", encoding="utf-8") as f:
+                            track_content_parts.append(f.read())
                     except Exception as e:
                         span.record_exception(e)
-                        # Continue loading other guides even if one fails
                         continue
 
-            # Also load any general guides (e.g., "general.md", "common.md")
-            general_guide_names = ["general.md", "common.md", "overview.md"]
-            for guide_name in general_guide_names:
-                guide_path = self.platform_guides_dir / guide_name
-                if guide_path.exists() and guide_name not in guides:
+                # Combine all content for this track
+                if track_content_parts:
+                    guides[track] = "\n\n---\n\n".join(track_content_parts)
+
+            # Also load any general guides from general/ subdirectory or general.md file
+            general_dir = self.platform_guides_dir / "general"
+            general_file = self.platform_guides_dir / "general.md"
+
+            general_content_parts: list[str] = []
+
+            # Try general/ subdirectory first
+            if general_dir.exists() and general_dir.is_dir():
+                md_files = sorted(general_dir.glob("*.md"))
+                for md_file in md_files:
                     try:
-                        with open(guide_path, "r", encoding="utf-8") as f:
-                            guides[guide_name.replace(".md", "")] = f.read()
+                        with open(md_file, "r", encoding="utf-8") as f:
+                            content = f.read()
+                            general_content_parts.append(f"## {md_file.name}\n\n{content}")
                     except Exception as e:
                         span.record_exception(e)
                         continue
+
+            # Fallback to general.md, common.md, overview.md files
+            for guide_name in ["general.md", "common.md", "overview.md"]:
+                guide_path = self.platform_guides_dir / guide_name
+                if guide_path.exists() and guide_path.is_file() and guide_name not in guides:
+                    try:
+                        with open(guide_path, "r", encoding="utf-8") as f:
+                            general_content_parts.append(f.read())
+                    except Exception as e:
+                        span.record_exception(e)
+                        continue
+
+            # Add general content if found
+            if general_content_parts:
+                guides["general"] = "\n\n---\n\n".join(general_content_parts)
 
             span.set_attribute("guides_found_count", len(guides))
             span.set_attribute("guide_tracks", str(list(guides.keys())))
