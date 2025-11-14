@@ -235,30 +235,30 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 1.9 Add Google-style docstrings to all schemas explaining their purpose and usage
   - [x] 1.10 Create unit tests for schema validation in `scoper_shared/tests/test_schemas.py`
 
-- [ ] 2.0 Implement Knowledge Base infrastructure (KB Retriever and Domain Router in scoper_shared)
-  - [ ] 2.1 Create `scoper_shared/utils/__init__.py` file
-  - [ ] 2.2 Implement `scoper_shared/utils/domain_router.py` with `domain_router()` function that takes `FactExtractionModel` and returns list of track strings
-  - [ ] 2.3 Add keyword matching logic for tracks: `time_series`, `nlp`, `cv`, `genai_rag`, and default `classic_ml`
-  - [ ] 2.4 Add OpenTelemetry tracing to `domain_router()` function: create span "domain_router", set attributes for input FactExtractionModel fields, selected tracks, add event when routing completes
-  - [ ] 2.5 Create `scoper_shared/utils/kb_retriever.py` with `KBRetriever` class
-  - [ ] 2.6 Implement `get_master_questionnaire()` method that reads JSON file from `scoper_shared/kb_content/master_questionnaire.json` and parses into list of `Question` objects
-  - [ ] 2.7 Add OpenTelemetry tracing to `get_master_questionnaire()`: create span "kb_retriever.get_master_questionnaire", set attributes for file path, question count, add event when parsing completes
-  - [ ] 2.8 Implement `get_platform_guides()` method that loads Markdown files from `scoper_shared/kb_content/platform_guides/` directory
-  - [ ] 2.9 Add filtering logic to return guides based on selected tracks
-  - [ ] 2.10 Add OpenTelemetry tracing to `get_platform_guides()`: create span "kb_retriever.get_platform_guides", set attributes for selected tracks, number of guides found, file paths, add event when filtering completes
-  - [ ] 2.11 Create unit tests for `domain_router()` function in `scoper_shared/tests/test_utils.py`
-  - [ ] 2.12 Create unit tests for `KBRetriever` class in `scoper_shared/tests/test_utils.py`
+- [x] 2.0 Implement Knowledge Base infrastructure (KB Retriever and Domain Router in scoper_shared)
+  - [x] 2.1 Create `scoper_shared/utils/__init__.py` file
+  - [x] 2.2 Implement `scoper_shared/utils/domain_router.py` with `domain_router()` function that takes `FactExtractionModel` and returns list of track strings
+  - [x] 2.3 Add keyword matching logic for tracks: `time_series`, `nlp`, `cv`, `genai_rag`, and default `classic_ml`
+  - [x] 2.4 Add OpenTelemetry tracing to `domain_router()` function: create span "domain_router", set attributes for input FactExtractionModel fields, selected tracks, add event when routing completes
+  - [x] 2.5 Create `scoper_shared/utils/kb_retriever.py` with `KBRetriever` class
+  - [x] 2.6 Implement `get_master_questionnaire()` method that reads JSON file from `scoper_shared/kb_content/master_questionnaire.json` and parses into list of `Question` objects
+  - [x] 2.7 Add OpenTelemetry tracing to `get_master_questionnaire()`: create span "kb_retriever.get_master_questionnaire", set attributes for file path, question count, add event when parsing completes
+  - [x] 2.8 Implement `get_platform_guides()` method that loads Markdown files from `scoper_shared/kb_content/platform_guides/` directory
+  - [x] 2.9 Add filtering logic to return guides based on selected tracks
+  - [x] 2.10 Add OpenTelemetry tracing to `get_platform_guides()`: create span "kb_retriever.get_platform_guides", set attributes for selected tracks, number of guides found, file paths, add event when filtering completes
+  - [x] 2.11 Create unit tests for `domain_router()` function in `scoper_shared/tests/test_utils.py`
+  - [x] 2.12 Create unit tests for `KBRetriever` class in `scoper_shared/tests/test_utils.py`
 
-- [ ] 3.0 Implement Requirement Analyzer Agent
-  - [ ] 3.1 Implement `requirement_analyzer_agent/custom_model/agent.py` with `RequirementAnalyzerAgent` class using pydantic-ai (main MyAgent class with core workflow logic)
-  - [ ] 3.2 Configure Agent 1 system prompt in `agent.py`: "You are a senior solutions architect. Your sole task is to read the following user query and transcript and extract key information..."
-  - [ ] 3.3 Implement `run()` method that takes `UseCaseInput` and returns `FactExtractionModel` (validated Pydantic JSON)
-  - [ ] 3.4 Add OpenTelemetry tracing to `run()` method: create span "requirement_analyzer.run", set attributes for input use_case_title, paragraph length, transcript length, add nested span for LLM call, set attributes for output technical_confidence_score, number of requirements extracted, number of gaps identified, add event when extraction completes
-  - [ ] 3.5 Import schemas from `scoper_shared.schemas`
-  - [ ] 3.6 Update `requirement_analyzer_agent/custom_model/custom.py` to implement DataRobot integration hooks (`load_model`, `chat`) for agent execution (OpenTelemetry instrumentation is already included in template)
-  - [ ] 3.7 Update `requirement_analyzer_agent/custom_model/helpers.py` if needed for utility functions, response formatting, and tool client
+- [x] 3.0 Implement Requirement Analyzer Agent
+  - [x] 3.1 Implement `requirement_analyzer_agent/custom_model/agent.py` with `RequirementAnalyzerAgent` class using pydantic-ai (main MyAgent class with core workflow logic)
+  - [x] 3.2 Configure Agent 1 system prompt in `agent.py`: "You are a senior solutions architect. Your sole task is to read the following user query and transcript and extract key information..."
+  - [x] 3.3 Implement `run()` method that takes `UseCaseInput` and returns `FactExtractionModel` (validated Pydantic JSON)
+  - [x] 3.4 Add OpenTelemetry tracing to `run()` method: create span "requirement_analyzer.run", set attributes for input use_case_title, paragraph length, transcript length, add nested span for LLM call, set attributes for output technical_confidence_score, number of requirements extracted, number of gaps identified, add event when extraction completes
+  - [x] 3.5 Import schemas from `scoper_shared.schemas`
+  - [x] 3.6 Update `requirement_analyzer_agent/custom_model/custom.py` to implement DataRobot integration hooks (`load_model`, `chat`) for agent execution (OpenTelemetry instrumentation is already included in template)
+  - [x] 3.7 Update `requirement_analyzer_agent/custom_model/helpers.py` if needed for utility functions, response formatting, and tool client
   - [ ] 3.8 Test agent locally using `task requirement_analyzer_agent:cli -- execute --user_prompt "Sample use case description"`
-  - [ ] 3.9 Create unit tests in `requirement_analyzer_agent/tests/test_agent.py`
+  - [x] 3.9 Create unit tests in `requirement_analyzer_agent/tests/test_agent.py`
 
 - [ ] 3.2 Implement Questionnaire Agent
   - [ ] 3.2.1 Implement `questionnaire_agent/custom_model/agent.py` with `QuestionnaireAgent` class using pydantic-ai (main MyAgent class with core workflow logic)

@@ -1,0 +1,29 @@
+[
+  {
+    "id": "q1",
+    "text": "What is the primary data source for this project?",
+    "type": "single_select",
+    "options": ["Database", "API", "File upload", "Streaming data"],
+    "required": true,
+    "rationale": "Understanding the data source helps determine ingestion requirements",
+    "tracks": ["classic_ml", "time_series"]
+  },
+  {
+    "id": "q2",
+    "text": "What is the target variable or outcome you want to predict?",
+    "type": "free_text",
+    "required": true,
+    "rationale": "The target variable defines the prediction task",
+    "tracks": ["classic_ml", "time_series"]
+  },
+  {
+    "id": "q3",
+    "text": "What is the expected deployment environment?",
+    "type": "single_select",
+    "options": ["Cloud", "On-premise", "Edge", "Hybrid"],
+    "required": true,
+    "rationale": "Deployment environment affects architecture decisions",
+    "tracks": ["classic_ml", "time_series", "nlp", "cv", "genai_rag"]
+  }
+]
+

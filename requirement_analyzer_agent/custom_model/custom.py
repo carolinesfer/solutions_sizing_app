@@ -21,6 +21,7 @@ import logging
 logging.getLogger("opentelemetry.instrumentation.instrumentor").setLevel(logging.ERROR)
 
 import asyncio
+import json
 from concurrent.futures import ThreadPoolExecutor
 
 from opentelemetry.instrumentation.aiohttp_client import AioHttpClientInstrumentor
@@ -33,10 +34,6 @@ instrument_aiohttp = AioHttpClientInstrumentor().instrument()
 instrument_httpx = HTTPXClientInstrumentor().instrument()
 instrument_openai = OpenAIInstrumentor().instrument()
 
-
-from opentelemetry.instrumentation.langchain import LangchainInstrumentor
-
-instrument_langchain = LangchainInstrumentor().instrument()
 import os
 
 # Some libraries collect telemetry data by default. Let's disable that.
@@ -45,8 +42,7 @@ os.environ["DEEPEVAL_TELEMETRY_OPT_OUT"] = "YES"
 # isort: on
 # ------------------------------------------------------------------------------
 
-
-from typing import Any, AsyncGenerator, Iterator, Union, cast
+from typing import Any, Iterator, Union
 
 from datarobot_drum import RuntimeParameters
 from datarobot_genai.core.chat import (
@@ -62,8 +58,8 @@ from openai.types.chat.completion_create_params import (
 )
 
 # ruff: noqa: E402
-from agent import MyAgent
-from helpers import to_custom_model_streaming_response
+from agent import RequirementAnalyzerAgent
+from scoper_shared.schemas import UseCaseInput
 
 
 def maybe_set_env_from_runtime_parameters(key: str) -> None:
@@ -94,6 +90,37 @@ def load_model(code_dir: str) -> tuple[ThreadPoolExecutor, asyncio.AbstractEvent
     return (thread_pool_executor, event_loop)
 
 
+def _extract_user_prompt_from_messages(
+    messages: list[dict[str, Any]] | None,
+) -> str:
+    """
+    Extract user prompt from OpenAI messages format.
+
+    Args:
+        messages: List of message dicts with 'role' and 'content' keys.
+
+    Returns:
+        User prompt string, or empty string if not found.
+    """
+    if not messages:
+        return ""
+
+    # Find the last user message
+    for message in reversed(messages):
+        if message.get("role") == "user":
+            content = message.get("content", "")
+            if isinstance(content, str):
+                return content
+            elif isinstance(content, list):
+                # Handle multimodal content
+                text_parts = [
+                    item.get("text", "") for item in content if item.get("type") == "text"
+                ]
+                return " ".join(text_parts)
+
+    return ""
+
+
 def chat(
     completion_create_params: CompletionCreateParams
     | CompletionCreateParamsNonStreaming
@@ -104,28 +131,22 @@ def chat(
     """When using the chat endpoint, this function is called.
 
     Agent inputs are in OpenAI message format and defined as the 'user' portion
-    of the input prompt.
+    of the input prompt. The user message should contain a JSON string with
+    UseCaseInput data.
 
     Example:
-        prompt = {
-            "topic": "Artificial Intelligence",
-        }
         client = OpenAI(...)
         completion = client.chat.completions.create(
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": f"{json.dumps(prompt)}"},
+                {"role": "user", "content": '{"paragraph": "We need to predict churn...", "use_case_title": "Churn Prediction"}'},
             ],
-            extra_body = {
-                "environment_var": True,
-            },
             ...
         )
     """
     thread_pool_executor, event_loop = load_model_result
 
     # Change working directory to the directory containing this file.
-    # Some agent frameworks expect this for expected pathing.
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
     # Load MCP runtime parameters and session secret if configured
@@ -133,38 +154,66 @@ def chat(
     maybe_set_env_from_runtime_parameters("MCP_DEPLOYMENT_ID")
     maybe_set_env_from_runtime_parameters("SESSION_SECRET_KEY")
 
-    # Initialize the authorization context for downstream agents and tools to retrieve
-    # access tokens for external services.
+    # Initialize the authorization context
     initialize_authorization_context(completion_create_params)
 
-    # Instantiate the agent, all fields from the completion_create_params are passed to the agent
-    # allowing environment variables to be passed during execution
-    agent = MyAgent(**completion_create_params)
-    # Invoke the agent and check if it returns a generator or a tuple
-    result = thread_pool_executor.submit(
-        event_loop.run_until_complete,
-        agent.invoke(completion_create_params=completion_create_params),
-    ).result()
+    # Extract user prompt from messages
+    messages = completion_create_params.get("messages", [])
+    user_prompt = _extract_user_prompt_from_messages(messages)
 
-    # Check if the result is a generator (streaming response)
-    if isinstance(result, AsyncGenerator):
-        # Streaming response
-        return cast(
-            Iterator[CustomModelStreamingResponse],
-            to_custom_model_streaming_response(
-                thread_pool_executor,
-                event_loop,
-                result,
-                model=completion_create_params.get("model"),
-            ),
-        )
-    else:
-        # Non-streaming response
-        response_text, pipeline_interactions, usage_metrics = result
+    if not user_prompt:
+        raise ValueError("No user message found in completion_create_params")
 
-        return to_custom_model_chat_response(
-            response_text,
-            pipeline_interactions,
-            usage_metrics,
-            model=completion_create_params.get("model"),
+    # Parse user prompt as UseCaseInput JSON
+    try:
+        if user_prompt.strip().startswith("{"):
+            input_data = UseCaseInput.model_validate_json(user_prompt)
+        else:
+            # If not JSON, treat as paragraph and create UseCaseInput
+            input_data = UseCaseInput(
+                paragraph=user_prompt,
+                use_case_title="Untitled Use Case",
+                transcript=None,
+            )
+    except Exception as e:
+        # Fallback: create UseCaseInput from plain text
+        input_data = UseCaseInput(
+            paragraph=user_prompt,
+            use_case_title="Untitled Use Case",
+            transcript=None,
         )
+
+    # Get model name from params or use default
+    model_name = completion_create_params.get("model")
+
+    # Instantiate the agent
+    agent = RequirementAnalyzerAgent(model_name=model_name)
+
+    # Run the agent
+    def run_agent() -> tuple[str, list, dict[str, int]]:
+        """Run agent in event loop and return formatted result."""
+        result = event_loop.run_until_complete(agent.run(input_data))
+
+        # Convert FactExtractionModel to JSON string for response
+        response_text = result.model_dump_json(indent=2)
+
+        # Extract usage metrics if available (pydantic-ai doesn't provide this directly)
+        usage_metrics = {
+            "completion_tokens": 0,
+            "prompt_tokens": 0,
+            "total_tokens": 0,
+        }
+
+        # Return in format expected by DataRobot
+        return (response_text, [], usage_metrics)
+
+    result = thread_pool_executor.submit(run_agent).result()
+    response_text, pipeline_interactions, usage_metrics = result
+
+    # Return non-streaming response
+    return to_custom_model_chat_response(
+        response_text,
+        pipeline_interactions,
+        usage_metrics,
+        model=completion_create_params.get("model"),
+    )
