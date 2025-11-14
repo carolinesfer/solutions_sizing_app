@@ -12,8 +12,8 @@ After consolidation, we now have **3 main files** instead of 8+ redundant ones:
 
 **Usage:**
 ```bash
-cd requirement_analyzer_agent
-PYTHONPATH=.. uv run python ../test_all_agents.py
+cd tests
+PYTHONPATH=.. python test_all_agents.py
 ```
 
 **Features:**
@@ -36,7 +36,9 @@ PYTHONPATH=.. uv run python ../test_all_agents.py
 
 **Usage:**
 ```bash
-./test_agents.sh
+./tests/test_agents.sh
+# Or from tests directory:
+cd tests && ./test_agents.sh
 ```
 
 **Features:**
@@ -93,14 +95,14 @@ The following redundant files were consolidated:
 
 2. **Quick Test:**
    ```bash
-   ./test_agents.sh
+   ./tests/test_agents.sh
    ```
    This verifies each agent can run independently.
 
 3. **Full Integration Test:**
    ```bash
-   cd requirement_analyzer_agent
-   PYTHONPATH=.. uv run python ../test_all_agents.py
+   cd tests
+   PYTHONPATH=.. python test_all_agents.py
    ```
    This tests the complete workflow end-to-end.
 
@@ -131,11 +133,12 @@ If you were using the old files:
 
 ## Summary
 
-**Before:** 8+ test files with overlapping functionality  
-**After:** 3 focused files:
-- `test_all_agents.py` - Comprehensive Python testing
-- `test_agents.sh` - Quick CLI testing  
-- `TESTING.md` - Complete documentation
+**Before:** 8+ test files with overlapping functionality scattered across the repository  
+**After:** 4 focused files in `tests/` directory:
+- `tests/test_all_agents.py` - Comprehensive Python testing
+- `tests/test_agents.sh` - Quick CLI testing  
+- `tests/TESTING.md` - Complete documentation
+- `tests/TEST_FILES_EXPLANATION.md` - This file (explanation of consolidation)
 
-This consolidation makes testing simpler, clearer, and easier to maintain.
+This consolidation makes testing simpler, clearer, and easier to maintain. All testing files are now organized in a single `tests/` directory at the repository root.
 

@@ -9,9 +9,13 @@ This script tests:
 4. Architecture Agent - generates architecture plan
 
 Usage:
+    cd tests
     python test_all_agents.py
     # Or with environment variables:
     INFRA_ENABLE_LLM=gateway_direct.py python test_all_agents.py
+    
+    # Or from repository root:
+    cd tests && PYTHONPATH=.. python test_all_agents.py
 """
 
 import asyncio
@@ -21,8 +25,9 @@ import sys
 from pathlib import Path
 from typing import Any
 
-# Add parent directory to path for imports
-root_dir = Path(__file__).parent
+# Add parent directory (repository root) to path for imports
+# Since this script is now in tests/, we need to go up one level
+root_dir = Path(__file__).parent.parent
 sys.path.insert(0, str(root_dir))
 
 # Set environment variable if not already set
@@ -389,3 +394,4 @@ if __name__ == "__main__":
 
         traceback.print_exc()
         sys.exit(1)
+

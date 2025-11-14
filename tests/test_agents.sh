@@ -1,8 +1,20 @@
 #!/bin/bash
 # Unified test script for all 4 agents
 # Tests each agent via CLI with sample inputs
+#
+# Usage:
+#   ./tests/test_agents.sh
+#   # Or from repository root:
+#   cd tests && ./test_agents.sh
 
 set -e
+
+# Get the directory where this script is located
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+# Change to repository root to ensure relative paths work
+cd "$REPO_ROOT"
 
 echo "🧪 Testing All 4 Agents"
 echo "======================"
@@ -22,7 +34,7 @@ echo "Test 1: Requirement Analyzer Agent"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 cd requirement_analyzer_agent
 task cli START_DEV=1 -- execute --user_prompt '{"paragraph": "We need to build a predictive maintenance system for industrial equipment. The system should analyze sensor data from machines to predict failures before they occur.", "use_case_title": "Predictive Maintenance System"}' --show_output 2>&1 | tail -50 || echo "⚠️  Test 1 had issues"
-cd ..
+cd "$REPO_ROOT"
 echo ""
 
 # Test 2: Questionnaire Agent  
@@ -31,7 +43,7 @@ echo "Test 2: Questionnaire Agent"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 cd questionnaire_agent
 task cli START_DEV=1 -- execute --user_prompt '{"use_case_title": "Predictive Maintenance", "technical_confidence_score": 0.85, "key_extracted_requirements": ["Predict failures", "Analyze sensor data"], "domain_keywords": ["time_series"], "identified_gaps": ["Data source"]}' --show_output 2>&1 | tail -50 || echo "⚠️  Test 2 had issues"
-cd ..
+cd "$REPO_ROOT"
 echo ""
 
 # Test 3: Clarifier Agent
@@ -40,7 +52,7 @@ echo "Test 3: Clarifier Agent"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 cd clarifier_agent
 task cli START_DEV=1 -- execute --user_prompt '{"questions": [{"id": "q1", "text": "Where is your data?", "type": "single_choice", "options": ["Database", "Cloud"], "required": true, "rationale": "Need data location", "tracks": ["classic_ml"]}], "selected_from_master_ids": ["q1"], "delta_questions": [], "coverage_estimate": 0.75}' --show_output 2>&1 | tail -50 || echo "⚠️  Test 3 had issues"
-cd ..
+cd "$REPO_ROOT"
 echo ""
 
 # Test 4: Architecture Agent
@@ -49,7 +61,7 @@ echo "Test 4: Architecture Agent"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 cd architecture_agent
 task cli START_DEV=1 -- execute --user_prompt '{"qas": [{"id": "q1", "answer": "Database"}], "answered_pct": 0.9, "gaps": []}' --show_output 2>&1 | tail -50 || echo "⚠️  Test 4 had issues"
-cd ..
+cd "$REPO_ROOT"
 echo ""
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -57,5 +69,5 @@ echo "✅ All tests completed!"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 echo "💡 Tip: For more detailed testing with validation, use:"
-echo "   cd requirement_analyzer_agent && PYTHONPATH=.. uv run python ../test_all_agents.py"
+echo "   cd tests && PYTHONPATH=.. python test_all_agents.py"
 

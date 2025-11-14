@@ -32,8 +32,8 @@ OPENAI_API_KEY=your-openai-api-key
 Tests all 4 agents in sequence with proper input/output validation:
 
 ```bash
-cd requirement_analyzer_agent
-PYTHONPATH=.. uv run python ../test_all_agents.py
+cd tests
+PYTHONPATH=.. python test_all_agents.py
 ```
 
 **What it does:**
@@ -47,7 +47,9 @@ PYTHONPATH=.. uv run python ../test_all_agents.py
 Tests each agent individually via their CLI interface:
 
 ```bash
-./test_agents.sh
+./tests/test_agents.sh
+# Or from tests directory:
+cd tests && ./test_agents.sh
 ```
 
 **What it does:**
@@ -211,7 +213,10 @@ After successful local testing:
 
 ## File Structure
 
-- `test_all_agents.py` - Main Python test script (tests all agents in sequence)
-- `test_agents.sh` - Quick shell script for CLI testing
-- `TESTING.md` - This file (consolidated testing documentation)
+All testing files are located in the `tests/` directory at the repository root:
+
+- `tests/test_all_agents.py` - Main Python test script (tests all agents in sequence)
+- `tests/test_agents.sh` - Quick shell script for CLI testing
+- `tests/TESTING.md` - This file (consolidated testing documentation)
+- `tests/TEST_FILES_EXPLANATION.md` - Explanation of test file consolidation
 
