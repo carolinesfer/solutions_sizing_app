@@ -96,11 +96,11 @@ def sample_architecture_plan() -> ArchitecturePlan:
     return ArchitecturePlan(
         steps=[
             ArchitectureStep(
-                id="step1",
+                id=1,
                 name="Data Ingestion",
                 purpose="Load customer data",
-                inputs="Raw customer data",
-                outputs="Cleansed data frame",
+                inputs=["Raw customer data"],
+                outputs=["Cleansed data frame"],
             )
         ]
         * 12,  # Ensure 12 steps (within 10-16 range)

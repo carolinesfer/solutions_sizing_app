@@ -247,7 +247,7 @@ class TestKBRetriever:
             assert "nonexistent" not in guides
 
     def test_get_platform_guides_general_guides(self) -> None:
-        """Test that general guides (general.md, common.md) are loaded."""
+        """Test that general guides (general.md, common.md) are loaded into 'general' key."""
         with tempfile.TemporaryDirectory() as tmpdir:
             kb_dir = Path(tmpdir)
             guides_dir = kb_dir / "platform_guides"
@@ -258,8 +258,10 @@ class TestKBRetriever:
             retriever = KBRetriever(kb_content_dir=kb_dir)
             guides = retriever.get_platform_guides(["time_series"])
 
+            # All general guides (general.md, common.md, overview.md) are combined into "general" key
             assert "general" in guides
-            assert "common" in guides
+            assert "# General Guide" in guides["general"]
+            assert "# Common Guide" in guides["general"]
 
     def test_get_platform_guides_subdirectory_structure(self) -> None:
         """Test loading platform guides from subdirectory structure (task 7.6)."""
